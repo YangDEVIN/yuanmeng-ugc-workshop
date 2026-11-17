@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>元梦 · FPS 对战地图工坊</title>
+<script src="workshop-bridge.js?v8"></script>
 <link rel="stylesheet" href="workshop.css">
 <style>
   :root{
@@ -424,6 +425,7 @@ function renderCode(){
   $('#expOrder').onclick=()=>copyText(JSON.stringify(order),'已复制放置清单（'+est+' 块），可直接喂给元梦接口生成');
   $('#dlOrder').onclick=()=>downloadJson(order,def.id+'_order.json');
   $('#copyShare').onclick=()=>copyText(shareUrl(),'已复制分享链接');
+  WorkshopBridge.buildButton($('#genBox'),()=>({schema:'yuanmeng-custom-project/v1',map:def.id,name:def.name,placement:{coordinates:{units:'cm'},count:order.count,guidance:order.guidance,commands:[{tool:'ugc_create_entity',arguments:{items:order.items}}]}}));
 }
 function doCopy(){ copyText($('#code').textContent,'已复制口令，发给我即可生成'); }
 

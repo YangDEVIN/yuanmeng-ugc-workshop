@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>FPS 地图工坊 · 沙漠2</title>
+<script src="workshop-bridge.js?v8"></script>
 <link rel="stylesheet" href="workshop.css">
 <link rel="stylesheet" href="map-workspace.css">
 <body class="workshop map-editor">
@@ -232,6 +233,7 @@ Promise.resolve().then(async ()=>{
   }
   editButton.onclick=exportButton.onclick=()=>openDraft('project');
   placementButton.onclick=()=>openDraft('placement');
+  if(window.WorkshopBridge)WorkshopBridge.buildButton(exportButton.parentElement,()=>({...FpsProject.create(data,spawnEditor.getSpawns()),placement:currentPlacement()}));
   bounds.getCenter(center);radius=bounds.getSize(new THREE.Vector3()).length()*.65;
   scene.fog.near=radius*.5;scene.fog.far=radius*3.5;frame(false);
   document.getElementById('status').textContent='';

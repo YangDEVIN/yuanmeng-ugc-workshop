@@ -3,15 +3,17 @@
   const INDEX='custom-library/v1';
   let library=await DraftStore.load(INDEX)||[],project=CustomMap.empty(),selected=null,agentList=[],pending=null,job=null,jobTimer,busy=false,frameReady=false,previewKey='';
   const notice=text=>$('notice').textContent=text;
+  const connect=document.createElement('button');connect.textContent='连接本机';connect.onclick=WorkshopBridge.connect;$('connection').before(connect);
+  const download=document.createElement('a');download.href='connector.zip';download.textContent='获取连接器';download.className='button';download.download='元梦工坊连接器.zip';$('connection-help').after(download);
+  WorkshopBridge.buildButton(document.querySelector('.actions'),snapshot);
+  const restore=document.createElement('button');restore.textContent='恢复上个版本';document.querySelector('.actions').append(restore);restore.onclick=async()=>{try{const previous=await DraftStore.load('custom-before-agent');if(!previous)throw Error('暂无 Agent 修改前的版本');await show(previous);notice('已恢复 Agent 修改前的版本。');}catch(e){notice(e.message);}};
+  const auto=new Option('自动识别正在运行的 Agent','auto',true,true);$('agent').prepend(auto);
+  $('agent-settings').hidden=true;
   const importButton=document.createElement('button');importButton.textContent='↑ 导入 JSON';importButton.className='primary';
   $('upload').parentElement.before(importButton);$('upload').parentElement.hidden=true;importButton.onclick=()=>$('upload').click();
   const stop=document.createElement('button');stop.textContent='停止等待';stop.type='button';stop.hidden=true;$('chat-form').append(stop);
-  stop.onclick=()=>{clearTimeout(jobTimer);job=null;busy=false;stop.hidden=true;$('send').disabled=false;DraftStore.save('custom-active-job',null).catch(e=>notice(e.message));message('已停止等待，Agent 窗口仍由你控制；结果可用导入 JSON 打开。');};
-  async function api(url,data){
-    const response=await fetch(url,{method:data?'POST':'GET',headers:{'X-Workshop-Client':'1',...(data?{'Content-Type':'application/json'}:{})},...(data?{body:JSON.stringify(data)}:{}),signal:AbortSignal.timeout(35000)});
-    if(!response.headers.get('content-type')?.includes('application/json'))throw Error('本地桥接未启动。请在网站目录运行 node tools/serve.cjs，并打开它显示的本地地址。');
-    const result=await response.json();if(!response.ok)throw Error(result.error||'连接失败');return result;
-  }
+  stop.onclick=()=>{clearTimeout(jobTimer);job=null;busy=false;stop.hidden=true;$('send').disabled=false;DraftStore.save('custom-active-job',null).catch(e=>notice(e.message));message('已停止等待和自动应用。后台 Agent 可能仍在运行，请在对应客户端查看；本轮结果不会覆盖当前地图。');};
+  const api=WorkshopBridge.api;
   function snapshot(){
     if(!frameReady)throw Error('地图正在加载，请稍后再操作。');
     const current=frame.contentWindow?.draftView?.exportProject?.()||project;
@@ -72,13 +74,13 @@
       if((manual||issue&&issue!==lastIssue)&&!$('connect-dialog').open)$('connect-dialog').showModal();lastIssue=issue;
     }catch(e){
       $('connection').dataset.state='error';$('connection').textContent='○ 本地桥接未连接';$('connection-detail').textContent=e.message;
-      $('connection-help').textContent='在网站目录运行：\nnode tools/serve.cjs\n\n打开启动后显示的 http://127.0.0.1 地址。线上静态网页不能直接启动桌面 Agent 或读取本机凭据。';
+      $('connection-help').textContent='启动本机连接器后点击「连接本机」。首次使用需在连接窗口授权，并允许浏览器访问本机网络。所有地图操作留在当前在线网页，无需下载网页或复制 JSON。';
       if((manual||lastIssue!=='bridge')&&!$('connect-dialog').open)$('connect-dialog').showModal();lastIssue='bridge';
     }finally{checking=false;}
   }
   $('connection').onclick=()=>checkConnection(true);$('retry').onclick=()=>checkConnection(true);
-  function agentStatus(){const c=agentList.find(a=>a.id===$('agent').value);$('agent-status').textContent=c?.available?(c.handoff?'桌面交接 · 打开后粘贴任务':'任务启动入口已就绪 · 登录由 Agent 确认'):'未配置本地启动入口';$('send').textContent=c?.handoff?'↗ 打开 Agent 并复制任务':'↗ 打开 Agent 并发送';}
-  async function refreshAgents(){try{agentList=await api('/api/agents');agentStatus();}catch(e){$('agent-status').textContent='请先启动本地桥接';}}
+  function agentStatus(){const active=agentList.filter(a=>a.running),c=agentList.find(a=>a.id===$('agent').value);$('agent-status').textContent=$('agent').value==='auto'?(active.length?'正在运行：'+active.map(a=>a.id+(a.automatic?'':'（无自动接口）')).join('、'):'未检测到运行中的 Agent'):c?.automatic?'可自动提交 · '+(c.running?'正在运行':'将启动本轮进程'):'此 Agent 无可用自动接口';$('send').textContent='✦ 生成 / 修改地图';}
+  async function refreshAgents(){try{agentList=await api('/api/agents/active');agentStatus();}catch(e){$('agent-status').textContent=e.message;}}
   $('agent').onchange=agentStatus;
   $('agent-settings').onclick=()=>{const c=agentList.find(a=>a.id===$('agent').value);$('settings-agent').textContent=$('agent').selectedOptions[0].textContent;$('executable').value=c?.executable||'';$('arguments').value=JSON.stringify(c?.args||['{prompt}']);$('settings-status').textContent='';$('settings').showModal();};
   $('settings-form').onsubmit=async event=>{event.preventDefault();try{await api('/api/agents',{id:$('agent').value,executable:$('executable').value,args:JSON.parse($('arguments').value)});await refreshAgents();$('settings').close();}catch(e){$('settings-status').textContent=e.message;}};
@@ -86,8 +88,10 @@
     if(!job)return;
     const currentJob=job;
     try{const r=await api('/api/jobs/'+currentJob.id);if(job!==currentJob)return;
-      if(r.state==='ready'){pending={project:CustomMap.normalize(r.project),base:job.base};await DraftStore.save('custom-pending',pending);await DraftStore.save('custom-active-job',null);message('已收到新版本：'+pending.project.placement.count+' 个元件。点击应用后替换当前草稿。');$('apply').hidden=false;job=null;busy=false;stop.hidden=true;$('send').disabled=false;return;}
-      if(r.state==='invalid'&&job.lastError!==r.message){message('返回数据未通过检查：'+r.message+'。可在 Agent 窗口修正 result.json。');job.lastError=r.message;}
+      if(r.state==='ready'){pending={project:CustomMap.normalize(r.project),base:job.base};await DraftStore.save('custom-pending',pending);await DraftStore.save('custom-active-job',null);message('新版本已通过数据校验：'+pending.project.placement.count+' 个元件，正在更新预览。');$('apply').hidden=false;job=null;busy=false;stop.hidden=true;$('send').disabled=false;$('apply').click();return;}
+      if(r.state==='blocked'){message('任务已阻断：'+r.message);alert(r.message);job=null;busy=false;stop.hidden=true;$('send').disabled=false;await DraftStore.save('custom-active-job',null);return;}
+      if(r.state==='running')$('agent-status').textContent='正在生成 · '+r.elapsedSec+' 秒'+(r.elapsedSec>120?' · 若长时间无结果，请检查 Agent 登录与模型连接':'');
+      if(r.state==='invalid'){message('结果未通过检查：'+r.message+'，请调整需求后重试。');job=null;busy=false;stop.hidden=true;$('send').disabled=false;await DraftStore.save('custom-active-job',null);return;}
     }catch(e){if(job!==currentJob)return;if(job.lastError!==e.message){message('等待结果：'+e.message);job.lastError=e.message;}}
     jobTimer=setTimeout(poll,3000);
   }
@@ -95,17 +99,16 @@
     event.preventDefault();if(busy)return;busy=true;$('send').disabled=true;
     try{
       const task=$('task').value.trim(),p=snapshot();message(task,'user');pending=null;await DraftStore.save('custom-pending',null);$('apply').hidden=true;
-      const result=await api('/api/jobs',{agent:$('agent').value,task,project:p});
-      job={id:result.id,base:JSON.stringify(p)};await DraftStore.save('custom-active-job',job);stop.hidden=false;message(result.message);message(result.prompt);$('task').value='';
+      const result=await api('/api/jobs',{agent:$('agent').value,task,project:p,automatic:true});
+      job={id:result.id,base:JSON.stringify(p)};await DraftStore.save('custom-active-job',job);stop.hidden=false;message(result.message);$('task').value='';
       // The prompt is visible and copyable even for GUI adapters without a prompt API.
-      const copyButton=document.createElement('button');copyButton.textContent='复制本轮任务';copyButton.onclick=()=>copy(result.prompt);$('messages').append(copyButton);
       poll();
     }catch(e){message('未发送：'+e.message);busy=false;$('send').disabled=false;}
   };
   $('apply').onclick=async()=>{
     if(!pending)return;
     if(JSON.stringify(snapshot())!==pending.base){message('当前地图在发送后有修改，请先导出或保存当前地图，再重新发送任务，避免覆盖。');return;}
-    try{await show(pending.project);pending=null;await DraftStore.save('custom-pending',null);$('apply').hidden=true;notice('已应用 Agent 新版本，尚未写入仓库或元梦。');}catch(e){message(e.message);}
+    try{await DraftStore.save('custom-before-agent',snapshot());await show(pending.project);pending=null;await DraftStore.save('custom-pending',null);$('apply').hidden=true;notice('Agent 修改已更新到网页，可恢复上个版本。');}catch(e){message(e.message);}
   };
   window.addEventListener('message',event=>{
     if(event.origin!==location.origin||event.source!==frame.contentWindow||event.data?.type!=='workshop-draft-ready'||event.data.draftId!==previewKey)return;
@@ -123,4 +126,6 @@
     job=await DraftStore.load('custom-active-job');if(job){busy=true;stop.hidden=false;$('send').disabled=true;message('正在恢复上次任务的结果等待。');poll();}
   }catch(e){notice(e.message);}
   refreshAgents();checkConnection();
+  window.addEventListener('workshop-connected',()=>{refreshAgents();checkConnection();});
+  setInterval(()=>{if(!document.hidden&&!busy)refreshAgents();},15000);
 })();

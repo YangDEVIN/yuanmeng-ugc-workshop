@@ -443,6 +443,7 @@
     get viewState(){return viewState;},
     get hiddenCount(){return hiddenIds.size;},
     get showHidden(){return showHidden;}};
+  if(!customEmbedded&&window.WorkshopBridge)WorkshopBridge.buildButton(document.querySelector('.map-actions'),()=>window.draftView.exportProject());
   if(renderer)feedback.textContent='';
   show();
 })();

@@ -307,6 +307,7 @@
   }
   $('#campus-edit').onclick=$('#campus-export').onclick=()=>openDraft('project');
   $('#campus-placement').onclick=()=>openDraft('placement');
+  if(window.WorkshopBridge)WorkshopBridge.buildButton($('#campus-export').parentElement,()=>data.makeProject(spawnEditor.getSpawns(),skyPicker.id));
   $('#campus-import').onchange=async event=>{
     const file=event.target.files[0];if(!file)return;
     try {

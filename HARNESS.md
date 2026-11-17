@@ -1,23 +1,29 @@
-# 本地地图 Harness
+# 在线地图工坊
 
-Node.js 22 以上，在仓库目录运行 `node tools/serve.cjs`，打开终端输出的本地地址进入「自定义仓库」。默认端口 18765；冲突时设置环境变量 WORKSHOP_PORT 为其他端口。本服务只监听 127.0.0.1，不启动或重启元梦 MCP。
+网站通过 GitHub Pages 发布，地址为 https://yangdevin.github.io/yuanmeng-ugc-workshop/ 。推送 main 后运行 Pages 工作流；必须在仓库 Settings → Pages 将 Source 设为 GitHub Actions。工作流成功才表示线上已更新。
 
-上传完整地图工程（含 placement）或厘米制放置清单即可打开共享 3D 编辑器。支持浏览、天空盒、剖视、选择删除、目录放置、撤销和导出。仓库存储在当前浏览器 IndexedDB；清除浏览器数据会丢失本地仓库，应导出 JSON 备份。旧版仅含 Source 几何而没有厘米 placement 的 JSON 必须先通过原 FPS 工坊生成放置清单，不能猜测单位。
+网页本身无需下载。导入 JSON、3D 浏览、编辑、保存和导出均在在线网页完成。地图仓库保存在当前浏览器，请导出备份。
 
-## Agent 窗口与回传
+## 连接本机
 
-- Codex CLI、Claude Code CLI、CodeBuddy CLI：检测 PATH 和标准安装目录，用官方交互式初始提示词参数启动新窗口；保持原有登录和授权机制，不跳过权限。
-- WorkBuddy：检测标准 Windows 安装位置，打开桌面程序并复制本轮任务，由玩家粘贴发送。官方分享/本地助理 API 需要应用注册、审核和授权；本项目未具备这些凭据，不伪装为自动提交。
-- 六个选项均提供本地程序适配设置（WorkBuddy / CodeBuddy / Codex / Claude / Devin / DeepSeek）。自定义 .exe/.ps1 及参数数组支持 `{prompt}`、`{taskFile}`、`{resultFile}`、`{workspace}`。Devin、DeepSeek 未预设不存在的本地官方启动接口，需连接玩家实际安装的适配程序。没有提示词参数的程序使用复制交接。
-- 每轮请求使用独立目录 `.workshop-local/jobs/<id>`，包含 task.md、project.json 和 native-assets.js。Agent 写入完整 result.json 后，网页检查数据并显示待应用版本。玩家确认后才替换草稿；不自动修改元梦或已保存的地图。发送后有本地编辑会阻止覆盖。
-- “已发起启动”仅表示操作系统接收启动请求；不表示 Agent 已登录、任务已执行或结果完成。关闭 Agent 时网页可能仍等待，可停止等待或重新导入结果。不要在启动参数填入密钥。
+在线网页不能直接读取本机进程或元梦凭据。首次使用下载网页提供的 connector.zip，解压后用 Node.js 22 或以上运行「启动连接器.cmd」，再点击网页「连接本机」，确认授权并允许浏览器本地网络访问。连接器仅监听 127.0.0.1:18766，不包含网站，不启动或重启元梦服务。
 
-## 连接与边界
+授权限定 https://yangdevin.github.io，令牌只存当前标签页，8 小时到期；重启连接器会失效。本机 MCP 凭据只从插件固定 ai-connection.json 路径读取，只发往 http://127.0.0.1:18000/mcp，不进入浏览器、日志或 Git。
 
-元梦状态接口只从插件的固定 ai-connection.json 路径读取接入信息，建立自己的短期 Streamable HTTP 会话，只调用 ugc_get_status(probe=true) 和 ugc_get_context。凭据限于 http://127.0.0.1:18000/mcp，不进入浏览器、任务文件、日志或 Git。脚本联动未就绪不等于 MCP 断开。Session not found 只重连一次。
+开发预览仍可用 `node tools/serve.cjs`，以终端输出地址为准。
 
-API 校验 Host、Origin 和同源请求标记；不开放 CORS。静态文件服务屏蔽 tools、隐藏目录和运行数据。线上静态网页可以导入、预览、编辑和导出，但需打开本机服务地址才能调用本机 Agent/MCP。仓库同步不等于已完成线上部署。
+## 自动编辑
 
-验证：`node --test tools/test-harness.cjs`。此测试中的 Agent 启动是隔离桩，不调用真实模型或绕过登录。元梦连接仍需浏览器实际查询，地图 JSON 正确不等于游戏内玩法验收通过。
+自动识别将「进程正在运行」与「有可执行 CLI」分别检测；多个可用 Agent 同时运行时要求选择。网页提交任务后启动独立 CLI 任务，不是向已有聊天窗口注入键鼠。Codex、Claude Code、CodeBuddy 使用各自 CLI；WorkBuddy 只有安装包具备完整 headless CLI 时可用。仅有桌面 lite 运行时不能假装有独立接口。Devin、DeepSeek 保留选项，但没有可用本地接口时明确阻断，不伪造成功。
 
-参考：[Codex CLI](https://learn.chatgpt.com/docs/cli/reference)、[Claude Code CLI](https://code.claude.com/docs/en/cli-usage)、[CodeBuddy CLI](https://www.codebuddy.cn/docs/cli/overview)、[WorkBuddy 第三方接入](https://open.workbuddy.cn/docs/third-party-app)。
+不读取或迁移其他客户端密钥，不绕过 CLI 登录与工具权限。登录失败、权限不足、进程异常、无效 JSON、超时和连接失败都会在网页显示。结果通过数据校验后自动更新草稿，提供恢复上个版本；任务期间的手工修改会阻止覆盖。停止等待不会保证终止后台 CLI，只停止自动应用。
+
+## 直接生成
+
+「直接生成到元梦」读取当前工程，查询实际连接地图，在玩家确认目标地图与数量后创建并逐件回读。不需要复制 JSON。每次写入前落盘意图，返回后记录 sceneId；超时或不确定结果停止且不自动重试。当前实现只创建布局，不自动保存，不删除已有地图，也不等于完成脚本、天空、机关或试玩验收。
+
+生成回执位于 `.workshop-local/builds`。中断任务会阻止再次生成，必须先人工核对回执与场景，避免重复创建。刷新网页可恢复当前标签页的生成进度。JSON 导入支持真实目录类型、厘米坐标和现有完整工程；不猜测缺失的类型或单位。
+
+## 验证
+
+`node --test tools/test-harness.cjs tools/test-online.cjs` 验证工程往返、非法数据、配对来源、生成回读与不确定写入停止。使用隔离测试数据，不代表真实模型调用或游戏内玩法验收。完整端到端仍需玩家本机 CLI 登录、浏览器授权、运行中的元梦编辑地图。

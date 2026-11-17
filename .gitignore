@@ -30,3 +30,5 @@ ai-connection.json
 /import-progress.json
 /import-audit.json
 /.workshop-local/
+/_site/
+/.connector/
