@@ -187,24 +187,23 @@
 | 提交身份 | `YangDEVIN <YangDEVIN@users.noreply.github.com>` |
 | 首次提交 | 72 个文件，含全部源码、地图数据、规范与文档 |
 
-**当前状态：本地已关联，WorkBuddy 的 GitHub 授权已生效，但远端仓库尚未创建、也尚未推送。**
+**当前状态：✅ 已全部推送到 `YangDEVIN/yuanmeng-ugc-workshop` 的 `main` 分支。**
 
-- 连接器认证账号已确认为 `YangDEVIN`。
-- 但连接器的 GitHub App 安装令牌无权在个人账号下新建仓库，调用创建接口返回 `403 Resource not accessible by integration`。这是 GitHub App 的权限边界，不是登录过期，重新授权无法解决。
-- 本机 git 仍无凭据；不过系统已装 Git Credential Manager 2.9.0，推送时会弹浏览器让 YangDEVIN 登录，无需手工配置 PAT。
-
-因此只需在 GitHub 网页上做一次「建空仓库」，然后选择一种推送方式：
-
-| 方式 | 操作 |
+| 项 | 值 |
 | --- | --- |
-| 网页建仓 + 本机推送（推荐） | 打开 <https://github.com/new>，仓库名 `yuanmeng-ugc-workshop`、选 Private、**不要初始化 README / .gitignore / license**，建好后在本目录执行下面的命令，浏览器登录 YangDEVIN 即自动完成 |
-| GitHub CLI | 安装并登录 `gh auth login`，再执行 `gh repo create YangDEVIN/yuanmeng-ugc-workshop --private --source=. --remote=origin --push` |
-| 网页建仓 + PAT / SSH | 新建空仓库后，本机配置 PAT 或 SSH 再执行推送命令 |
+| 仓库地址 | <https://github.com/YangDEVIN/yuanmeng-ugc-workshop> |
+| 默认分支 | `main`，已建立 `origin/main` 上游跟踪 |
+| 提交 | 3 个，作者均为 `YangDEVIN <YangDEVIN@users.noreply.github.com>` |
+| 文件 | 72 个，含两个约 8.3 MB 的 Dust II 几何数据、4 张雷达图 / 布局图、`tools/yuanmeng/` 导入脚本与地图快照 |
+| 未入库 | 约 325 MB 原始 BSP、含第三方统计脚本的抓取页、ZIP 打包产物、`ai-connection.json` 凭据 |
 
-推送命令（远端仓库已存在时）：
+认证过程：WorkBuddy 的 GitHub 连接器确认账号为 `YangDEVIN`，但它使用 GitHub App 安装令牌，**无权在个人账号下新建仓库**（创建接口返回 `403 Resource not accessible by integration`），因此远端空仓库在 GitHub 网页创建；随后用本机 Git Credential Manager 2.9.0 的设备码流程完成一次 YangDEVIN 登录，凭据已缓存。
+
+后续同步改动：
 
 ```bash
-git push -u origin main
+git add -A && git commit -m "说明本次改动"
+git push
 ```
 
 想换仓库名时先改地址：`git remote set-url origin https://github.com/YangDEVIN/<新名字>.git`。
