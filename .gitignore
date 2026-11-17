@@ -29,3 +29,4 @@ ai-connection.json
 # 本地运行临时文件（历史导入状态保留在 tools/yuanmeng/，这里只挡新建副本）
 /import-progress.json
 /import-audit.json
+/.workshop-local/

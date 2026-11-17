@@ -2,6 +2,8 @@
   const $=id=>document.getElementById(id);
   const feedback=$('draft-status'), stage=$('draft-stage');
   const draftId=location.hash.slice(1);
+  const customEmbedded=new URLSearchParams(location.search).get('custom')==='1';
+  if(customEmbedded)document.body.classList.add('custom-embedded');
   MapWorkspace.tabs(document.querySelector('.map-tabs'));
   MapWorkspace.addIcons();
   let saved;
@@ -223,6 +225,7 @@
       }
     }
     $('draft-map').textContent=project.name+' · '+records.length+' 个元件';
+    if(customEmbedded)window.parent.postMessage({type:'workshop-draft-ready',count:records.length,draftId},location.origin);
     $('draft-roofs').hidden=!records.some(entry=>entry.roof);
     $('draft-roofs').setAttribute('aria-pressed',String(cutaway));
     $('draft-undo').disabled=!history.length;
@@ -430,6 +433,7 @@
   };
   // 只读调试视图：便于核对编辑页初始镜头、材质批次与临时草稿状态。
   window.draftView={camera,scene,
+    exportProject(){return YuanmengSkyboxes.withPreset(MapDraft.apply(project,records),skyPicker.id);},
     setCamera(position,target){camera.position.fromArray(position);orbit?.target.fromArray(target);
       camera.updateProjectionMatrix();orbit?.update();render();},
     get cameraTarget(){return orbit?.target.toArray()??null;},

@@ -16,3 +16,8 @@
 .draft .draft-labels { position:absolute; inset:0; z-index:1; pointer-events:none; overflow:hidden; }
 .draft .draft-labels span { position:absolute; translate:-50% -50%; white-space:nowrap; background:#1a2034ed; border:1px solid #8e918b; color:#ede9ff; padding:4px 8px; border-radius:6px; font-weight:700; font-size:13px; }
 .draft .draft-labels span.active { border-color:#ffe0a0; color:#ffe0a0; }
+.custom-embedded>.workshop-bar,.custom-embedded .map-heading h1,.custom-embedded .map-intro,.custom-embedded #draft-note,.custom-embedded #draft-agent-tab{display:none!important}
+.custom-embedded .map-main{width:calc(100% - 24px);padding:12px 0}
+.custom-embedded .map-heading{justify-content:flex-end;margin-bottom:10px}
+.custom-embedded .map-stage{min-height:600px}
+@media(max-width:800px){.custom-embedded .map-stage{min-height:420px}}
