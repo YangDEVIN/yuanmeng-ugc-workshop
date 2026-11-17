@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN" data-page-node-id="ycQBNwNWSRQExy8uoYBkRo">
+<head data-page-node-id="mSC1SbE12z8UnzMZATiWpP">
+  <meta charset="utf-8" data-page-node-id="lBm0MghhwQORe84iuAE0o0">
+  <meta name="viewport" content="width=device-width,initial-scale=1" data-page-node-id="I235wgZlQ0tZwCyZpuvNKS">
+  <title>元梦创作工坊</title>
+  <link rel="stylesheet" href="workshop.css" data-page-node-id="jEODNCzyGViZBFjSQiPDSC">
+</head>
+<body class="workshop" data-page-node-id="IC9w8SDMHRRnj2tv199Tbh">
+  <main class="workshop-main" data-page-node-id="m91P6Mno2BZkPmrV4X0c5t">
+    <h1 class="workshop-title" data-page-node-id="hz84RSmWUF5lCazpY1d0sP"><span class="workshop-icon" aria-hidden="true" data-page-node-id="5MrvGQgBA1TN2L2YjVAtSa">◈</span>元梦创作工坊</h1>
+    <div class="workshop-tabs" role="tablist" aria-label="工坊分类" data-page-node-id="apbn3VaewhlpitNoNVUlxm">
+      <button type="button" id="tab-scenes" role="tab" aria-controls="panel-scenes" aria-selected="true" data-page-node-id="UNra3B0OeRKfdXoFlfPWJI"><span class="workshop-icon" aria-hidden="true" data-page-node-id="HpoMxqiNfVJjAz9mhORkfn">◫</span>地图场景工坊</button>
+      <button type="button" id="tab-models" role="tab" aria-controls="panel-models" aria-selected="false" tabindex="-1" data-page-node-id="OMY9pDxWhdaH98M5LuLtLO"><span class="workshop-icon" aria-hidden="true" data-page-node-id="PVUTtf0J4hXudr6NOt45iv">▦</span>模型工坊</button>
+    </div>
+    <section id="panel-scenes" role="tabpanel" aria-labelledby="tab-scenes" data-page-node-id="CGUDUmHt4GsZTIOxDrbqAe">
+      <div class="workshop-grid" data-page-node-id="XtbmJdsoU4KuoWPmb6MADB">
+        <a class="workshop-card" href="maps.html" data-page-node-id="hVJtDjAETPeyio38AsRFNP">
+          <div class="workshop-art" aria-hidden="true" data-page-node-id="tfEz91aCP7AYAEYhmpLB96"><span class="workshop-icon" data-page-node-id="hiKhiIE4Brf4rEm6GZe8Cq">◎</span></div>
+          <div class="workshop-card-title" data-page-node-id="NMeSfHComNNtyADoU5ms4z">FPS 对战 <span aria-hidden="true" data-page-node-id="yXvkgGGIaHGZjX4HqbwCxX">↗</span></div>
+        </a>
+        <a class="workshop-card story-tone" href="story.html" data-page-node-id="L6zPaSj1A16B8AACcTAHg9">
+          <div class="workshop-art" aria-hidden="true" data-page-node-id="oSu8d3eegmf5EUuZEZHR5s"><span class="workshop-icon" data-page-node-id="TJCGhMowfe1DD924GfVOgp">◫</span></div>
+          <div class="workshop-card-title" data-page-node-id="72qXSk3I2Sg0TM3myFA5LQ">剧情图工坊 <span aria-hidden="true" data-page-node-id="67xkomwiF3eza5oNTj4aig">↗</span></div>
+        </a>
+        <a class="workshop-card parkour-tone" href="parkour.html" data-page-node-id="sriIWAQWnrGDOivfIVtN29">
+          <div class="workshop-art" aria-hidden="true" data-page-node-id="wlaaYdwnUg475MnzwGpevU"><span class="workshop-icon" data-page-node-id="Xmuk1s1Mbp4g3oG4AILYO2">⚑</span></div>
+          <div class="workshop-card-title" data-page-node-id="PxZbf3SAtehakT9KEI6fM6">跑酷图工坊 <span aria-hidden="true" data-page-node-id="E2pFwzczxF3QGJf51MMVOW">↗</span></div>
+        </a>
+      </div>
+    </section>
+    <section id="panel-models" role="tabpanel" aria-labelledby="tab-models" hidden data-page-node-id="eG6f5gxKhLaUPiCTOkvZXC">
+      <div class="workshop-grid models" data-page-node-id="qteDQ7AFKC2fGXzw9oBHrp">
+        <a class="workshop-card model-tone" href="animals/index.html" data-page-node-id="bwAYy5yIGfy2ME3x8AG2Ih">
+          <div class="workshop-art" aria-hidden="true" data-page-node-id="x5KrnUihLKJjBn3W9t82Kj"><span class="workshop-icon" data-page-node-id="P9d8sXzMHRY9gruItV1yTq">▦</span></div>
+          <div class="workshop-card-title" data-page-node-id="4Vw9hxfgL5T7UU3zRGPQga">积木模型工坊 <span aria-hidden="true" data-page-node-id="JLUOBWzWg1ylQSxlEUGOLe">↗</span></div>
+        </a>
+      </div>
+    </section>
+  </main>
+  <script>
+    const tabs = [...document.querySelectorAll('[role="tab"]')];
+    function activate(id, focus = false) {
+      for (const tab of tabs) {
+        const selected = tab.id === 'tab-' + id;
+        tab.setAttribute('aria-selected', String(selected));
+        tab.tabIndex = selected ? 0 : -1;
+        document.getElementById(tab.getAttribute('aria-controls')).hidden = !selected;
+        if (selected && focus) tab.focus();
+      }
+      history.replaceState(null, '', '#' + id);
+    }
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => activate(tab.id.slice(4)));
+      tab.addEventListener('keydown', event => {
+        const target = {ArrowRight: (index + 1) % tabs.length, ArrowLeft: (index + tabs.length - 1) % tabs.length, Home: 0, End: tabs.length - 1}[event.key];
+        if (target === undefined) return;
+        event.preventDefault();
+        activate(tabs[target].id.slice(4), true);
+      });
+    });
+    function activateFromHash() {
+      const id = location.hash.slice(1);
+      activate(tabs.some(tab => tab.id === 'tab-' + id) ? id : 'scenes');
+    }
+    window.addEventListener('hashchange', activateFromHash);
+    activateFromHash();
+  </script>
+</body>
+</html>

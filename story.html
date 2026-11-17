@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>午夜点名 · 剧情图工坊</title>
+  <link rel="stylesheet" href="workshop.css?v6">
+  <link rel="stylesheet" href="campus.css?v6">
+  <link rel="stylesheet" href="map-workspace.css?v6">
+</head>
+<body class="workshop campus map-editor">
+  <header class="workshop-bar">
+    <nav class="workshop-nav" aria-label="工坊导航">
+      <a class="workshop-brand" href="index.html#scenes"><span class="workshop-icon" aria-hidden="true">◫</span>元梦创作工坊</a>
+      <a href="maps.html">FPS 对战</a><a href="story.html" aria-current="page">剧情图</a>
+      <a href="parkour.html">跑酷图</a><a href="animals/index.html">积木模型</a>
+    </nav>
+  </header>
+  <main class="map-main">
+    <header class="map-heading">
+      <div>
+        <h1 class="workshop-title"><span class="workshop-icon" aria-hidden="true">◫</span>午夜点名</h1>
+        <p class="map-intro">校钟停在午夜，广播却还在念你的名字。</p>
+      </div>
+      <div class="map-actions">
+        <button type="button" id="reset" data-icon="reset">重新入校</button>
+        <button type="button" id="campus-edit" data-icon="edit">编辑地图</button>
+        <button type="button" class="map-primary" data-icon="export" id="campus-export">导出地图工程 JSON</button>
+        <button type="button" id="campus-placement" data-icon="blocks">导出元梦积木清单</button>
+        <label class="map-import" data-icon="import">导入地图工程 <input id="campus-import" type="file" accept=".json,application/json"></label>
+      </div>
+    </header>
+    <p id="campus-project-status" role="status"></p>
+    <div class="map-body">
+      <section class="campus-map map-stage" id="play-field" aria-label="校园地图与移动控制">
+        <div id="campus-viewport" aria-hidden="true"></div>
+        <canvas id="campus-plan" width="800" height="800" aria-hidden="true"></canvas>
+        <div id="campus-labels" aria-hidden="true"></div>
+        <div class="campus-scale">200 × 200 m <span aria-hidden="true">·</span> 北 ↑</div>
+        <div class="map-views" role="group" aria-label="地图视角">
+          <button type="button" data-view="top" data-icon="top" aria-pressed="false">俯视</button>
+          <button type="button" data-view="perspective" data-icon="perspective" aria-pressed="true">透视</button>
+          <button type="button" data-view="wire" data-icon="wire" aria-pressed="false">线框</button>
+          <button type="button" data-view="follow" data-icon="follow" aria-pressed="false">跟随</button>
+          <button type="button" id="campus-cutaway" data-icon="roof" aria-pressed="false">剖视屋顶</button>
+          <label class="map-skybox"><span aria-hidden="true">☁</span> 天空盒 <select id="campus-skybox"></select></label>
+        </div>
+        <div class="map-controls" aria-label="移动与交互"></div>
+        <dialog id="scare" class="campus-scare" aria-labelledby="scare-title">
+          <div class="campus-mask" aria-hidden="true"><i></i><i></i><b></b></div>
+          <strong id="scare-title">走廊里有人</strong>
+          <form method="dialog"><button type="submit">继续前进</button></form>
+        </dialog>
+      </section>
+      <aside class="map-panel">
+        <div class="map-tabs" role="tablist" aria-label="地图设置">
+          <button type="button" role="tab" id="route-tab" data-icon="route" aria-selected="true" aria-controls="route-panel">动线验证</button>
+          <button type="button" role="tab" id="spawns-tab" data-icon="spawn" aria-selected="false" aria-controls="campus-spawns" tabindex="-1">出生点设置</button>
+        </div>
+        <section id="route-panel" role="tabpanel" aria-labelledby="route-tab">
+        <h2>巡夜路线</h2>
+        <ol id="route" class="campus-route"></ol>
+        <section class="campus-event" aria-label="当前剧情">
+          <p id="status" role="status">校园门前，值班室的灯还亮着。</p>
+          <p id="interact-label" class="map-action-label">阅读值班簿</p>
+          <div id="puzzle" class="campus-puzzle" role="group" aria-label="广播台开关" hidden></div>
+        </section>
+        <section class="campus-props" aria-labelledby="props-title">
+          <h2 id="props-title">场景物件</h2>
+          <p id="prop-status" role="status"></p>
+          <ul id="prop-list"></ul>
+        </section>
+        </section>
+        <section id="campus-spawns" role="tabpanel" aria-labelledby="spawns-tab" hidden></section>
+        <details id="campus-modules"><summary>场景模组</summary><div id="campus-module-list"></div></details>
+      </aside>
+    </div>
+  </main>
+  <script src="lib/three.min.js?v6"></script>
+  <script src="lib/OrbitControls.js?v6"></script>
+  <script src="campus-plan.js?v6"></script>
+  <script src="campus-assets.js?v6"></script>
+  <script src="native-assets.js?v6"></script><script src="map-draft.js?v6"></script><script src="draft-store.js?v6"></script>
+  <script src="campus-horror-modules.js?v6"></script><script src="campus-design.js?v6"></script>
+  <script src="editor-skybox-list.js?v6"></script><script src="campus-skyboxes.js?v6"></script><script src="campus-sky-view.js?v6"></script>
+  <script src="campus-native-preview.js?v6"></script>
+  <script src="campus-scene.js?v6"></script>
+  <script src="campus-materials.js?v6"></script>
+  <script src="campus-view.js?v6"></script>
+  <script src="map-workspace.js?v6"></script>
+  <script src="spawn-editor.js?v6"></script>
+  <script src="campus-game.js?v6"></script>
+</body>
+</html>

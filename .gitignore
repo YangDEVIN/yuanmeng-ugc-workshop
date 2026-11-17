@@ -1,0 +1,31 @@
+# 打包产物与系统文件
+*.zip
+*.7z
+*.rar
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 编辑器 / 依赖 / 日志
+.vscode/
+.idea/
+node_modules/
+*.log
+
+# 原始大体积素材：约 325 MB 的 Source BSP，不参与网页运行，也不入库
+reference/source/
+*.bsp
+
+# 抓取页面（含第三方统计脚本与外链）
+reference/cf_transport_article.html
+
+# 元梦编辑器连接凭据：只在本机读取，绝不入库
+ai-connection.json
+**/ai-connection.json
+*.token
+.env
+.env.*
+
+# 本地运行临时文件（历史导入状态保留在 tools/yuanmeng/，这里只挡新建副本）
+/import-progress.json
+/import-audit.json

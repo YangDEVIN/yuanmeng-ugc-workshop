@@ -1,0 +1,50 @@
+.map-editor { --map-accent:#594578; --map-tint:#efe7f7; }
+.map-editor .map-main { width:min(1400px,calc(100% - 36px)); margin:auto; padding:20px 0; }
+.map-editor .map-heading { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px 20px; margin:0 0 14px; }
+.map-editor .map-heading h1 { font-size:clamp(24px,4vw,38px); letter-spacing:-.025em; line-height:1.2; }
+.map-editor .map-heading .workshop-icon { background:var(--map-tint); color:var(--map-accent); }
+.map-editor .map-intro { margin:4px 0 0; font-size:14px; }
+.map-editor .map-actions,.map-editor .map-views,.map-editor .map-tabs { display:flex; align-items:center; flex-wrap:wrap; gap:6px; }
+.map-editor button,.map-editor .map-import { display:inline-flex; align-items:center; justify-content:center; gap:5px; border:1px solid var(--line); padding:7px 9px; border-radius:8px; color:var(--ink); background:#fffdf8; font:inherit; font-size:14px; line-height:1.3; font-weight:650; cursor:pointer; }
+.map-editor button:hover:not(:disabled),.map-editor .map-import:hover { border-color:var(--map-accent); }
+.map-editor button:disabled { cursor:default; opacity:.55; }
+.map-editor button[aria-selected=true],.map-editor button[aria-pressed=true],.map-editor .map-primary { background:var(--map-accent); border-color:var(--map-accent); color:white; }
+.map-editor .map-import { position:relative; }
+.map-editor .map-import input { position:absolute; inset:0; width:100%; cursor:pointer; opacity:0; }
+.map-editor .map-import:focus-within { outline:3px solid var(--map-accent); outline-offset:3px; }
+.map-editor .map-body { display:grid; grid-template-columns:minmax(0,1fr) minmax(240px,290px); gap:12px; align-items:start; }
+.map-editor .map-stage { min-height:clamp(355px,calc(100svh - 190px),640px); position:relative; isolation:isolate; overflow:hidden; border:1px solid var(--line); border-radius:16px; background:#ece7de; }
+.embedded .map-editor .map-stage { min-height:clamp(355px,calc(100svh - 115px),680px); }
+.map-editor .map-views { position:absolute; top:9px; right:9px; z-index:2; max-width:calc(100% - 18px); }
+.map-editor .map-skybox { display:inline-flex; align-items:center; gap:5px; padding:5px 8px; background:#fffdf8; border:1px solid var(--line); border-radius:8px; font-size:13px; font-weight:650; }
+.map-editor .map-skybox select { color:inherit; background:transparent; font:inherit; border:0; max-width:116px; }
+.map-editor .map-panel { min-width:0; background:#fffdf8; border:1px solid var(--line); border-radius:16px; padding:12px; }
+.map-editor .map-tabs { margin-bottom:10px; }
+.map-editor .map-controls { position:absolute; left:10px; right:10px; bottom:10px; display:flex; justify-content:space-between; align-items:flex-end; gap:5px; pointer-events:none; z-index:2; }
+.map-editor .map-controls button { pointer-events:auto; }
+.map-editor .map-control-actions { display:flex; flex-wrap:wrap; justify-content:flex-end; align-items:center; gap:6px; }
+.map-editor [hidden] { display:none !important; }
+.map-editor .map-dpad { display:grid; grid-template-columns:repeat(3,39px); gap:3px; }
+.map-editor .map-dpad button { touch-action:none; }
+.map-editor .map-dpad button:first-child { grid-column:2; }
+.map-editor .map-dpad button:nth-child(2) { grid-column:1; }
+.map-editor [role=status]:empty,.map-editor [role=alert]:empty { display:none; }
+.map-editor .spawn-panel h2 { font-size:17px; margin:0; }
+.map-editor .spawn-panel label { display:grid; gap:4px; margin:7px 0; font-size:14px; }
+.map-editor .spawn-panel input,.map-editor .spawn-panel select,.map-editor .map-panel select { min-width:0; max-width:100%; font:inherit; padding:5px; border:1px solid var(--line); border-radius:6px; background:white; }
+.map-editor .spawn-panel .spawn-fields { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 7px; }
+.map-editor .spawn-panel button { margin:2px 2px 2px 0; font-size:13px; }
+.map-editor .map-route-actions { display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-bottom:8px; }
+.map-editor .map-route-actions label { display:flex; gap:6px; align-items:center; }
+.map-editor .map-panel [role=status] { line-height:1.5; }
+.map-editor canvas.map-canvas { display:block; position:absolute; width:100%; height:100%; inset:0; }
+.map-editor .map-icon { display:inline-block; flex:none; inline-size:1em; text-align:center; }
+@media(max-width:800px) {
+  .map-editor .map-main { width:calc(100% - 22px); padding:12px 0; }
+  .map-editor .map-body { grid-template-columns:1fr; }
+  .map-editor .map-stage { min-height:clamp(340px,62svh,520px); }
+}
+@media(max-width:500px) {
+  .map-editor .map-views { right:6px; top:6px; gap:3px; }
+  .map-editor .map-views button { padding:6px; font-size:12px; }
+}

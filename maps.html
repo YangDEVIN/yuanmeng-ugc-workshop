@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>元梦 · FPS 对战地图工坊</title>
+<link rel="stylesheet" href="workshop.css">
+<style>
+  :root{
+    --ink:#23262B; --mute:#6B7280; --line:#E4E7EC; --bg:#F6F4EE; --card:#fff;
+    --accent:#C25E14; --accentbg:#FFF3E6; --ok:#2E8B57;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{font:14px/1.5 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif;color:var(--ink);background:var(--bg);overflow:hidden}
+  #app{display:grid;grid-template-columns:238px 1fr 312px;height:100vh}
+  aside,section.right{background:var(--card);overflow-y:auto}
+  aside{border-right:1px solid var(--line);padding:14px 12px}
+  section.right{border-left:1px solid var(--line);padding:16px 14px}
+  main{position:relative;background:linear-gradient(180deg,#FBFAF6,#EFEBDF)}
+  h1{font-size:15px;margin:0 0 4px}
+  h2{font-size:13px;color:var(--mute);margin:16px 0 8px;font-weight:600;letter-spacing:.3px}
+  .sub{font-size:12px;color:var(--mute);margin:0 0 10px}
+  .nav{display:flex;gap:6px;margin:8px 0 12px}
+  .nav a{flex:1;text-align:center;text-decoration:none;color:#4f5661;background:#F1F2F3;padding:6px 5px;border-radius:8px;font-size:11.5px}
+  .nav a.on{background:#FFF0DF;color:#A94E11;font-weight:700}
+  .scene-tabs{display:flex;flex-wrap:wrap;gap:5px;margin:0 0 12px}
+  .scene-tabs a{font-size:11px;text-decoration:none;padding:5px 7px;color:#576170;background:#f4f5f6;border-radius:7px}
+  .scene-tabs a.active{background:#fff0df;color:#a34f16;font-weight:700}
+  /* 地图卡片 */
+  .card{display:flex;gap:10px;align-items:center;padding:9px;border-radius:12px;border:2px solid transparent;cursor:pointer;margin-bottom:7px;transition:.15s}
+  .card:hover{background:#F8F6F0}
+  button.card{width:100%;background:transparent;color:inherit;font:inherit;text-align:left}
+  .card.on{border-color:var(--accent);background:var(--accentbg)}
+  .ic{width:46px;height:46px;border-radius:10px;flex:none;display:grid;place-items:center;font-size:24px;color:#fff}
+  .card b{display:block;font-size:14px}
+  .card small{color:var(--mute);font-size:11.5px}
+  .tag-t{display:inline-block;font-size:10px;padding:1px 6px;border-radius:6px;background:#EEE;color:#555;margin-left:4px}
+  /* 画布覆盖层 */
+  .hud{position:absolute;left:16px;top:14px;z-index:2;pointer-events:none}
+  .hud .nm{font-size:22px;font-weight:700;text-shadow:0 1px 3px rgba(255,255,255,.8)}
+  .hud .dim{font-size:12px;color:#555;background:rgba(255,255,255,.7);border-radius:7px;padding:3px 9px;display:inline-block;margin-top:6px}
+  .seg{position:absolute;right:16px;top:14px;z-index:2;display:flex;gap:4px;background:rgba(255,255,255,.85);border:1px solid var(--line);border-radius:10px;padding:4px}
+  .seg button{border:0;background:transparent;padding:6px 11px;border-radius:7px;cursor:pointer;font-size:12.5px;color:#555}
+  .seg button.on{background:var(--accent);color:#fff}
+  .slice{position:absolute;left:16px;bottom:16px;right:16px;z-index:2;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.82);border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+  .slice label{font-size:12px;color:var(--mute);white-space:nowrap}
+  .slice input{flex:1}
+  .loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--mute);font-size:14px;z-index:3;background:rgba(246,244,238,.6)}
+  /* 右栏 */
+  .row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .row>span{width:58px;color:var(--mute);flex:none;font-size:12.5px}
+  input[type=number]{width:78px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;font:inherit}
+  input[type=range]{accent-color:var(--accent)}
+  .presets{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 2px}
+  .presets button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:5px 10px;cursor:pointer;font-size:12.5px}
+  .presets button:hover{border-color:var(--accent);color:var(--accent)}
+  .presets button:disabled{opacity:.45;cursor:not-allowed}
+  .stat{display:flex;justify-content:space-between;font-size:12.5px;padding:3px 0;border-bottom:1px dashed var(--line)}
+  .stat b{font-variant-numeric:tabular-nums}
+  .zone{display:flex;align-items:center;gap:7px;padding:6px 7px;border-radius:8px;cursor:pointer;font-size:12.5px}
+  .zone:hover{background:#F6F4EE}
+  .zone.on{background:var(--accentbg);outline:1px solid var(--accent)}
+  .dot{width:11px;height:11px;border-radius:3px;flex:none}
+  .zone .c{margin-left:auto;color:var(--mute);font-variant-numeric:tabular-nums}
+  .btn{display:block;width:100%;border:0;border-radius:10px;padding:11px;font-size:14px;font-weight:600;cursor:pointer;margin-top:8px}
+  .btn.p{background:var(--accent);color:#fff}
+  .btn.g{background:#EEF0F3;color:#333}
+  .code{background:#2B2D33;color:#E8E8E8;border-radius:10px;padding:10px;font:12px/1.5 Consolas,monospace;white-space:pre-wrap;word-break:break-all;margin-top:8px}
+  .note{font-size:12px;color:var(--mute);background:#F6F4EE;border-radius:9px;padding:9px 11px;margin-top:8px}
+  .source-card{font-size:11.5px;color:var(--mute);background:#F6F4EE;border-radius:9px;padding:8px;margin:6px 0}
+  .source-card a{color:#35699A;word-break:break-word}
+  .source-card img{display:block;width:100%;max-height:132px;object-fit:cover;object-position:center;border-radius:6px;margin:6px 0}
+  .warn{background:#FFF3E6;color:#9A4A12;border:1px solid #F3D3B0}
+  .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--ok);color:#fff;padding:9px 18px;border-radius:20px;font-size:13px;z-index:9;opacity:0;transition:.25s;pointer-events:none}
+  .toast.on{opacity:1}
+#app.source-mode{display:flex;flex-direction:column;height:100vh}
+#app.source-mode>main,#app.source-mode>section.right{display:none}
+#app.source-mode>aside{flex:none;padding:0;background:var(--paper);border:0;overflow:visible}
+#app.source-mode .map-picker{width:min(1400px,calc(100% - 36px));margin:8px auto 0;display:flex;gap:6px;flex-wrap:wrap}
+#app.source-mode .map-picker .card{display:inline-flex;width:auto;margin:0 0 4px;padding:4px 8px;border:1px solid var(--line);background:#fffdf8}
+#app.source-mode .map-picker .card.on{border-color:#594578;background:#efe7f7}
+#app.source-mode .map-picker .ic{width:24px;height:24px;display:grid;place-items:center;background:#efe7f7;color:#594578;font-size:15px}
+#source-editor{display:none;width:100%;border:0}
+#app.source-mode>#source-editor{display:block;flex:1;min-height:0}
+</style>
+</head>
+<body class="workshop">
+<div id="app">
+  <aside>
+    <header class="workshop-bar">
+      <nav class="workshop-nav" aria-label="工坊导航">
+        <a class="workshop-brand" href="index.html#scenes"><span class="workshop-icon" aria-hidden="true">◫</span>元梦创作工坊</a>
+        <a href="maps.html" aria-current="page">FPS 对战</a><a href="story.html">剧情图</a><a href="parkour.html">跑酷图</a><a href="animals/index.html">积木模型</a>
+      </nav>
+    </header>
+    <div id="list" class="map-picker"></div>
+  </aside>
+
+  <main>
+    <div class="hud"><div class="nm" id="hName">—</div><div class="dim" id="hDim"></div></div>
+    <div class="seg" id="viewSeg">
+      <button data-v="solid" class="on">实色</button>
+      <button data-v="wire">线框</button>
+      <button data-v="top">俯视</button>
+    </div>
+    <div class="slice">
+      <label>楼层切片</label>
+      <input type="range" id="slice" min="0" max="100" value="100">
+      <label id="sliceV" style="width:70px;text-align:right">全部</label>
+    </div>
+    <div class="loading" id="loading">正在加载 3D 场景…</div>
+    <canvas id="cv"></canvas>
+  </main>
+
+  <section class="right">
+    <h2>地图信息</h2>
+    <div id="info"></div>
+
+    <h2>区域细节</h2>
+    <div id="zones"></div>
+
+    <h2>布局参考</h2>
+    <div id="sourceBox"></div>
+
+    <h2>地图规模（最短边 ≥ 200m）</h2>
+    <div class="presets" id="presets"></div>
+    <div class="row"><span>整体缩放</span><input type="range" id="scale" min="1" max="3" step="0.1" value="1" style="flex:1"><b id="scaleV" style="width:38px;text-align:right">1.0×</b></div>
+    <div class="row"><span>放置点 X</span><input type="number" id="px" value="0"> <span style="width:auto">Y</span><input type="number" id="py" value="0"></div>
+    <div class="row"><span>离地 Z</span><input type="number" id="pz" value="0"> <span style="width:auto">朝向°</span><input type="number" id="yaw" value="0"></div>
+    <div id="sizeStat"></div>
+
+    <h2>在元梦里生成</h2>
+    <div id="genBox">
+      <button class="btn p" id="copy">📋 复制生成口令</button>
+      <div class="code" id="code"></div>
+    </div>
+  </section>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="lib/three.min.js"></script>
+<script src="lib/OrbitControls.js"></script>
+<script src="maps.js"></script>
+<script src="map-guidance.js"></script>
+<script src="reference/yuanmeng-template.js"></script>
+<script>
+const $=s=>document.querySelector(s);
+const F=window.FpsMaps, PAL=F.PAL, PAL_NAME=F.PAL_NAME, MAPS=F.MAPS;
+
+// ---------- three.js 基础 ----------
+const cv=$('#cv'), host=cv.parentElement;
+const renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+const scene=new THREE.Scene(); scene.background=new THREE.Color(0xF7F5EF);
+const camera=new THREE.PerspectiveCamera(42,1,1,200000);
+const topCam=new THREE.OrthographicCamera(-1,1,1,-1,-100000,100000);
+let useTop=false;
+const controls=new THREE.OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true; controls.dampingFactor=.08;
+scene.add(new THREE.HemisphereLight(0xffffff,0x9fa6ad,1.05));
+const sun=new THREE.DirectionalLight(0xffffff,.7); sun.position.set(1,2,1.2); scene.add(sun);
+const grid=new THREE.GridHelper(20000,40,0xcfc9ba,0xe3dece); scene.add(grid);
+
+let group=new THREE.Group(); scene.add(group);
+const guideGroup = new THREE.Group();
+const guideControls = document.createElement('div');
+$('#info').after(guideControls);
+let meshes=[]; // {mesh,tag,c,z,h,baseColor}
+let current=null, state={scale:1,x:0,y:0,z:0,yaw:0};
+
+function clearGroup(){ group.clear(); meshes=[]; }
+function actualFactor(def){ return def.kind==='template'?1:(def.layoutScale||1)*state.scale; }
+function actualVerticalFactor(def){ return def.kind==='template'?1:(def.verticalScale||def.layoutScale||1)*state.scale; }
+function scaleBounds(b,f,vf){ return {minX:b.minX*f,maxX:b.maxX*f,minY:b.minY*f,maxY:b.maxY*f,minZ:b.minZ*vf,maxZ:b.maxZ*vf}; }
+function actualSize(def){
+  if(def.kind==='template') return def._size;
+  const f=actualFactor(def),vf=actualVerticalFactor(def);
+  return {x:Math.round(def.size.x*f),y:Math.round(def.size.y*f),z:Math.round(def.size.z*vf)};
+}
+
+function addPart(p){
+  const g=new THREE.BoxGeometry(Math.max(p.w,8),Math.max(p.h,8),Math.max(p.d,8));
+  const col=new THREE.Color(PAL[p.c]||'#9199A3');
+  const air=(p.c==='air'||p.c==='glass'||p.c==='water');
+  const m=new THREE.MeshLambertMaterial({color:col,transparent:air,opacity:air?.42:1});
+  const mesh=new THREE.Mesh(g,m);
+  mesh.position.set(p.x,p.z+p.h/2,p.y);  // 地图Z(高)->three.Y ; 地图Y(宽)->three.Z
+  if(p.ry) mesh.rotation.y=-p.ry*Math.PI/180;
+  const edge=new THREE.LineSegments(new THREE.EdgesGeometry(g),new THREE.LineBasicMaterial({color:0x000000,transparent:true,opacity:.14}));
+  mesh.add(edge);
+  group.add(mesh);
+  meshes.push({mesh,edge,tag:p.tag,c:p.c,z:p.z,h:p.h,baseColor:col.clone(),air});
+}
+
+// 模板：加载外部 json，按类别 InstancedMesh
+async function loadTemplate(def){
+  const data=window.YuanmengTemplateReference.snapshot;
+  def._data=data; def._bbox={minX:data.bounds.x[0],maxX:data.bounds.x[1],minY:data.bounds.y[0],maxY:data.bounds.y[1],minZ:data.bounds.z[0],maxZ:data.bounds.z[1]};
+  def._size={x:Math.round(data.bounds.x[1]-data.bounds.x[0]),y:Math.round(data.bounds.y[1]-data.bounds.y[0]),z:Math.round(data.bounds.z[1]-data.bounds.z[0])};
+  // 按类别分组
+  const byCat={};
+  data.items.forEach(it=>{ (byCat[it[0]]=byCat[it[0]]||[]).push(it); });
+  const dummy=new THREE.Object3D();
+  Object.keys(byCat).forEach(ci=>{
+    const arr=byCat[ci], cat=data.cats[ci], hex=data.pal[cat];
+    const air=(cat==='air'||cat==='glass');
+    const geo=new THREE.BoxGeometry(1,1,1);
+    const mat=new THREE.MeshLambertMaterial({color:new THREE.Color(hex),transparent:air,opacity:air?.3:1});
+    const inst=new THREE.InstancedMesh(geo,mat,arr.length);
+    arr.forEach((it,i)=>{
+      const sx=Math.max(Math.abs(it[4]),12),sy=Math.max(Math.abs(it[5]),12),sz=Math.max(Math.abs(it[6]),12);
+      dummy.position.set(it[1],it[3]+sz/2,it[2]); // z(高)=it[3]+sizeZ/2 -> three.Y
+      dummy.scale.set(sx,sz,sy); dummy.rotation.set(0,0,0); dummy.updateMatrix();
+      inst.setMatrixAt(i,dummy.matrix);
+    });
+    group.add(inst);
+    meshes.push({mesh:inst,tag:'模板·'+cat,c:cat,z:data.bounds.z[0],h:1,baseColor:new THREE.Color(hex),air,instanced:true});
+  });
+}
+
+function fitCamera(bbox){
+  const cx=(bbox.minX+bbox.maxX)/2, cy=(bbox.minY+bbox.maxY)/2, cz=(bbox.minZ+bbox.maxZ)/2;
+  const sx=bbox.maxX-bbox.minX, sy=bbox.maxY-bbox.minY, sz=bbox.maxZ-bbox.minZ;
+  const r=Math.max(sx,sy,sz*1.4);
+  const tx=cx, ty=(bbox.minZ+sz*0.28), tz=cy;  // three坐标 target
+  controls.target.set(tx,ty,tz);
+  camera.position.set(tx+r*0.82, ty+r*0.72, tz+r*0.95);
+  camera.near=Math.max(r/500,1); camera.far=r*60; camera.updateProjectionMatrix();
+  // 俯视正交
+  const pad=r*0.62;
+  topCam.left=-pad; topCam.right=pad; topCam.top=pad; topCam.bottom=-pad;
+  topCam.position.set(tx,ty+r*1.6,tz+0.001); topCam.up.set(0,0,-1); topCam.lookAt(tx,ty,tz);
+  topCam.updateProjectionMatrix();
+  grid.position.set(cx,bbox.minZ-2,cy);
+  controls.minDistance=r*0.15; controls.maxDistance=r*5;
+}
+
+// ---------- 选择地图 ----------
+async function select(def){
+  const sourceMode=['dust2','template'].includes(def.id);
+  $('#app').classList.toggle('source-mode',sourceMode);
+  if(sourceMode){
+    current=def;
+    document.querySelectorAll('#list .card').forEach(card=>{
+      const selected=card.dataset.id===def.id;
+      card.classList.toggle('on',selected);
+      card.setAttribute('aria-pressed',String(selected));
+    });
+    let editor=$('#source-editor');
+    if(!editor){editor=document.createElement('iframe');editor.id='source-editor';$('#app').appendChild(editor)}
+    editor.title=def.name+'地图与出生点编辑器';
+    const target='dust2-source.html?embedded=1&map='+def.id;
+    if(editor.getAttribute('src')!==target)editor.src=target;
+    history.replaceState(null,'','#map='+def.id);
+    return;
+  }
+  requestAnimationFrame(resize);
+  current=def;
+  $('#scale').disabled=(def.kind==='template');
+  document.querySelectorAll('#presets button').forEach(b=>b.disabled=(def.kind==='template'));
+  $('#loading').style.display='grid';
+  document.querySelectorAll('.card').forEach(c=>c.classList.toggle('on',c.dataset.id===def.id));
+  clearGroup();
+  await new Promise(r=>setTimeout(r,20));
+  if (current !== def) return;
+  let bbox,size;
+  if(def.kind==='template'){
+    if(!def._data) await loadTemplate(def);
+    else { // 重新建实例
+      await loadTemplate(def);
+    }
+    bbox=def._bbox; size=def._size;
+  }else{
+    def.parts.forEach(addPart);
+    bbox=def.bbox; size=def.size;
+  }
+  const localBox=def.kind==='template'?def._bbox:def.bbox;
+  const localSize=def.kind==='template'?def._size:def.size;
+  const factor=actualFactor(def), verticalFactor=actualVerticalFactor(def);
+  group.scale.set(factor,verticalFactor,factor);
+  bbox=scaleBounds(localBox,factor,verticalFactor); size=actualSize(def);
+  fitCamera(bbox);
+  setupGuides(def);
+  // 重置切片
+  const maxZ=bbox.maxZ; $('#slice').value=100; $('#sliceV').textContent='全部';
+  applyView(); applySlice(); clearZone();
+  renderInfo(def,size); renderZones(def); renderSize(); renderCode();
+  $('#hName').textContent=def.emoji+' '+def.name;
+  $('#hDim').textContent='占地 '+(size.x/100).toFixed(1)+'×'+(size.y/100).toFixed(1)+' m · 高 '+(size.z/100).toFixed(1)+' m';
+  $('#loading').style.display='none';
+}
+
+// ---------- 视图模式 ----------
+let viewMode='solid';
+document.querySelectorAll('#viewSeg button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#viewSeg button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
+  viewMode=b.dataset.v; useTop=(viewMode==='top'); applyView();
+});
+function applyView(){
+  meshes.forEach(o=>{
+    if(o.instanced) return;
+    o.mesh.material.wireframe=(viewMode==='wire');
+    if(o.edge) o.edge.visible=(viewMode!=='wire');
+  });
+}
+
+// ---------- 楼层切片 ----------
+$('#slice').oninput=applySlice;
+function applySlice(){
+  if(!current) return;
+  const bbox=current.kind==='template'?current._bbox:current.bbox;
+  const t=+$('#slice').value;
+  const zc=bbox.minZ+(bbox.maxZ-bbox.minZ)*t/100;
+  $('#sliceV').textContent = t>=100?'全部':('≤'+((zc*actualVerticalFactor(current))/100).toFixed(1)+'m');
+  meshes.forEach(o=>{ if(o.instanced){o.mesh.visible=(t>=100||o.z<=zc);return;} o.mesh.visible=(o.z<=zc+0.1); });
+  guideGroup.children.forEach(label => label.visible = label.position.y <= zc + 100 || t >= 100);
+}
+
+function setupGuides(def) {
+  guideGroup.children.forEach(label => {
+    label.material.map.dispose();
+    label.material.dispose();
+  });
+  guideGroup.clear();
+  group.add(guideGroup);
+  const labels = MapGuidance.authoredSpawns(def).map(point => ({
+    position: point.position,
+    text: point.team + ' 出生',
+    color: point.team === 'T' ? '#a65318' : '#225b9b',
+  }));
+  MapGuidance.showGuides({
+    group: guideGroup, container: guideControls, sites: MapGuidance.sitesFor(def.id),
+    caption: def.kind === 'bomb' ? '布局参考点' : '战场引导',
+    labels,
+    mapPoint: ([x, y, z]) => new THREE.Vector3(x, z + 65, y),
+    focus(point) {
+      $('#viewSeg [data-v="solid"]').click();
+      const world = guideGroup.localToWorld(point.clone());
+      const distance = actualFactor(def) * 240;
+      controls.target.copy(world);
+      camera.position.copy(world).add(new THREE.Vector3(distance, distance * .75, distance));
+      controls.update();
+    },
+  });
+}
+
+// ---------- 区域高亮 ----------
+let activeZone=null;
+function clearZone(){ activeZone=null; document.querySelectorAll('.zone').forEach(z=>z.classList.remove('on')); emphasize(null); }
+function emphasize(tag){
+  meshes.forEach(o=>{
+    const hit=(tag===null)|| (o.tag===tag);
+    if(o.instanced){ o.mesh.material.opacity=hit?(o.air?.3:1):0.08; o.mesh.material.transparent=true; return; }
+    const m=o.mesh.material;
+    if(hit){ m.color.copy(o.baseColor); m.opacity=o.air?.42:1; m.transparent=o.air; }
+    else { m.color.copy(o.baseColor); m.opacity=0.08; m.transparent=true; }
+  });
+}
+
+// ---------- 渲染右栏 ----------
+function renderInfo(def,size){
+  const teamTxt={bomb:'爆破（A/B 双点）',team:'团队对冲'}[def.kind]||'';
+  const bars=[];
+  $('#info').innerHTML=
+    '<p class="sub" style="margin:0 0 8px">'+def.tip+'</p>'+
+    '<div class="stat"><span>玩法</span><b>'+teamTxt+'</b></div>'+
+    (def.kind==='template'
+      ? '<div class="stat"><span>元件数</span><b>'+(def._data?def._data.count:'…')+'</b></div>'
+      : '<div class="stat"><span>生成块数</span><b>'+def.parts.length+'</b></div>')+
+    '<div class="stat"><span>当前占地</span><b>'+(size.x/100).toFixed(0)+'×'+(size.y/100).toFixed(0)+' m</b></div>'+
+    '<div class="stat"><span>当前高度</span><b>'+(size.z/100).toFixed(1)+' m</b></div>'+
+    (def.kind==='template'?'<div class="note warn">模板快照原始范围约 '+(size.x/100).toFixed(1)+'×'+(size.y/100).toFixed(1)+'m；保留实测尺寸，不改写源数据，仅供外观参考。</div>':'<div class="note">本图为按公开地图路线关系制作的原创 blockout 灰盒，不是游戏原图复刻；最小边 ≥ 200m。</div>');
+  const src=def.source;
+  const overview=src&&src.overview?'<div style="margin-top:5px;color:#687080">抓取 overview 参数：'+Object.entries(src.overview).map(([k,v])=>k+'='+JSON.stringify(v)).join(' · ')+'</div>':'';
+  $('#sourceBox').innerHTML=src?'<div class="source-card"><b>'+src.label+'</b><div>'+src.note+'</div>'+overview+(src.asset?'<img src="'+src.asset+'" alt="布局参考">':'')+(src.url?'<a href="'+src.url+'" target="_blank" rel="noopener">打开地图布局说明</a>':'')+(src.assetUrl?'<div><a href="'+src.assetUrl+'" target="_blank" rel="noopener">雷达素材来源/镜像仓库</a></div>':'')+'</div>':'<div class="note">暂无外部参考</div>';
+}
+function renderZones(def){
+  const z=$('#zones'); z.innerHTML='';
+  let tags;
+  if(def.kind==='template'){
+    tags=Object.keys(def._data.counts).map(k=>({name:'模板·'+k,count:def._data.counts[k],c:k}));
+  }else{
+    tags=def.tags.map(t=>{ const first=def.parts.find(p=>p.tag===t.name); return {name:t.name,count:t.count,c:first?first.c:'grey'}; });
+  }
+  tags.sort((a,b)=>b.count-a.count);
+  tags.forEach(t=>{
+    const el=document.createElement('div'); el.className='zone';
+    el.innerHTML='<span class="dot" style="background:'+(PAL[t.c]||def._data&&def._data.pal[t.c]||'#9199A3')+'"></span><span>'+t.name+'</span><span class="c">'+t.count+'</span>';
+    el.onclick=()=>{
+      if(activeZone===t.name){ clearZone(); return; }
+      activeZone=t.name; document.querySelectorAll('.zone').forEach(x=>x.classList.remove('on')); el.classList.add('on'); emphasize(t.name);
+    };
+    z.appendChild(el);
+  });
+}
+function renderSize(){
+  const def=current; if(!def) return;
+  const size=actualSize(def);
+  $('#sizeStat').innerHTML=
+    '<div class="stat"><span>当前占地</span><b>'+(size.x/100).toFixed(0)+'×'+(size.y/100).toFixed(0)+' m</b></div>'+
+    '<div class="stat"><span>当前高度</span><b>'+(size.z/100).toFixed(1)+' m</b></div>'+
+    (def.kind!=='template'?'<div class="stat"><span>生成方块</span><b>'+def.parts.length+' 个</b></div>':'');
+}
+function renderCode(){
+  const def=current; if(!def) return;
+  updateHash();
+  if(def.kind==='template'){
+    $('#genBox').innerHTML='<div class="note warn">这是你当前元梦地图的实时快照（'+(def._data?def._data.count:'')+' 个元件），仅作预览底图参考，<b>不支持重新生成</b>——它由大量官方模板蓝图组成，没有可重建的类型与颜色。想生成的是下面的 FPS 对战地图，选它们即可。</div>';
+    return;
+  }
+  const o={map:def.id,scale:+state.scale,x:+state.x,y:+state.y,z:+state.z,yaw:+state.yaw};
+  const order=buildOrder(def);
+  const est=order.count, size=actualSize(def);
+  $('#genBox').innerHTML=
+    '<button class="btn p" id="copy">📋 复制生成口令</button>'+
+    '<div class="code" id="code">请在元梦里生成 FPS 地图【'+def.name+'】：\n目标占地约 '+(size.x/100).toFixed(0)+'×'+(size.y/100).toFixed(0)+'m（最短边不少于200m），当前相对比例 '+o.scale+'×；放置点 X='+o.x+' Y='+o.y+' Z='+o.z+'，朝向 '+o.yaw+'°，共 '+est+' 个方块。\n订单：'+JSON.stringify(o)+'</div>'+
+    '<div style="display:flex;gap:8px"><button class="btn g" id="expOrder" style="margin-top:8px;flex:1">📦 复制放置清单</button><button class="btn g" id="dlOrder" style="margin-top:8px;flex:1">⬇ 下载 JSON</button></div>'+
+    '<div class="note" style="margin-top:8px">① 把<b>生成口令</b>发我，我在编辑器里按比例生成（最省事）。<br>② 或用<b>放置清单</b>：'+est+' 个方块的完整坐标 / 缩放 / 颜色，是元梦可直接批量调用的接口数据。<br>③ 下方<b>分享链接</b>已带当前配置，打开即还原这张图和比例。</div>'+
+    '<div class="code" id="share" style="font-size:11px"></div>'+
+    '<button class="btn g" id="copyShare">🔗 复制分享链接</button>';
+  $('#share').textContent=shareUrl();
+  $('#copy').onclick=doCopy;
+  $('#expOrder').onclick=()=>copyText(JSON.stringify(order),'已复制放置清单（'+est+' 块），可直接喂给元梦接口生成');
+  $('#dlOrder').onclick=()=>downloadJson(order,def.id+'_order.json');
+  $('#copyShare').onclick=()=>copyText(shareUrl(),'已复制分享链接');
+}
+function doCopy(){ copyText($('#code').textContent,'已复制口令，发给我即可生成'); }
+
+// ---------- 元梦可直接调用的接口：放置清单 / 分享深链 ----------
+function buildOrder(def){
+  const spec={scale:+state.scale,x:+state.x,y:+state.y,z:+state.z,yaw:+state.yaw};
+  const items=F.buildPlacement(def,spec).map(p=>({typeId:p.typeId,transform:p.transform,color:p.color}));
+  const size=actualSize(def);
+  const angle = spec.yaw * Math.PI / 180;
+  const f = actualFactor(def), vf = actualVerticalFactor(def);
+  const guidance = MapGuidance.exportGuidance({
+    sites: MapGuidance.sitesFor(def.id), spawns: MapGuidance.authoredSpawns(def),
+    source: 'authored-map-layout', yaw: spec.yaw,
+    toCm: ([x, y, z]) => [
+      spec.x + (x * Math.cos(angle) - y * Math.sin(angle)) * f,
+      spec.y + (x * Math.sin(angle) + y * Math.cos(angle)) * f,
+      spec.z + z * vf,
+    ],
+  });
+  return {schema:'yuanmeng-fps-map/v1',map:def.id,mapName:def.name,typeId:F.TYPE_ID,
+    layoutScale:def.layoutScale,verticalScale:def.verticalScale,userScale:spec.scale,scale:(def.layoutScale||1)*spec.scale,
+    targetSizeCm:{x:size.x,y:size.y,z:size.z},origin:{x:spec.x,y:spec.y,z:spec.z},yaw:spec.yaw,count:items.length,items,guidance};
+}
+function shareUrl(){
+  const base=location.href.split('#')[0];
+  if(!current) return base;
+  if(current.kind==='template') return base+'#map='+current.id;
+  return base+'#map='+current.id+'&scale='+state.scale+'&x='+state.x+'&y='+state.y+'&z='+state.z+'&yaw='+state.yaw;
+}
+function updateHash(){ try{ history.replaceState(null,'',shareUrl()); }catch(e){} }
+function applyHash(){
+  const h=new URLSearchParams(location.hash.slice(1));
+  const id=h.get('map'); if(!id) return null;
+  const def=MAPS.find(m=>m.id===id); if(!def) return null;
+  const map={scale:'#scale',x:'#px',y:'#py',z:'#pz',yaw:'#yaw'};
+  Object.keys(map).forEach(k=>{ if(h.has(k)){ state[k]=+h.get(k); const el=$(map[k]); if(el) el.value=state[k]; }});
+  state.scale=Math.max(1,Math.min(3,Number.isFinite(state.scale)?state.scale:1)); $('#scale').value=state.scale;
+  $('#scaleV').textContent=(+state.scale).toFixed(1)+'×';
+  return def;
+}
+function copyText(txt,msg){
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(()=>toast(msg)).catch(fallback);
+  } else fallback();
+  function fallback(){ const ta=document.createElement('textarea'); ta.value=txt; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy');toast(msg)}catch(e){toast('复制失败，请手动选中')} ta.remove(); }
+}
+function downloadJson(obj,name){
+  const blob=new Blob([JSON.stringify(obj)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),2000); toast('已下载 '+name);
+}
+function toast(t){ const el=$('#toast'); el.textContent=t; el.classList.add('on'); clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove('on'),1800); }
+
+// ---------- 比例控件 ----------
+[['#scale','scale'],['#px','x'],['#py','y'],['#pz','z'],['#yaw','yaw']].forEach(([sel,key])=>{
+  $(sel).addEventListener('input',e=>{
+    state[key]=+e.target.value;
+    if(key==='scale'){
+      $('#scaleV').textContent=(+e.target.value).toFixed(1)+'×';
+      if(current&&current.kind!=='template'){
+        const f=actualFactor(current),vf=actualVerticalFactor(current); group.scale.set(f,vf,f); fitCamera(scaleBounds(current.bbox,f,vf)); applySlice();
+        const sz=actualSize(current); $('#hDim').textContent='占地 '+(sz.x/100).toFixed(0)+'×'+(sz.y/100).toFixed(0)+' m · 高 '+(sz.z/100).toFixed(1)+' m';
+      }
+    }
+    renderSize(); renderCode();
+  });
+});
+const presets=[['最小 200m',1],['适中 250m',1.25],['大型 300m',1.5],['超大 400m',2],['巨型 600m',3]];
+presets.forEach(([n,v])=>{ const b=document.createElement('button'); b.textContent=n; b.onclick=()=>{ state.scale=v; $('#scale').value=v; $('#scaleV').textContent=v.toFixed(1)+'×'; renderSize(); renderCode(); }; $('#presets').appendChild(b); });
+
+// ---------- 列表 ----------
+MAPS.forEach(m=>{
+  const el=document.createElement('button'); el.type='button'; el.className='card'; el.dataset.id=m.id;
+  el.innerHTML='<span class="ic" aria-hidden="true">◫</span>'+
+    '<b>'+m.name+'</b>';
+  el.onclick=()=>select(m);
+  $('#list').appendChild(el);
+});
+
+// ---------- 渲染循环 ----------
+function resize(){ const w=host.clientWidth,h=host.clientHeight; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix();
+  const a=topCam; const cur=(a.right-a.left); /* keep */ topCam.updateProjectionMatrix(); }
+addEventListener('resize',resize);
+(function loop(){ requestAnimationFrame(loop); if(!['dust2','template'].includes(current?.id)){controls.update(); renderer.render(scene, useTop?topCam:camera);} })();
+
+window.__fps={scene,camera,controls,host,select,MAPS};
+resize();
+select(applyHash()||MAPS[1]); // 优先按分享链接恢复，否则默认沙漠·双点
+</script>
+</body>
+</html>

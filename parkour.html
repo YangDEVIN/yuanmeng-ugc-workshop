@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>跑酷图工坊 · 元梦创作工坊</title>
+  <link rel="stylesheet" href="workshop.css">
+  <link rel="stylesheet" href="map-workspace.css">
+</head>
+<body class="workshop map-editor">
+  <header class="workshop-bar">
+    <nav class="workshop-nav" aria-label="工坊导航">
+      <a class="workshop-brand" href="index.html#scenes"><span class="workshop-icon" aria-hidden="true">◫</span>元梦创作工坊</a>
+      <a href="maps.html">FPS 对战</a>
+      <a href="story.html">剧情图</a>
+      <a href="parkour.html" aria-current="page">跑酷图</a>
+      <a href="animals/index.html">积木模型</a>
+    </nav>
+  </header>
+  <main class="map-main">
+    <header class="map-heading"><h1 class="workshop-title"><span class="workshop-icon" aria-hidden="true">⚑</span>跑酷图工坊</h1></header>
+    <section class="map-stage" id="parkour-sky-preview" aria-label="跑酷图天空盒预览">
+      <div class="map-views"><label class="map-skybox"><span aria-hidden="true">☁</span> 天空盒 <select id="parkour-skybox"></select></label></div>
+    </section>
+    <p role="status">跑酷地图规划中</p>
+  </main>
+  <script src="lib/three.min.js"></script><script src="lib/OrbitControls.js"></script>
+  <script src="editor-skybox-list.js"></script><script src="campus-skyboxes.js"></script><script src="campus-sky-view.js"></script>
+  <script>
+    const stage=document.getElementById('parkour-sky-preview');
+    let renderer=null;
+    try{renderer=new THREE.WebGLRenderer({antialias:true});}catch{}
+    const sky=renderer?createMapSky(THREE):null;
+    YuanmengSkyboxes.bind(document.getElementById('parkour-skybox'),{key:'parkour-skybox',initial:1,onChange(profile){
+      sky?.setProfile(profile);
+      const css=n=>'#'+n.toString(16).padStart(6,'0');
+      stage.style.background='linear-gradient('+css(profile.zenith)+','+css(profile.horizon)+' 69%,'+css(profile.ground)+')';
+    }});
+    if(renderer){
+      const scene=new THREE.Scene();scene.add(sky.mesh);
+      const camera=new THREE.PerspectiveCamera(58,1,.1,1000);camera.position.set(0,0,6);
+      const orbit=new THREE.OrbitControls(camera,renderer.domElement);orbit.enablePan=false;orbit.enableZoom=false;
+      renderer.domElement.className='map-canvas';renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));stage.prepend(renderer.domElement);
+      new ResizeObserver(()=>{camera.aspect=stage.clientWidth/stage.clientHeight;camera.updateProjectionMatrix();renderer.setSize(stage.clientWidth,stage.clientHeight,false);}).observe(stage);
+      function paint(){sky.followCamera(camera);renderer.render(scene,camera);requestAnimationFrame(paint);}
+      requestAnimationFrame(paint);
+    }
+  </script>
+</body>
+</html>

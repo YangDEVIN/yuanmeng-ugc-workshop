@@ -1,0 +1,18 @@
+.draft .map-panel label { display:grid; gap:4px; margin:8px 0; font-size:14px; }
+.draft .map-panel input,.draft .map-panel textarea { min-width:0; padding:6px; border:1px solid var(--line); border-radius:6px; font:inherit; }
+.draft .map-panel textarea { resize:vertical; }
+.draft .draft-fields { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); column-gap:8px; }
+.draft .draft-catalog-pages { display:flex; align-items:center; justify-content:space-between; gap:4px; font-size:13px; }
+.draft .draft-catalog-pages span { white-space:nowrap; text-align:center; }
+.draft .draft-catalog-pages button { padding-inline:6px; }
+.draft .draft-tools button:disabled { background:#fffdf8; }
+.draft #draft-asset-size,.draft #draft-selection { font-size:14px; margin:6px 0; }
+.draft #draft-agent details { margin-block:12px; }
+.draft #draft-agent code { overflow-wrap:anywhere; }
+.draft [id$="status"] { overflow-wrap:anywhere; }
+.draft .map-stage[data-placing] canvas { cursor:crosshair; }
+.draft .draft-note { margin:0 0 10px; padding:7px 10px; font-size:13px; font-weight:650; color:#4a3a63; background:#f1ebfa; border:1px solid #d3c3e9; border-radius:8px; }
+.draft .draft-note:empty { display:none; }
+.draft .draft-labels { position:absolute; inset:0; z-index:1; pointer-events:none; overflow:hidden; }
+.draft .draft-labels span { position:absolute; translate:-50% -50%; white-space:nowrap; background:#1a2034ed; border:1px solid #8e918b; color:#ede9ff; padding:4px 8px; border-radius:6px; font-weight:700; font-size:13px; }
+.draft .draft-labels span.active { border-color:#ffe0a0; color:#ffe0a0; }

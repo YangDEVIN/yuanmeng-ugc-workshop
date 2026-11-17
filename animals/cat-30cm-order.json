@@ -1,0 +1,1739 @@
+{
+  "schema": "yuanmeng-animal-placement/v1",
+  "spec": {
+    "animal": "cat",
+    "size": 30,
+    "x": 0,
+    "y": 0,
+    "z": 0,
+    "yaw": 0,
+    "mode": "merge"
+  },
+  "count": 66,
+  "dimensionsCm": {
+    "x": 270,
+    "y": 270,
+    "z": 300
+  },
+  "tool": "ugc_create_entity",
+  "arguments": {
+    "items": [
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": -75,
+            "y": 45,
+            "z": 0
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.6,
+            "y": 0.6,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 244,
+          "g": 244,
+          "b": 239
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": -75,
+            "y": -45,
+            "z": 0
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.6,
+            "y": 0.6,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 244,
+          "g": 244,
+          "b": 239
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 15,
+            "y": 45,
+            "z": 0
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.6,
+            "y": 0.6,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 244,
+          "g": 244,
+          "b": 239
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 15,
+            "y": -45,
+            "z": 0
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.6,
+            "y": 0.6,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 244,
+          "g": 244,
+          "b": 239
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": -75,
+            "y": 45,
+            "z": 30
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.6,
+            "y": 0.6,
+            "z": 0.6
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": -75,
+            "y": -45,
+            "z": 30
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.6,
+            "y": 0.6,
+            "z": 0.6
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 15,
+            "y": 45,
+            "z": 30
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.6,
+            "y": 0.6,
+            "z": 0.6
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 15,
+            "y": -45,
+            "z": 30
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.6,
+            "y": 0.6,
+            "z": 0.6
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": -45,
+            "y": 0,
+            "z": 60
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1.8,
+            "y": 0.3,
+            "z": 0.6
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": -30,
+            "y": 45,
+            "z": 60
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.6,
+            "z": 0.9
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": -30,
+            "y": -45,
+            "z": 60
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.6,
+            "z": 0.9
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": -90,
+            "y": 45,
+            "z": 90
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.6,
+            "z": 0.6
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": -90,
+            "y": -45,
+            "z": 90
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.6,
+            "z": 0.6
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": -60,
+            "y": 60,
+            "z": 90
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 194,
+          "g": 94,
+          "b": 20
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": -60,
+            "y": 30,
+            "z": 90
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": -60,
+            "y": -30,
+            "z": 90
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": -60,
+            "y": -60,
+            "z": 90
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 194,
+          "g": 94,
+          "b": 20
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 0,
+            "y": 60,
+            "z": 90
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 194,
+          "g": 94,
+          "b": 20
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 45,
+            "y": 30,
+            "z": 90
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1.2,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 45,
+            "y": -30,
+            "z": 90
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1.2,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 0,
+            "y": -60,
+            "z": 90
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 194,
+          "g": 94,
+          "b": 20
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 75,
+            "y": 75,
+            "z": 90
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1.2,
+            "y": 0.6,
+            "z": 0.6
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 75,
+            "y": -75,
+            "z": 90
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1.2,
+            "y": 0.6,
+            "z": 0.6
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 75,
+            "y": 0,
+            "z": 90
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.6,
+            "y": 0.3,
+            "z": 1.2
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 120,
+            "y": 0,
+            "z": 90
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.9,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 244,
+          "g": 244,
+          "b": 239
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": -120,
+            "y": 0,
+            "z": 120
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 194,
+          "g": 94,
+          "b": 20
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": -90,
+            "y": 0,
+            "z": 120
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": -60,
+            "y": 60,
+            "z": 120
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": -60,
+            "y": 0,
+            "z": 120
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.9,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 194,
+          "g": 94,
+          "b": 20
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": -60,
+            "y": -60,
+            "z": 120
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": -30,
+            "y": 0,
+            "z": 120
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 0,
+            "y": 60,
+            "z": 120
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 0,
+            "y": 0,
+            "z": 120
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.9,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 194,
+          "g": 94,
+          "b": 20
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 0,
+            "y": -60,
+            "z": 120
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 30,
+            "y": 0,
+            "z": 120
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.9,
+            "z": 0.9
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 75,
+            "y": 30,
+            "z": 120
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.6,
+            "y": 0.3,
+            "z": 1.2
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 75,
+            "y": -30,
+            "z": 120
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.6,
+            "y": 0.3,
+            "z": 1.2
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 90,
+            "y": 120,
+            "z": 120
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 244,
+          "g": 244,
+          "b": 239
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 90,
+            "y": -120,
+            "z": 120
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 244,
+          "g": 244,
+          "b": 239
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 120,
+            "y": 30,
+            "z": 120
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 244,
+          "g": 244,
+          "b": 239
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 120,
+            "y": 0,
+            "z": 120
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 249,
+          "g": 169,
+          "b": 188
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 120,
+            "y": -30,
+            "z": 120
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 244,
+          "g": 244,
+          "b": 239
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": -120,
+            "y": 0,
+            "z": 150
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 60,
+            "y": 75,
+            "z": 150
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.9,
+            "y": 0.6,
+            "z": 0.9
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 60,
+            "y": -75,
+            "z": 150
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.9,
+            "y": 0.6,
+            "z": 0.9
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 120,
+            "y": 90,
+            "z": 150
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.9
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 120,
+            "y": 60,
+            "z": 150
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 43,
+          "g": 45,
+          "b": 51
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 120,
+            "y": 0,
+            "z": 150
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.9,
+            "z": 0.6
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 120,
+            "y": -60,
+            "z": 150
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 43,
+          "g": 45,
+          "b": 51
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 120,
+            "y": -90,
+            "z": 150
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.9
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": -120,
+            "y": 0,
+            "z": 180
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 244,
+          "g": 244,
+          "b": 239
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 120,
+            "y": 60,
+            "z": 180
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.6
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 120,
+            "y": -60,
+            "z": 180
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.6
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 30,
+            "y": 30,
+            "z": 210
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 75,
+            "y": 0,
+            "z": 210
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1.2,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 194,
+          "g": 94,
+          "b": 20
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 30,
+            "y": -30,
+            "z": 210
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 120,
+            "y": 30,
+            "z": 210
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 120,
+            "y": -30,
+            "z": 210
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 30,
+            "y": 75,
+            "z": 240
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.6,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 30,
+            "y": -75,
+            "z": 240
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.6,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 60,
+            "y": 90,
+            "z": 240
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.6
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 60,
+            "y": 60,
+            "z": 240
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 249,
+          "g": 169,
+          "b": 188
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 60,
+            "y": -60,
+            "z": 240
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 249,
+          "g": 169,
+          "b": 188
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 60,
+            "y": -90,
+            "z": 240
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.6
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 30,
+            "y": 90,
+            "z": 270
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      },
+      {
+        "typeId": "1101002001034000",
+        "transform": {
+          "location": {
+            "x": 30,
+            "y": -90,
+            "z": 270
+          },
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          },
+          "scale": {
+            "x": 0.3,
+            "y": 0.3,
+            "z": 0.3
+          }
+        },
+        "color": {
+          "r": 242,
+          "g": 140,
+          "b": 40
+        },
+        "snapToGround": false
+      }
+    ]
+  }
+}

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>地图编辑 · 元梦创作工坊</title>
+  <link rel="stylesheet" href="workshop.css?v6">
+  <link rel="stylesheet" href="map-workspace.css?v6">
+  <link rel="stylesheet" href="map-edit.css?v6">
+</head>
+<body class="workshop map-editor draft">
+  <header class="workshop-bar">
+    <nav class="workshop-nav" aria-label="工坊导航">
+      <a class="workshop-brand" href="index.html#scenes"><span class="workshop-icon" aria-hidden="true">◫</span>元梦创作工坊</a>
+      <a id="draft-back" href="index.html#scenes">返回地图</a>
+    </nav>
+  </header>
+  <main class="map-main">
+    <header class="map-heading">
+      <div><h1 class="workshop-title"><span class="workshop-icon" aria-hidden="true">✎</span>地图编辑</h1><p class="map-intro" id="draft-map"></p></div>
+      <div class="map-actions">
+        <button type="button" data-icon="undo" id="draft-undo" disabled>撤销</button>
+        <button type="button" data-icon="export" class="map-primary" id="draft-download" disabled>确认导出 JSON</button>
+      </div>
+    </header>
+    <p id="draft-status" role="status">正在载入地图草稿…</p>
+    <p class="draft-note" id="draft-note" role="status"></p>
+    <div class="map-body" id="draft-body" hidden>
+      <section class="map-stage" id="draft-stage" aria-label="选择与放置地图元件">
+        <div class="draft-labels" id="draft-labels" aria-hidden="true"></div>
+        <div class="map-views">
+          <button type="button" data-view="top" data-icon="top" aria-pressed="false">俯视</button>
+          <button type="button" data-view="perspective" data-icon="perspective" aria-pressed="true">透视</button>
+          <button type="button" data-view="wire" data-icon="wire" aria-pressed="false">线框</button>
+          <button type="button" id="draft-roofs" data-icon="roof" aria-pressed="false">剖视屋顶</button>
+          <button type="button" id="draft-hidden" data-icon="blocks" aria-pressed="false">运行时元件</button>
+          <label class="map-skybox"><span aria-hidden="true">☁</span> 天空盒 <select id="draft-skybox"></select></label>
+        </div>
+        <div class="map-controls draft-tools">
+          <button type="button" data-icon="check" id="draft-pick" aria-pressed="true">选择</button>
+          <div class="map-control-actions">
+            <button type="button" data-icon="spawn" id="draft-place" aria-pressed="false">添加放置</button>
+            <button type="button" data-icon="delete" id="draft-delete" disabled>删除选中</button>
+          </div>
+        </div>
+      </section>
+      <aside class="map-panel">
+        <div class="map-tabs" role="tablist" aria-label="编辑方式">
+          <button id="draft-assets-tab" type="button" role="tab" data-icon="blocks" aria-controls="draft-assets" aria-selected="true">元梦内置元件</button>
+          <button id="draft-agent-tab" type="button" role="tab" data-icon="action" aria-controls="draft-agent" aria-selected="false" tabindex="-1">Agent 接口</button>
+        </div>
+        <section id="draft-assets" role="tabpanel" aria-labelledby="draft-assets-tab">
+          <label>搜索元件 <input id="draft-search" type="search"></label>
+          <div class="draft-fields">
+            <label>分类 <select id="draft-category"><option value="">全部分类</option></select></label>
+            <label>地图模式 <select id="draft-mode"><option value="">全部模式</option></select></label>
+          </div>
+          <label>内置元件 <select id="draft-asset"></select></label>
+          <div class="draft-catalog-pages" aria-label="元件目录分页">
+            <button type="button" id="draft-assets-prev">上一页</button>
+            <span id="draft-assets-count" role="status"></span>
+            <button type="button" id="draft-assets-next">下一页</button>
+          </div>
+          <p id="draft-asset-size"></p>
+          <p>网页显示元件尺寸包围盒</p>
+          <div class="draft-fields">
+            <label>X (cm) <input id="draft-x" type="number" step="any" value="0"></label>
+            <label>Y (cm) <input id="draft-y" type="number" step="any" value="0"></label>
+            <label>Z (cm) <input id="draft-z" type="number" step="any" value="0"></label>
+            <label>朝向 (°) <input id="draft-yaw" type="number" step="any" value="0"></label>
+          </div>
+          <button type="button" id="draft-place-coord" data-icon="spawn">按坐标放置</button>
+          <label>选中元件 ID <input id="draft-id" type="text"></label>
+          <button type="button" id="draft-select-id">按 ID 选中</button>
+          <p id="draft-selection" role="status"></p>
+        </section>
+        <section id="draft-agent" role="tabpanel" aria-labelledby="draft-agent-tab" hidden>
+          <form id="draft-agent-form">
+            <label>Agent POST 地址 <input id="draft-endpoint" type="url" required placeholder="https://"></label>
+            <label>任务 <textarea id="draft-task" rows="3" required></textarea></label>
+            <button type="submit" data-icon="export" id="draft-send">发送当前地图</button>
+            <button type="button" data-icon="check" id="draft-apply-agent" disabled>应用返回的编辑</button>
+          </form>
+          <details><summary>接口格式</summary>
+            <p>请求 JSON 包含 <code>task</code>、<code>project</code>、<code>entityIds</code> 和 <code>catalog</code>。</p>
+            <p>返回 <code>removeIds</code> 及 <code>add</code>。<code>add</code> 中每项包含 <code>typeId</code>、<code>location</code>（厘米）和 <code>yaw</code>（度）。</p>
+            <p>接口需允许当前网页跨域 POST。</p>
+          </details>
+          <p id="draft-agent-status" role="status"></p>
+        </section>
+      </aside>
+    </div>
+  </main>
+  <script src="lib/three.min.js?v6"></script><script src="lib/OrbitControls.js?v6"></script>
+  <script src="editor-skybox-list.js?v6"></script><script src="campus-skyboxes.js?v6"></script><script src="campus-sky-view.js?v6"></script>
+  <script src="map-workspace.js?v6"></script><script src="native-assets.js?v6"></script><script src="map-draft.js?v6"></script>
+  <script src="campus-native-preview.js?v6"></script>
+  <script src="campus-materials.js?v6"></script>
+  <script src="draft-store.js?v6"></script><script src="map-edit.js?v6"></script>
+</body>
+</html>
