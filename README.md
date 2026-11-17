@@ -177,24 +177,36 @@
 
 ## 📤 同步到 GitHub
 
-本目录是一个已初始化的 Git 仓库，默认分支 `main`，首次提交包含全部源码与数据。推送前需先完成一次授权（任选其一）：
+本地仓库已关联到个人账号 **`YangDEVIN`**：
+
+| 项 | 值 |
+| --- | --- |
+| 本地路径 | `C:\Users\senzhuoyang\WorkBuddy\2026-11-13-16-07-04\yuanmeng-workshop\` |
+| 分支 | `main` |
+| 远端 `origin` | `https://github.com/YangDEVIN/yuanmeng-ugc-workshop.git` |
+| 提交身份 | `YangDEVIN <YangDEVIN@users.noreply.github.com>` |
+| 首次提交 | 72 个文件，含全部源码、地图数据、规范与文档 |
+
+**当前状态：本地已关联，远端仓库尚未创建，也尚未推送。** `git ls-remote origin` 返回 `Repository not found`；本机没有 `gh`、没有 token / SSH key / 凭据管理器记录，浏览器会话也未登录 GitHub，因此无法代为新建仓库或推送。
+
+完成一次授权后（任选其一）：
 
 | 方式 | 操作 |
 | --- | --- |
-| GitHub 连接器 | 在 WorkBuddy 中连接 GitHub 连接器后，由助手直接新建仓库并推送 |
-| GitHub CLI | 安装后执行 `gh auth login`，再执行 `gh repo create <仓库名> --private --source=. --remote=origin --push` |
-| PAT / SSH | 使用具备 `repo` 权限的 Personal Access Token 作为推送密码，或配置 SSH key |
+| GitHub CLI | 安装并登录 `gh auth login`，再执行 `gh repo create YangDEVIN/yuanmeng-ugc-workshop --private --source=. --remote=origin --push` |
+| 网页新建 + 本地认证 | 在 GitHub 网页新建同名空仓库，本机配置 PAT 或 SSH 后执行下面的推送命令 |
+| 授权给助手 | 在 WorkBuddy 中完成 GitHub 授权后，由助手新建仓库并推送 |
 
-手动推送命令：
+推送命令（远端仓库已存在、本机已认证时）：
 
 ```bash
-git remote add origin https://github.com/<用户名>/<仓库名>.git
-git branch -M main
 git push -u origin main
 ```
 
+想换仓库名时先改地址：`git remote set-url origin https://github.com/YangDEVIN/<新名字>.git`。
+
+> ● 默认建议私有仓库；若要公开，网页新建时选 Public，或 `gh repo create` 去掉 `--private`。
 > ● 绝不提交 `%LOCALAPPDATA%\Yuanmeng\DesktopService\ai-connection.json` 等凭据文件，`.gitignore` 已排除。
-> ● 若要把提交作者改成自己的账号：先 `git config user.name "你的名字"` 与 `git config user.email "你的邮箱"`，再执行 `git commit --amend --reset-author --no-edit`。
 > ● 推送成功后在仓库 Settings → Pages 选择 `main / root` 即可开启 GitHub Pages，静态站点入口为根目录 `index.html`。
 > ● 仓库目录与网站部署目录是分开的：本目录用于 GitHub；`fps-maps/` 用于本地预览与线上发布，改动网站后需把变更文件同步过来再提交。
 
