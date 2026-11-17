@@ -187,17 +187,21 @@
 | 提交身份 | `YangDEVIN <YangDEVIN@users.noreply.github.com>` |
 | 首次提交 | 72 个文件，含全部源码、地图数据、规范与文档 |
 
-**当前状态：本地已关联，远端仓库尚未创建，也尚未推送。** `git ls-remote origin` 返回 `Repository not found`；本机没有 `gh`、没有 token / SSH key / 凭据管理器记录，浏览器会话也未登录 GitHub，因此无法代为新建仓库或推送。
+**当前状态：本地已关联，WorkBuddy 的 GitHub 授权已生效，但远端仓库尚未创建、也尚未推送。**
 
-完成一次授权后（任选其一）：
+- 连接器认证账号已确认为 `YangDEVIN`。
+- 但连接器的 GitHub App 安装令牌无权在个人账号下新建仓库，调用创建接口返回 `403 Resource not accessible by integration`。这是 GitHub App 的权限边界，不是登录过期，重新授权无法解决。
+- 本机 git 仍无凭据；不过系统已装 Git Credential Manager 2.9.0，推送时会弹浏览器让 YangDEVIN 登录，无需手工配置 PAT。
+
+因此只需在 GitHub 网页上做一次「建空仓库」，然后选择一种推送方式：
 
 | 方式 | 操作 |
 | --- | --- |
+| 网页建仓 + 本机推送（推荐） | 打开 <https://github.com/new>，仓库名 `yuanmeng-ugc-workshop`、选 Private、**不要初始化 README / .gitignore / license**，建好后在本目录执行下面的命令，浏览器登录 YangDEVIN 即自动完成 |
 | GitHub CLI | 安装并登录 `gh auth login`，再执行 `gh repo create YangDEVIN/yuanmeng-ugc-workshop --private --source=. --remote=origin --push` |
-| 网页新建 + 本地认证 | 在 GitHub 网页新建同名空仓库，本机配置 PAT 或 SSH 后执行下面的推送命令 |
-| 授权给助手 | 在 WorkBuddy 中完成 GitHub 授权后，由助手新建仓库并推送 |
+| 网页建仓 + PAT / SSH | 新建空仓库后，本机配置 PAT 或 SSH 再执行推送命令 |
 
-推送命令（远端仓库已存在、本机已认证时）：
+推送命令（远端仓库已存在时）：
 
 ```bash
 git push -u origin main
