@@ -2,15 +2,11 @@
 
 网站通过 GitHub Pages 发布，地址为 https://yangdevin.github.io/yuanmeng-ugc-workshop/ 。推送 main 后运行 Pages 工作流；必须在仓库 Settings → Pages 将 Source 设为 GitHub Actions。工作流成功才表示线上已更新。
 
-网页本身无需下载。导入 JSON、3D 浏览、编辑、保存和导出均在在线网页完成。地图仓库保存在当前浏览器，请导出备份。
+线上版支持预览已有模型、编辑和导出。导入工程 JSON、使用自定义仓库以及连接自己的 Agent，需要下载完整项目并在本地启动工坊。
 
 ## 连接本机
 
-在线网页不能直接读取本机进程或元梦凭据。首次使用下载网页提供的 connector.zip，解压后用 Node.js 22 或以上运行「启动连接器.cmd」，再点击网页「连接本机」，确认授权并允许浏览器本地网络访问。连接器仅监听 127.0.0.1:18766，不包含网站，不启动或重启元梦服务。
-
-授权限定 https://yangdevin.github.io，令牌只存当前标签页，8 小时到期；重启连接器会失效。本机 MCP 凭据只从插件固定 ai-connection.json 路径读取，只发往 http://127.0.0.1:18000/mcp，不进入浏览器、日志或 Git。
-
-开发预览仍可用 `node tools/serve.cjs`，以终端输出地址为准。
+在 GitHub 仓库选择 Code → Download ZIP，解压后在项目根目录运行 `node tools/serve.cjs`，打开终端显示的本地地址（默认 http://127.0.0.1:18765/）。使用期间保持终端开启。 安装并登录自己的 Agent 后，在本地工坊连接。
 
 ## 自动编辑
 

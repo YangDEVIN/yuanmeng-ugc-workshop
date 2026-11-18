@@ -4,22 +4,14 @@
 
 - 技术栈：原生 HTML + CSS + JavaScript，3D 预览使用仓库内置的 three.js（`lib/three.min.js`），无需 `npm install`，无需打包。
 - 坐标单位：网页作者层用**米**，导出到元梦的清单一律用**厘米**，Z 轴朝上。
-- 线上版本：<https://lego-zoo.app-tencent.workbuddy.host/?sharecode=ORI7IU4WUH>
-- 当前版本：`campus-night-v4`（剧情图）+ `?v6` 静态资源版本号。
+- 工坊版本：2026.11.18
+- [打开线上工坊](https://yangdevin.github.io/yuanmeng-ugc-workshop/)
 
----
+## 使用方式
 
-## 🚀 快速开始
+线上版支持预览已有模型、编辑和导出。导入工程 JSON、使用自定义仓库以及连接自己的 Agent，需要下载完整项目并在本地启动工坊。
 
-| 方式 | 操作 | 适用 |
-| --- | --- | --- |
-| 直接打开 | 双击 `index.html` | 只看页面、试玩走查 |
-| 本地服务（推荐） | 在本目录执行 `node tools/serve.cjs`，打开 <http://127.0.0.1:18765/> | 需要导入工程 JSON、下载文件、使用临时编辑页 |
-| GitHub Pages | 把本仓库根目录设为 Pages 源（根目录 `index.html`） | 分享给他人在线访问 |
-
-> 直接双击打开时，浏览器可能拦截本地文件读写与下载。凡是涉及「导入工程」「导出 JSON」「编辑地图」，请改用本地服务或线上地址。使用期间保持命令行窗口开启。
-
----
+在 GitHub 仓库选择 Code → Download ZIP，解压后在项目根目录运行 `node tools/serve.cjs`，打开终端显示的本地地址（默认 http://127.0.0.1:18765/）。使用期间保持终端开启。
 
 ## 🗂️ 目录结构
 
@@ -148,7 +140,7 @@
 | ZIP 打包 | 用 UTF-8 文件名标志位打包，避免中文名乱码；`reference/source/*.bsp`（约 325 MB 原始素材）与含第三方统计脚本的抓取页不参与运行、不打包 |
 | 线上部署 | 静态站点，入口 `index.html`；部署后建议 `Ctrl+F5` 强制刷新，让带 `?v6` 的 JS/CSS 生效 |
 
-> 是否更新线上地址由使用者单独确认，仓库内的改动不会自动触发部署。
+> 推送 main 后由 GitHub Pages 工作流部署。
 
 ---
 
@@ -156,7 +148,7 @@
 
 | 现象 | 处理 |
 | --- | --- |
-| 双击 `index.html` 无法导入工程 / 下载文件 | 改用 `node tools/serve.cjs` 或线上地址 |
+| 双击 `index.html` 无法导入工程 / 下载文件 | 下载完整项目并运行 `node tools/serve.cjs` |
 | 「编辑页载入失败：Failed to read a named property 'assign' from 'Location'」 | 已在 `draft-store.js` 修复：跨源 iframe 只改当前 frame 地址；请确认使用带 `?v6` 的最新脚本并强制刷新 |
 | 改了代码但线上看起来没变 | 静态资源带 `?v6` 且页面声明 `no-store`，部署后按 `Ctrl+F5` 刷新 |
 | 编辑页出现整块淡紫色大方块 | 内置元件未走 `campus-native-preview.js` 拆解；两页可见实例数应相等（2552） |
@@ -210,7 +202,7 @@ git push
 
 > ● 默认建议私有仓库；若要公开，网页新建时选 Public，或 `gh repo create` 去掉 `--private`。
 > ● 绝不提交 `%LOCALAPPDATA%\Yuanmeng\DesktopService\ai-connection.json` 等凭据文件，`.gitignore` 已排除。
-> ● 推送成功后在仓库 Settings → Pages 选择 `main / root` 即可开启 GitHub Pages，静态站点入口为根目录 `index.html`。
+> ● 推送成功后在仓库 Settings → Pages 选择 `GitHub Actions` 即可开启 GitHub Pages，静态站点入口为根目录 `index.html`。
 > ● 仓库目录与网站部署目录是分开的：本目录用于 GitHub；`fps-maps/` 用于本地预览与线上发布，改动网站后需把变更文件同步过来再提交。
 
 ---

@@ -7,7 +7,8 @@
     const p=project.placement;
     if(p.coordinates?.units!=='cm')throw Error('坐标单位必须为 cm，不能自动猜测或缩放。');
     const rows=draft.records(p);
-    if(rows.length>LIMIT)throw Error('单张地图最多 30,000 个元件，请拆分地图。');
+    const limit=project.map==='coconut-wave'?80000:LIMIT;
+    if(rows.length>limit)throw Error('单张地图最多 '+limit.toLocaleString('en-US')+' 个元件，请拆分地图。');
     if(p.count!==undefined&&p.count!==rows.length)throw Error('元件 count 与放置清单数量不一致。');
     if(p.batchItemIds&&(p.batchItemIds.length!==p.commands.length||p.commands.some((c,i)=>p.batchItemIds[i]?.length!==c.arguments.items.length)))throw Error('元件 ID 批次与清单不一致。');
     const ids=new Set();
