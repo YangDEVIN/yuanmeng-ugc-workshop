@@ -4,10 +4,12 @@
     const response=await fetch('coconut/project.json');
     if(!response.ok)throw Error('地图工程加载失败');
     const project=await response.json(),scene=new THREE.Scene();
+    for(const command of project.placement.commands)for(const item of command.arguments.items)if(item.typeId==='1101002001034000')item.typeId='1101008001011363';
     const renderer=new THREE.WebGLRenderer({antialias:true});
     renderer.setPixelRatio(Math.min(devicePixelRatio,2));
     renderer.outputEncoding=THREE.sRGBEncoding;
     stage.append(renderer.domElement);
+    document.querySelector('a[download]').href=URL.createObjectURL(new Blob([JSON.stringify(project)],{type:'application/json'}));
     scene.background=new THREE.Color(0xbfdadc);
     scene.add(new THREE.HemisphereLight(0xfffbef,0x889ca0,.64));
     const sun=new THREE.DirectionalLight(0xffead4,.56);sun.position.set(10,20,8);scene.add(sun);
@@ -25,8 +27,8 @@
     scene.add(model);
     const mapped=new THREE.Group();scene.add(mapped);mapped.visible=false;
     const box=new THREE.BoxGeometry(1,1,1),sphere=new THREE.SphereGeometry(.5,16,12);
-    const blockCount=project.placement.commands.reduce((n,c)=>n+c.arguments.items.filter(i=>i.typeId==='1101002001034000').length,0);
-    const blocks=new THREE.InstancedMesh(box,new THREE.MeshLambertMaterial(),blockCount);
+    const blockCount=project.placement.commands.reduce((n,c)=>n+c.arguments.items.filter(i=>i.typeId==='1101008001011363').length,0);
+    const blocks=new THREE.InstancedMesh(box,brickMaterial(new THREE.MeshLambertMaterial(),.6),blockCount);
     const transform=new THREE.Object3D(),tint=new THREE.Color();
     let blockIndex=0;
     mapped.add(blocks);
@@ -42,7 +44,7 @@
         roof.translateY(roof.scale.y/2);
         mapped.add(roof);continue;
       }
-      if(item.typeId!=='1101002001034000'){
+      if(item.typeId!=='1101008001011363'){
         const asset=nativeCatalog.get(item.typeId),group=new THREE.Group();
         const basic=(geometry,color,x,y,z,w,h,d)=>{
           const mesh=new THREE.Mesh(geometry,new THREE.MeshLambertMaterial({color}));
@@ -142,7 +144,7 @@
     new ResizeObserver(frame).observe(stage);
     function select(original){model.visible=original;mapped.visible=!original;byId('source').setAttribute('aria-pressed',original);byId('mapped').setAttribute('aria-pressed',!original)}
     byId('source').onclick=()=>select(true);byId('mapped').onclick=()=>select(false);
-    select(new URLSearchParams(location.search).get('view')!=='mapped');
+    select(new URLSearchParams(location.search).get('view')==='source');
     status.textContent='元梦映射 · '+project.placement.count+' 个元件';
     WorkshopBridge.buildButton(document.querySelector('.actions'),()=>project);
     renderer.setAnimationLoop(()=>renderer.render(scene,camera));

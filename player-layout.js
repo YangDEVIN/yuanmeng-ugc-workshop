@@ -7,7 +7,7 @@
   // Local height uses the same origin as the BSP placement export.
   function floor(x, y, width, length, z = 310, color = floorColor) {
     return {
-      typeId: '1101002001034000',
+      typeId: '1101008001011363',
       transform: {
         location: { x, y, z },
         rotation: { pitch: 0, roll: 0, yaw: 0 },

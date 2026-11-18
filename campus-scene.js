@@ -5,7 +5,7 @@
   const nativePreview=root.CampusNativePreview ?? (typeof module==='object'?require('./campus-native-preview'):null);
   const design=root.CampusDesign ?? require('./campus-design');
   const skyboxes=root.YuanmengSkyboxes ?? require('./campus-skyboxes');
-  const blockType='1101002001034000';
+  const blockType='1101008001011363';
   const spawnType='1105000000000027';
   const pieces=[];
   let nativeItems=[],editorEdits=null,missingEntityIds=[],designVersion=design.version,modules=[];

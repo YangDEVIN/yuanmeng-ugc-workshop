@@ -11,7 +11,7 @@
     {name:'木门2', typeId:'1102015001002792', category:'建筑', usage:'广播室门参考', size:[239,50.6,380.5]},
     {name:'石材墙壁', typeId:'1108006001001437', category:'建筑', usage:'建筑墙体参考', size:[100,800,340]},
     {name:'出生点', typeId:'1105000000000027', category:'玩法', usage:'校门出生点', size:[207.4,154.1,143.4]},
-    {name:'立方体 · 纯色', typeId:'1101002001034000', category:'积木', usage:'校园三维几何', size:[100,100,100]}
+    {name:'立方体 · 积木', typeId:'1101008001011363', category:'积木', usage:'校园三维几何', size:[100,100,100]}
   ];
   if(typeof module==='object') module.exports=records;
   else root.CampusAssets=records;

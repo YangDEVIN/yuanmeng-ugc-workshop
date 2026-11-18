@@ -24,7 +24,7 @@
   function nativeItem(typeId,location,yaw=0){
     if(!assets.has(typeId))throw Error('请选择元梦内置目录中的元件');
     if(!axes.every(axis=>Number.isFinite(location?.[axis]))||!Number.isFinite(yaw))throw Error('元件坐标或朝向无效');
-    if(typeId==='1101002001034000'&&yaw%90!==0)throw Error('基础立方体朝向需为 90° 的倍数');
+    if(['1101002001034000','1101008001011363'].includes(typeId)&&yaw%90!==0)throw Error('基础立方体朝向需为 90° 的倍数');
     return {typeId,transform:{location:Object.fromEntries(axes.map(axis=>[axis,Math.round(location[axis]*10)/10])),
       rotation:{pitch:0,yaw,roll:0},scale:{x:1,y:1,z:1}},snapToGround:false};
   }

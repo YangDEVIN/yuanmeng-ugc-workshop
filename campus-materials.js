@@ -131,7 +131,7 @@
       light:new T.MeshBasicMaterial({color:0xffffff})
     };
     const haloTexture=makeHaloTexture(T);
-    const list=Object.values(materials);
+    const list=Object.values(materials); for(const mat of list) if(mat!==materials.light) brickMaterial(mat,.6);
     return {
       materials,materialKey,haloTexture,kinds,
       setWireframe(on){for(const material of list)material.wireframe=Boolean(on);},

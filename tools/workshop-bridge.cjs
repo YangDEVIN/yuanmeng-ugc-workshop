@@ -162,6 +162,7 @@ async function handle(req,res){
       const all=await config();all[c.id]={executable:c.executable,args:c.args};await fs.mkdir(state,{recursive:true});await fs.writeFile(path.join(state,'agents.json'),JSON.stringify(all,null,2));json(res,200,{ok:true});
     }else if(req.method==='POST'&&url.pathname==='/api/jobs'){const input=await body(req);if(!access.local(req)&&!input.automatic)throw Error('线上只支持自动任务接口');json(res,200,await createJob(input));}
     else if(req.method==='GET'&&url.pathname.startsWith('/api/jobs/'))json(res,200,await jobResult(url.pathname.slice(10)));
+    else if(req.method==='POST' && url.pathname==='/api/games/blocks' && access.local(req)) json(res,200,await require('./blocks-import.cjs').install(await body(req),withMcp));
     else if(url.pathname.startsWith('/api/builds')){
       const builds=require('./map-build.cjs');
       if(req.method==='POST'&&url.pathname==='/api/builds/prepare')json(res,200,await builds.prepare(await body(req),withMcp));

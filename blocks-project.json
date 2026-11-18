@@ -1,0 +1,152 @@
+{
+  "name": "俄罗斯方块",
+  "ui": [
+    {
+      "op": "create",
+      "type": "Image",
+      "name": "积木俄罗斯方块_cell",
+      "props": {
+        "x": -1100,
+        "y": 0,
+        "width": 25,
+        "height": 25,
+        "opacity": 1,
+        "color": {
+          "r": 55,
+          "g": 155,
+          "b": 166,
+          "a": 255
+        }
+      }
+    },
+    {
+      "op": "create",
+      "type": "Image",
+      "name": "积木俄罗斯方块_board",
+      "props": {
+        "x": 0,
+        "y": 0,
+        "width": 286,
+        "height": 566,
+        "opacity": 1,
+        "color": {
+          "r": 22,
+          "g": 53,
+          "b": 57,
+          "a": 255
+        }
+      }
+    },
+    {
+      "op": "create",
+      "type": "Text",
+      "name": "积木俄罗斯方块_score",
+      "props": {
+        "x": 230,
+        "y": -180,
+        "width": 270,
+        "height": 70,
+        "text": "俄罗斯方块",
+        "fontSize": 24
+      }
+    },
+    {
+      "op": "create",
+      "type": "Button",
+      "name": "积木俄罗斯方块_left",
+      "props": {
+        "x": 230,
+        "y": -115,
+        "width": 185,
+        "height": 48,
+        "text": "←",
+        "fontSize": 24
+      }
+    },
+    {
+      "op": "create",
+      "type": "Button",
+      "name": "积木俄罗斯方块_rotate",
+      "props": {
+        "x": 230,
+        "y": -63,
+        "width": 185,
+        "height": 48,
+        "text": "旋转",
+        "fontSize": 24
+      }
+    },
+    {
+      "op": "create",
+      "type": "Button",
+      "name": "积木俄罗斯方块_right",
+      "props": {
+        "x": 230,
+        "y": -11,
+        "width": 185,
+        "height": 48,
+        "text": "→",
+        "fontSize": 24
+      }
+    },
+    {
+      "op": "create",
+      "type": "Button",
+      "name": "积木俄罗斯方块_down",
+      "props": {
+        "x": 230,
+        "y": 41,
+        "width": 185,
+        "height": 48,
+        "text": "下降",
+        "fontSize": 24
+      }
+    },
+    {
+      "op": "create",
+      "type": "Button",
+      "name": "积木俄罗斯方块_drop",
+      "props": {
+        "x": 230,
+        "y": 93,
+        "width": 185,
+        "height": 48,
+        "text": "落底",
+        "fontSize": 24
+      }
+    },
+    {
+      "op": "create",
+      "type": "Button",
+      "name": "积木俄罗斯方块_start",
+      "props": {
+        "x": 230,
+        "y": 145,
+        "width": 185,
+        "height": 48,
+        "text": "开始 / 重开",
+        "fontSize": 24
+      }
+    },
+    {
+      "op": "create",
+      "type": "Button",
+      "name": "积木俄罗斯方块_pause",
+      "props": {
+        "x": 230,
+        "y": 197,
+        "width": 185,
+        "height": 48,
+        "text": "暂停 / 继续",
+        "fontSize": 24
+      }
+    }
+  ],
+  "files": {
+    "GameEntry.lua": "-- 脚本加载入口\n_GAME = {}\n\n_GAME.NetMsg     = require \"Common.NetMsg\"\n_GAME.GameServer = require \"Server.GameServer\"\n_GAME.GameClient = require \"Client.GameClient\"\n\nif System:IsServer() then _GAME.GameServer:Init() end\nif System:IsClient() then _GAME.GameClient:Init() end\n\nlocal ServerCurTime = TimerManager:GetTimeSeconds()\nlocal ClientCurTime = TimerManager:GetTimeSeconds()\n\nlocal function UpdateClient()\n    local _curTime = TimerManager:GetTimeSeconds()\n    _GAME.GameClient:OnUpdate(_curTime - ClientCurTime)\n    ClientCurTime = _curTime\nend\n\nlocal function UpdateServer()\n    local _curTime = TimerManager:GetTimeSeconds()\n    _GAME.GameServer:OnUpdate(_curTime - ServerCurTime)\n    ServerCurTime = _curTime\nend\n\nlocal function OnBeginPlay()\n    if System:IsServer() then\n        _GAME.GameServer:OnStart()\n        TimerManager:AddLoopFrame(1, UpdateServer)\n    end\n    if System:IsClient() then\n        _GAME.GameClient:OnStart()\n        TimerManager:AddLoopFrame(1, UpdateClient)\n    end\nend\n\nlocal function OnEndPlay()\n    if System:IsServer() then _GAME.GameServer:OnEnd() end\n    if System:IsClient() then _GAME.GameClient:OnEnd() end\nend\n\nSystem:RegisterEvent(Events.ON_BEGIN_PLAY, OnBeginPlay)\nSystem:RegisterEvent(Events.ON_END_PLAY,   OnEndPlay)",
+    "Common/NetMsg.lua": "return {}",
+    "Server/GameServer.lua": "local Server = {}\nfunction Server:Init() end\nfunction Server:OnStart() end\nfunction Server:OnUpdate(dt) end\nfunction Server:OnEnd() end\nreturn Server",
+    "Client/GameClient.lua": "local Game = {}\nlocal ids = require \"Common.WidgetIds\"\nlocal shapes = {\"1111\",\"11/11\",\"010/111\",\"100/111\",\"001/111\",\"011/110\",\"110/011\"}\nlocal colors = {\"#55CFDD\",\"#FFD068\",\"#BC99ED\",\"#629BE8\",\"#FF965E\",\"#68C99B\",\"#EC7688\"}\nlocal board, piece, kind, x, y, score, lines, elapsed, active, ended\nlocal pool = {}\nlocal function row()\n    return {0,0,0,0,0,0,0,0,0,0}\nend\nlocal function fits(matrix, px, py)\n    for j,r in ipairs(matrix) do\n        for i,value in ipairs(r) do\n            if value == 1 then\n                local col, line = px+i-1, py+j-1\n                if col<1 or col>10 or line>20 or board[line][col]~=0 then return false end\n            end\n        end\n    end\n    return true\nend\nlocal function spawn()\n    x,y,kind,piece = 4,1,math.random(1,7),{}\n    for line in string.gmatch(shapes[kind],\"[^/]+\") do\n        local r={}\n        for v in string.gmatch(line,\".\") do table.insert(r,tonumber(v)) end\n        table.insert(piece,r)\n    end\n    ended=not fits(piece,x,y)\n    if ended then active=false end\nend\nlocal function reset()\n    board,score,lines,elapsed,active,ended={},0,0,0,true,false\n    for j=1,20 do board[j]=row() end\n    spawn()\nend\nlocal function render()\n    local count=0\n    local function cell(col,line,color)\n        count=count+1\n        if not pool[count] then pool[count]=UI:DuplicateWidget(ids.cell,0,0) end\n        local uid=pool[count]\n        UI:SetPosition({uid},(col-5.5)*28,(line-10.5)*28)\n        UI:SetImageColor({uid},colors[color])\n        UI:SetVisibility({uid},true)\n    end\n    for j,r in ipairs(board) do for i,v in ipairs(r) do if v>0 then cell(i,j,v) end end end\n    if not ended then\n        for j,r in ipairs(piece) do for i,v in ipairs(r) do if v==1 then cell(x+i-1,y+j-1,kind) end end end\n    end\n    for i=count+1,#pool do UI:SetVisibility({pool[i]},false) end\n    local state=ended and \"游戏结束\" or (active and \"进行中\" or \"已暂停\")\n    UI:SetText({ids.score},state..\"  \"..score..\" 分 / \"..lines..\" 行\")\nend\nlocal function step()\n    if fits(piece,x,y+1) then y=y+1 return end\n    for j,r in ipairs(piece) do for i,v in ipairs(r) do if v==1 then board[y+j-1][x+i-1]=kind end end end\n    local cleared=0\n    for j=20,1,-1 do\n        local full=true\n        for i=1,10 do if board[j][i]==0 then full=false end end\n        if full then table.remove(board,j) cleared=cleared+1 end\n    end\n    for i=1,cleared do table.insert(board,1,row()) end\n    score=score+({0,100,300,500,800})[cleared+1]\n    lines=lines+cleared\n    spawn()\nend\nlocal function click(uid)\n    uid=tonumber(uid)\n    if uid==ids.start then reset()\n    elseif uid==ids.pause and not ended then active=not active\n    elseif not active then return\n    elseif uid==ids.left and fits(piece,x-1,y) then x=x-1\n    elseif uid==ids.right and fits(piece,x+1,y) then x=x+1\n    elseif uid==ids.rotate then\n        local nextShape={}\n        for i=1,#piece[1] do\n            nextShape[i]={}\n            for j=#piece,1,-1 do table.insert(nextShape[i],piece[j][i]) end\n        end\n        for _,shift in ipairs({0,-1,1,-2,2}) do\n            if fits(nextShape,x+shift,y) then piece,x=nextShape,x+shift break end\n        end\n    elseif uid==ids.down then step()\n    elseif uid==ids.drop then while fits(piece,x,y+1) do y=y+1 end step()\n    else return end\n    render()\nend\nfunction Game:Init() System:RegisterEvent(Events.ON_BUTTON_CLICKED,click) end\nfunction Game:OnStart() reset() active=false render() end\nfunction Game:OnUpdate(dt)\n    if not active then return end\n    elapsed=elapsed+dt\n    if elapsed>=0.65 then elapsed=elapsed-0.65 step() render() end\nend\nfunction Game:OnEnd() active=false pool={} end\nreturn Game"
+  },
+  "widgetBindings": "Common/WidgetIds.lua"
+}

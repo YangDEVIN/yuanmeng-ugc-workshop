@@ -41,7 +41,7 @@
 </main>
 <script src="map-workspace.js"></script>
 <script src="native-assets.js"></script><script src="map-draft.js"></script><script src="draft-store.js"></script>
-<script src="lib/three.min.js"></script><script src="lib/OrbitControls.js"></script>
+<script src="lib/three.min.js"></script><script src="brick-material.js"></script><script src="lib/OrbitControls.js"></script>
 <script src="editor-skybox-list.js"></script><script src="campus-skyboxes.js"></script><script src="campus-sky-view.js"></script>
 <script src="reference/dust2-geometry.js"></script><script src="reference/template-geometry.js"></script><script src="spawn-editor.js"></script>
 <script src="reference/yuanmeng-template.js"></script><script src="map-project.js"></script>
@@ -247,11 +247,11 @@ function buildPlacementPreview(placement) {
   const roofIndexes = new Set(placement.roofItemIndexes);
   const boxes=[],roofBoxes=[];
   items.forEach((item,index)=>{
-    if(item.typeId==='1101002001034000')(roofIndexes.has(index)?roofBoxes:boxes).push(item);
+    if(['1101002001034000','1101008001011363'].includes(item.typeId))(roofIndexes.has(index)?roofBoxes:boxes).push(item);
   });
   const block = new THREE.Object3D();
   function createBoxMesh(boxes,roof) {
-    const mesh = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshLambertMaterial(), boxes.length);
+    const mesh = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), brickMaterial(new THREE.MeshLambertMaterial(),60/rate), boxes.length);
     mesh.userData.roof=roof;
     boxes.forEach(({ transform, color }, index) => {
     const { location, rotation, scale } = transform;
@@ -285,7 +285,7 @@ function buildPlacementPreview(placement) {
     return arrow;
   });
   const native=items.flatMap(item=>{
-    if(['1101002001034000','1102011001001018'].includes(item.typeId))return [];
+    if(['1101002001034000','1101008001011363','1102011001001018'].includes(item.typeId))return [];
     const shape=MapDraft.boxFor(item);if(!shape)return [];
     const {size,offset,position,color,rotation}=shape;
     const mesh=new THREE.Mesh(new THREE.BoxGeometry(size[0]/rate,size[2]/rate,size[1]/rate),

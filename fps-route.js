@@ -6,7 +6,7 @@
   function build(placement, maxRise=step) {
     const bins=new Map(), floors=new Map();
     for(const command of placement.commands) for(const item of command.arguments.items){
-      if(item.typeId!==blockId) continue;
+      if(item.typeId!==blockId && item.typeId!=='1101008001011363') continue;
       const {location:p,scale:s,rotation}=item.transform;
       if(rotation.pitch||rotation.roll||rotation.yaw%90) throw Error('动线检查需要与网格对齐的积木');
       const transpose=Math.abs(rotation.yaw%180)===90;

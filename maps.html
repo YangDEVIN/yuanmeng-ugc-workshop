@@ -141,7 +141,7 @@
 <div class="toast" id="toast"></div>
 
 <script src="lib/three.min.js"></script>
-<script src="lib/OrbitControls.js"></script>
+<script src="brick-material.js"></script><script src="lib/OrbitControls.js"></script>
 <script src="maps.js"></script>
 <script src="map-guidance.js"></script>
 <script src="reference/yuanmeng-template.js"></script>
@@ -185,7 +185,7 @@ function addPart(p){
   const col=new THREE.Color(PAL[p.c]||'#9199A3');
   const air=(p.c==='air'||p.c==='glass'||p.c==='water');
   const m=new THREE.MeshLambertMaterial({color:col,transparent:air,opacity:air?.42:1});
-  const mesh=new THREE.Mesh(g,m);
+  const mesh=new THREE.Mesh(g,brickMaterial(m,60));
   mesh.position.set(p.x,p.z+p.h/2,p.y);  // 地图Z(高)->three.Y ; 地图Y(宽)->three.Z
   if(p.ry) mesh.rotation.y=-p.ry*Math.PI/180;
   const edge=new THREE.LineSegments(new THREE.EdgesGeometry(g),new THREE.LineBasicMaterial({color:0x000000,transparent:true,opacity:.14}));
@@ -208,7 +208,7 @@ async function loadTemplate(def){
     const air=(cat==='air'||cat==='glass');
     const geo=new THREE.BoxGeometry(1,1,1);
     const mat=new THREE.MeshLambertMaterial({color:new THREE.Color(hex),transparent:air,opacity:air?.3:1});
-    const inst=new THREE.InstancedMesh(geo,mat,arr.length);
+    const inst=new THREE.InstancedMesh(geo,brickMaterial(mat,60),arr.length);
     arr.forEach((it,i)=>{
       const sx=Math.max(Math.abs(it[4]),12),sy=Math.max(Math.abs(it[5]),12),sz=Math.max(Math.abs(it[6]),12);
       dummy.position.set(it[1],it[3]+sz/2,it[2]); // z(高)=it[3]+sizeZ/2 -> three.Y

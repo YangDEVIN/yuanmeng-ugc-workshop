@@ -1,5 +1,5 @@
 (function (root) {
-  const typeId = '1101002001034000';
+  const typeId = '1101008001011363';
   const batchSize = 20;
   const roundToTenth = value => Math.round(value * 10) / 10;
 
