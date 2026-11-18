@@ -42,6 +42,7 @@ if(typeof document!=='undefined'){
 const $=id=>document.getElementById(id),canvas=document.querySelector('canvas'),g=canvas.getContext('2d');
 const palette={'.':null,k:'#392841',h:'#743d51',g:'#ffc75a',s:'#ffe0b4',p:'#e8568c',r:'#a83969',w:'#fff5e0',b:'#668dd4'};
 const princess=['...g.g.g...','...ggggg...','...hhhhh...','..hhssshh..','..hhssshh..','...hhhhh...','....ppp....','..sspppss..','...prrrp...','..pprrrpp..','.ppppppppp.','..wwwwwww..','...kk.kk...'];
+const runner=new Image();runner.src='princess-run.png';
 let game=new PrincessRun(),keys={},last=0;
 function rect(x,y,w,h,c){g.fillStyle=c;g.fillRect(Math.round(x),Math.round(y),Math.ceil(w),Math.ceil(h));}
 function sprite(rows,x,y,size){rows.forEach((r,j)=>[...r].forEach((v,i)=>{if(palette[v])rect(x+i*size,y+j*size,size,size,palette[v]);}));}
@@ -63,7 +64,7 @@ function draw(){
     else {const w=(o.kind==='crack'?48:17)*s;rect(x-w/2,y-2*s,w,3*s,'#5f688c');rect(x-w*.35,y+s,w*.7,2*s,'#a7bfd0');if(o.kind==='seal'){rect(x-3*s,y-8*s,6*s,7*s,'#74627b');rect(x+s,y-7*s,s,s,'#fff');}}
   }
   const px=128+game.x*153,py=184-game.height*36;rect(px-9,184,18,2,'#aca3bd');
-  sprite(princess,px-11,py-26+(game.mode==='run'&&!game.jump?Math.floor(game.distance/3)%2:0),2);
+  if(runner.complete && runner.naturalWidth){const h=46,w=h*runner.naturalWidth/runner.naturalHeight;const stride=game.mode==='run'&&!game.jump?Math.sin(game.distance*.65):0;g.save();g.translate(px,py-Math.abs(stride)*1.5);g.rotate(stride*.025);g.drawImage(runner,-w/2,-h,w,h);g.restore();}else sprite(princess,px-11,py-26+(game.mode==='run'&&!game.jump?Math.floor(game.distance/3)%2:0),2);
   $('stage').textContent='驿站 '+game.stage+'/10';$('time').textContent=Math.ceil(game.time)+' 秒';$('rest').textContent=Math.ceil(left)+' 米';$('score').textContent=game.score+' 分';
   const state={ready:'抵达下一座冰雪城堡。',lost:'时间到',won:'十座驿站全部抵达！',station:'抵达驿站！剩余时间已折算得分。',paused:'已暂停',run:game.wings?'获得飞行旗 · 连按跳跃可滑翔':game.stun?'撞到障碍，正在恢复':'冒险中'}[game.mode];
   if($('state').textContent!==state)$('state').textContent=state;
