@@ -32,3 +32,4 @@ ai-connection.json
 /.workshop-local/
 /_site/
 /.connector/
+/princess-kit/.restore/

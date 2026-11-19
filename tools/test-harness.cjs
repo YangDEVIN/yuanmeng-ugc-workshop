@@ -22,5 +22,5 @@ test('Agent job writes task and round-trips validated result; launcher is isolat
   await fs.writeFile(path.join(dir,'result.json'),JSON.stringify(C.normalize(p)));assert.equal((await bridge.jobResult(job.id)).state,'ready');
   await fs.writeFile(path.join(dir,'result.json'),'{}');assert.equal((await bridge.jobResult(job.id)).state,'invalid');
   // Delete only files in this test's unique job directory, not user jobs.
-  for(const file of ['AGENTS.md','project.json','native-assets.js','task.md','job.json','result.json'])await fs.unlink(path.join(dir,file));await fs.rmdir(dir);
+  for(const file of ['AGENTS.md','agent.md','project.json','native-assets.js','task.md','job.json','result.json'])await fs.unlink(path.join(dir,file));await fs.rmdir(dir);
 });

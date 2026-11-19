@@ -1,0 +1,331 @@
+{
+  "name": "公主大冒险",
+  "version": 1,
+  "roads": [
+    "PolarCRT00",
+    "PolarCRT01",
+    "PolarCRT02",
+    "PolarCRT03",
+    "PolarCRT04",
+    "PolarCRT05",
+    "PolarCRT06",
+    "PolarCRT07",
+    "PolarCRT08",
+    "PolarCRT09",
+    "PolarCRT10",
+    "PolarCRT11",
+    "PolarCRT12",
+    "PolarCRT13",
+    "PolarCRT14",
+    "PolarCRT15",
+    "PolarCRT16",
+    "PolarCRT17",
+    "PolarCRT18",
+    "PolarCRT19",
+    "PolarCRT20",
+    "PolarCRT21",
+    "PolarCRT22",
+    "PolarCRT23"
+  ],
+  "frames": [
+    "PrincessStride0",
+    "PrincessStride1",
+    "PrincessStride2",
+    "PrincessStride3",
+    "PrincessStride4",
+    "PrincessStride5",
+    "PrincessStride6",
+    "PrincessStride7"
+  ],
+  "widgets": [
+    {
+      "key": "screen",
+      "type": "Image",
+      "props": {
+        "x": 0,
+        "y": 0,
+        "width": 2560,
+        "height": 1440
+      },
+      "asset": "PolarCRT00"
+    },
+    {
+      "key": "frame0",
+      "type": "Image",
+      "props": {
+        "x": 0,
+        "y": 315,
+        "width": 210,
+        "height": 210,
+        "visible": true
+      },
+      "asset": "PrincessStride0"
+    },
+    {
+      "key": "frame1",
+      "type": "Image",
+      "props": {
+        "x": 0,
+        "y": 315,
+        "width": 210,
+        "height": 210,
+        "visible": false
+      },
+      "asset": "PrincessStride1"
+    },
+    {
+      "key": "frame2",
+      "type": "Image",
+      "props": {
+        "x": 0,
+        "y": 315,
+        "width": 210,
+        "height": 210,
+        "visible": false
+      },
+      "asset": "PrincessStride2"
+    },
+    {
+      "key": "frame3",
+      "type": "Image",
+      "props": {
+        "x": 0,
+        "y": 315,
+        "width": 210,
+        "height": 210,
+        "visible": false
+      },
+      "asset": "PrincessStride3"
+    },
+    {
+      "key": "frame4",
+      "type": "Image",
+      "props": {
+        "x": 0,
+        "y": 315,
+        "width": 210,
+        "height": 210,
+        "visible": false
+      },
+      "asset": "PrincessStride4"
+    },
+    {
+      "key": "frame5",
+      "type": "Image",
+      "props": {
+        "x": 0,
+        "y": 315,
+        "width": 210,
+        "height": 210,
+        "visible": false
+      },
+      "asset": "PrincessStride5"
+    },
+    {
+      "key": "frame6",
+      "type": "Image",
+      "props": {
+        "x": 0,
+        "y": 315,
+        "width": 210,
+        "height": 210,
+        "visible": false
+      },
+      "asset": "PrincessStride6"
+    },
+    {
+      "key": "frame7",
+      "type": "Image",
+      "props": {
+        "x": 0,
+        "y": 315,
+        "width": 210,
+        "height": 210,
+        "visible": false
+      },
+      "asset": "PrincessStride7"
+    },
+    {
+      "key": "score",
+      "type": "Text",
+      "props": {
+        "x": 0,
+        "y": -585,
+        "width": 2100,
+        "height": 74,
+        "text": "公主大冒险",
+        "fontSize": 41
+      }
+    },
+    {
+      "key": "left",
+      "type": "Button",
+      "props": {
+        "x": -947,
+        "y": 560,
+        "width": 283,
+        "height": 86,
+        "text": "◀ 左移",
+        "opacity": 0,
+        "fontSize": 36
+      }
+    },
+    {
+      "key": "right",
+      "type": "Button",
+      "props": {
+        "x": -632,
+        "y": 560,
+        "width": 283,
+        "height": 86,
+        "text": "右移 ▶",
+        "opacity": 0,
+        "fontSize": 36
+      }
+    },
+    {
+      "key": "fast",
+      "type": "Button",
+      "props": {
+        "x": -317,
+        "y": 560,
+        "width": 283,
+        "height": 86,
+        "text": "▲ 加速",
+        "opacity": 0,
+        "fontSize": 36
+      }
+    },
+    {
+      "key": "slow",
+      "type": "Button",
+      "props": {
+        "x": -3,
+        "y": 560,
+        "width": 283,
+        "height": 86,
+        "text": "▼ 减速",
+        "opacity": 0,
+        "fontSize": 36
+      }
+    },
+    {
+      "key": "jump",
+      "type": "Button",
+      "props": {
+        "x": 312,
+        "y": 560,
+        "width": 283,
+        "height": 86,
+        "text": "跳跃",
+        "opacity": 0,
+        "fontSize": 36
+      }
+    },
+    {
+      "key": "start",
+      "type": "Button",
+      "props": {
+        "x": 627,
+        "y": 560,
+        "width": 283,
+        "height": 86,
+        "text": "开始",
+        "opacity": 0,
+        "fontSize": 36
+      }
+    },
+    {
+      "key": "pause",
+      "type": "Button",
+      "props": {
+        "x": 941,
+        "y": 560,
+        "width": 283,
+        "height": 86,
+        "text": "暂停",
+        "opacity": 0,
+        "fontSize": 36
+      }
+    },
+    {
+      "key": "flag",
+      "type": "Image",
+      "props": {
+        "x": -3500,
+        "y": -3500,
+        "width": 48,
+        "height": 48
+      },
+      "asset": "flag"
+    },
+    {
+      "key": "fish",
+      "type": "Image",
+      "props": {
+        "x": -3500,
+        "y": -3500,
+        "width": 48,
+        "height": 48
+      },
+      "asset": "fish"
+    },
+    {
+      "key": "seal",
+      "type": "Image",
+      "props": {
+        "x": -3500,
+        "y": -3500,
+        "width": 48,
+        "height": 48
+      },
+      "asset": "seal"
+    },
+    {
+      "key": "hole",
+      "type": "Image",
+      "props": {
+        "x": -3500,
+        "y": -3500,
+        "width": 48,
+        "height": 48
+      },
+      "asset": "hole"
+    },
+    {
+      "key": "magic",
+      "type": "Image",
+      "props": {
+        "x": -3500,
+        "y": -3500,
+        "width": 48,
+        "height": 48
+      },
+      "asset": "magic"
+    }
+  ],
+  "keys": {
+    "left": "Left",
+    "right": "Right",
+    "fast": "Up",
+    "slow": "Down",
+    "jump": "SpaceBar",
+    "start": "Enter",
+    "pause": "P"
+  },
+  "hideNative": [
+    "摇杆",
+    "跳跃",
+    "托举",
+    "前扑",
+    "加速",
+    "竞速排名",
+    "通关目标"
+  ],
+  "scripts": [
+    "Client/GameClient.lua",
+    "GameEntry.lua",
+    "Common/NetMsg.lua",
+    "Server/GameServer.lua"
+  ]
+}
