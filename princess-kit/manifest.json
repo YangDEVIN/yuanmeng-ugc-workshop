@@ -1,6 +1,6 @@
 {
   "name": "公主大冒险",
-  "version": 1,
+  "version": 2,
   "roads": [
     "PolarCRT00",
     "PolarCRT01",
@@ -161,10 +161,10 @@
       "key": "left",
       "type": "Button",
       "props": {
-        "x": -947,
-        "y": 560,
-        "width": 283,
-        "height": 86,
+        "x": -3200,
+        "y": -3200,
+        "width": 40,
+        "height": 40,
         "text": "◀ 左移",
         "opacity": 0,
         "fontSize": 36
@@ -174,10 +174,10 @@
       "key": "right",
       "type": "Button",
       "props": {
-        "x": -632,
-        "y": 560,
-        "width": 283,
-        "height": 86,
+        "x": -3200,
+        "y": -3200,
+        "width": 40,
+        "height": 40,
         "text": "右移 ▶",
         "opacity": 0,
         "fontSize": 36
@@ -187,10 +187,10 @@
       "key": "fast",
       "type": "Button",
       "props": {
-        "x": -317,
-        "y": 560,
-        "width": 283,
-        "height": 86,
+        "x": -3200,
+        "y": -3200,
+        "width": 40,
+        "height": 40,
         "text": "▲ 加速",
         "opacity": 0,
         "fontSize": 36
@@ -200,10 +200,10 @@
       "key": "slow",
       "type": "Button",
       "props": {
-        "x": -3,
-        "y": 560,
-        "width": 283,
-        "height": 86,
+        "x": -3200,
+        "y": -3200,
+        "width": 40,
+        "height": 40,
         "text": "▼ 减速",
         "opacity": 0,
         "fontSize": 36
@@ -213,10 +213,10 @@
       "key": "jump",
       "type": "Button",
       "props": {
-        "x": 312,
-        "y": 560,
-        "width": 283,
-        "height": 86,
+        "x": 945,
+        "y": 460,
+        "width": 240,
+        "height": 240,
         "text": "跳跃",
         "opacity": 0,
         "fontSize": 36
@@ -226,10 +226,10 @@
       "key": "start",
       "type": "Button",
       "props": {
-        "x": 627,
-        "y": 560,
-        "width": 283,
-        "height": 86,
+        "x": -160,
+        "y": 573,
+        "width": 280,
+        "height": 82,
         "text": "开始",
         "opacity": 0,
         "fontSize": 36
@@ -239,10 +239,10 @@
       "key": "pause",
       "type": "Button",
       "props": {
-        "x": 941,
-        "y": 560,
-        "width": 283,
-        "height": 86,
+        "x": 160,
+        "y": 573,
+        "width": 280,
+        "height": 82,
         "text": "暂停",
         "opacity": 0,
         "fontSize": 36
@@ -302,13 +302,25 @@
         "height": 48
       },
       "asset": "magic"
+    },
+    {
+      "key": "stick",
+      "type": "Button",
+      "props": {
+        "x": -900,
+        "y": 430,
+        "width": 370,
+        "height": 370,
+        "text": " ",
+        "opacity": 0
+      }
     }
   ],
   "keys": {
-    "left": "Left",
-    "right": "Right",
-    "fast": "Up",
-    "slow": "Down",
+    "left": "A",
+    "right": "D",
+    "fast": "W",
+    "slow": "S",
     "jump": "SpaceBar",
     "start": "Enter",
     "pause": "P"

@@ -2,8 +2,21 @@ local Game={}
 local W=require "Common.Bindings"
 local stage,score,distance,length,time,x,speed,jump,wings,stun,mode,objects
 local held={}
+local steer,throttle,originX,originY=0,0,nil,nil
+local function resetInput()
+ held={}
+ steer,throttle,originX,originY=0,0,nil,nil
+end
+local function moveStick(_,px,py)
+ if not originX or mode~="run" then return end
+ local dx,dy=(px-originX)/70,(py-originY)/70
+ local length=math.max(1,math.sqrt(dx*dx+dy*dy))
+ steer=math.abs(dx)>.15 and dx/length or 0
+ throttle=math.abs(dy)>.15 and -dy/length or 0
+end
 local marks={"●","━","海豹","旗","鱼","旗","★"}
 local function begin()
+ resetInput()
  length=840+stage*70
  time=length/24+8
  distance,x,speed,jump,wings,stun,mode=0,0,23,0,0,0,"run"
@@ -29,7 +42,7 @@ local function press(uid)
   if mode=="station" then stage=stage+1 else stage,score=1,0 end
   begin()
  elseif uid==W.pause then
-  if mode=="run" then mode="pause" elseif mode=="pause" then mode="run" end
+  if mode=="run" then resetInput() mode="pause" elseif mode=="pause" then mode="run" end
  elseif uid==W.jump and mode=="run" and stun<=0 and (jump<=0 or wings>0) then jump=.82 end
 end
 local function release(uid) held[tonumber(uid)]=false end
@@ -40,8 +53,8 @@ local function step(dt)
  stun=math.max(0,stun-dt)
  wings=math.max(0,wings-dt)
  if stun<=0 then
-  x=math.max(-.92,math.min(.92,x+((held[W.right] and 1 or 0)-(held[W.left] and 1 or 0))*dt*1.7))
-  speed=math.max(12,math.min(38,speed+((held[W.fast] and 1 or 0)-(held[W.slow] and 1 or 0))*dt*21))
+  x=math.max(-.92,math.min(.92,x+math.max(-1,math.min(1,steer+(held[W.right] and 1 or 0)-(held[W.left] and 1 or 0)))*dt*1.7))
+  speed=math.max(12,math.min(38,speed+math.max(-1,math.min(1,throttle+(held[W.fast] and 1 or 0)-(held[W.slow] and 1 or 0)))*dt*21))
  end
  distance=distance+speed*dt
  local height=math.sin(math.pi*jump/.82)
@@ -105,6 +118,13 @@ local function render()
 end
 function Game:Init() end
 local function bind()
+ UI:RegisterPressed(W.stick,function(_,px,py)
+  if mode=="run" then originX,originY=px,py end
+ end)
+ UI:RegisterMoved(W.stick,moveStick)
+ UI:RegisterReleased(W.stick,function()
+  steer,throttle,originX,originY=0,0,nil,nil
+ end)
  for _,id in ipairs({W.left,W.right,W.fast,W.slow}) do
   local button=id
   UI:RegisterPressed(id,function() press(button) end)
@@ -123,5 +143,5 @@ function Game:OnUpdate(dt)
  elapsed=elapsed+dt
  if elapsed>=.055 then elapsed=0 render() end
 end
-function Game:OnEnd() held={} mode=nil end
+function Game:OnEnd() resetInput() mode=nil end
 return Game

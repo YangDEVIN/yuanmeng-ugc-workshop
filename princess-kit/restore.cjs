@@ -37,6 +37,7 @@ async function restore(input,progress=()=>{},connect=withMcp){
     try{
       try{state=JSON.parse(await fs.readFile(journal,'utf8'));}catch(e){if(e.code!=='ENOENT')throw e;state={images:{},version:pack.version};}
       async function record(){await fs.writeFile(journal+'.tmp',JSON.stringify(state,null,2));await fs.rename(journal+'.tmp',journal);}
+      if(state.version!==pack.version)throw Error('此草稿记录属于较早版本，请在新草稿中还原新版布局。');
       if(state.uncertain)throw Error('上次写入缺少确定回执，请先核对：'+state.uncertain);
       async function mutate(label,tool,args){
         await check();state.uncertain=label;await record();

@@ -20,8 +20,8 @@ class PrincessRun {
     this.time-=dt;if(this.time<=0){this.time=0;this.mode='lost';return;}
     this.jump=Math.max(0,this.jump-dt);this.wings=Math.max(0,this.wings-dt);this.stun=Math.max(0,this.stun-dt);
     if(!this.stun){
-      this.x=Math.max(-.92,Math.min(.92,this.x+((keys.right?1:0)-(keys.left?1:0))*dt*1.7));
-      this.speed=Math.max(12,Math.min(38,this.speed+((keys.fast?1:0)-(keys.slow?1:0))*dt*21));
+      this.x=Math.max(-.92,Math.min(.92,this.x+Math.max(-1,Math.min(1,(keys.steer||0)+Number(!!keys.right)-Number(!!keys.left)))*dt*1.7));
+      this.speed=Math.max(12,Math.min(38,this.speed+Math.max(-1,Math.min(1,(keys.throttle||0)+Number(!!keys.fast)-Number(!!keys.slow)))*dt*21));
     }
     this.distance+=this.speed*dt;
     for(const o of this.objects){
@@ -71,12 +71,29 @@ function draw(){
   if($('state').textContent!==state)$('state').textContent=state;
   $('start').textContent=game.mode==='station'?'前往下一站':['ready','won','lost'].includes(game.mode)?'开始冒险':'重新开始';
 }
-function start(){if(game.mode==='station')game.stage++;else game=new PrincessRun();game.begin();keys={};document.activeElement.blur();$('pause').textContent='暂停';}
-function pause(){if(game.mode==='run')game.mode='paused';else if(game.mode==='paused')game.mode='run';keys={};$('pause').textContent=game.mode==='paused'?'继续':'暂停';}
+function start(){if(game.mode==='station')game.stage++;else game=new PrincessRun();game.begin();releaseStick();keys={};document.activeElement.blur();$('pause').textContent='暂停';}
+function pause(){if(game.mode==='run')game.mode='paused';else if(game.mode==='paused')game.mode='run';releaseStick();keys={};$('pause').textContent=game.mode==='paused'?'继续':'暂停';}
 $('start').onclick=start;$('pause').onclick=pause;
-const input={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'fast',ArrowDown:'slow',' ':'jump'};
-document.addEventListener('keydown',e=>{if(e.key.toLowerCase()==='p'&&!e.repeat)pause();const key=input[e.key];if(!key||game.mode!=='run'||(e.key===' '&&e.target.tagName==='BUTTON'))return;e.preventDefault();keys[key]=true;if(key==='jump'&&!e.repeat)game.leap();});
-document.addEventListener('keyup',e=>{delete keys[input[e.key]];});
+const stick=$('stick'),knob=stick.querySelector('i');
+let finger=null;
+function releaseStick(){
+  finger=null;keys.steer=0;keys.throttle=0;knob.style.transform='';
+}
+function dragStick(e){
+  if(e.pointerId!==finger)return;
+  const b=stick.getBoundingClientRect(),r=b.width*.34;
+  const dx=(e.clientX-b.left-b.width/2)/r,dy=(e.clientY-b.top-b.height/2)/r;
+  const length=Math.max(1,Math.hypot(dx,dy));
+  keys.steer=Math.abs(dx)<.15?0:dx/length;
+  keys.throttle=Math.abs(dy)<.15?0:-dy/length;
+  knob.style.transform='translate('+dx/length*r*.76+'px,'+dy/length*r*.76+'px)';
+}
+stick.onpointerdown=e=>{if(finger!==null||game.mode!=='run')return;finger=e.pointerId;stick.setPointerCapture(finger);dragStick(e);};
+stick.onpointermove=dragStick;
+stick.onlostpointercapture=e=>{if(e.pointerId===finger)releaseStick();};
+const input={KeyW:'fast',KeyS:'slow',KeyA:'left',KeyD:'right',ArrowLeft:'left',ArrowRight:'right',ArrowUp:'fast',ArrowDown:'slow',' ':'jump'};
+document.addEventListener('keydown',e=>{if(e.key.toLowerCase()==='p'&&!e.repeat)pause();const key=(input[e.code]||input[e.key]);if(!key||game.mode!=='run'||(e.key===' '&&e.target.tagName==='BUTTON'))return;e.preventDefault();keys[key]=true;if(key==='jump'&&!e.repeat)game.leap();});
+document.addEventListener('keyup',e=>{delete keys[(input[e.code]||input[e.key])];});
 document.querySelectorAll('[data-key]').forEach(b=>{const key=b.dataset.key;b.onpointerdown=e=>{b.setPointerCapture(e.pointerId);keys[key]=true;if(key==='jump')game.leap();};b.onlostpointercapture=()=>{delete keys[key];};});
 window.addEventListener('blur',()=>{if(game.mode==='run')pause();});
 function frame(now){game.tick(Math.min(.05,(now-last)/1000),keys);last=now;draw();requestAnimationFrame(frame);}requestAnimationFrame(frame);
