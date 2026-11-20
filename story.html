@@ -8,7 +8,8 @@
   <link rel="stylesheet" href="workshop.css?v6">
   <link rel="stylesheet" href="campus.css?v6">
   <link rel="stylesheet" href="map-workspace.css?v6">
-<script src="workshop-bridge.js?v8"></script></head>
+<script src="workshop-bridge.js?v8"></script><script src="native-assets.js"></script><script src="map-export.js?v1"></script>
+</head>
 <body class="workshop campus map-editor">
   <header class="workshop-bar">
     <nav class="workshop-nav" aria-label="工坊导航">
@@ -27,8 +28,8 @@
         <a class="map-import" href="coconut-story.html">椰风逐浪 ↗</a>
         <button type="button" id="reset" data-icon="reset">重新入校</button>
         <button type="button" id="campus-edit" data-icon="edit">编辑地图</button>
-        <button type="button" class="map-primary" data-icon="export" id="campus-export">导出地图工程 JSON</button>
-        <button type="button" id="campus-placement" data-icon="blocks">导出元梦积木清单</button>
+        <button type="button" class="map-primary" data-icon="export" id="campus-export">导出</button>
+        <button type="button" hidden id="campus-placement" data-icon="blocks">导出元梦积木清单</button>
         <label class="map-import" data-icon="import">导入地图工程 <input id="campus-import" type="file" accept=".json,application/json"></label>
       </div>
     </header>
@@ -82,7 +83,7 @@
   <script src="brick-material.js"></script><script src="lib/OrbitControls.js?v6"></script>
   <script src="campus-plan.js?v6"></script>
   <script src="campus-assets.js?v6"></script>
-  <script src="native-assets.js?v6"></script><script src="map-draft.js?v6"></script><script src="draft-store.js?v6"></script>
+  <script src="map-draft.js?v6"></script><script src="draft-store.js?v6"></script>
   <script src="campus-horror-modules.js?v6"></script><script src="campus-design.js?v6"></script>
   <script src="editor-skybox-list.js?v6"></script><script src="campus-skyboxes.js?v6"></script><script src="campus-sky-view.js?v6"></script>
   <script src="campus-native-preview.js?v6"></script>
@@ -91,6 +92,6 @@
   <script src="campus-view.js?v6"></script>
   <script src="map-workspace.js?v6"></script>
   <script src="spawn-editor.js?v6"></script>
-  <script src="campus-game.js?v8"></script>
+  <script src="campus-game.js?v9"></script>
 </body>
 </html>

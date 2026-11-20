@@ -400,11 +400,7 @@
   $('draft-assets-prev').onclick=()=>{assetPage--;fillAssets();};
   $('draft-assets-next').onclick=()=>{assetPage++;fillAssets();};
   assetSelect.onchange=assetDetails;fillAssets();
-  $('draft-download').onclick=()=>{
-    const updated=YuanmengSkyboxes.withPreset(MapDraft.apply(project,records),skyPicker.id);
-    DraftStore.download(target==='placement'?updated.placement:updated,project.map+(target==='placement'?'-placement.json':'-map-project.json'));
-    feedback.textContent='已导出 '+records.length+' 个元件。';
-  };
+  $('draft-download').onclick=()=>MapExport.open(()=>YuanmengSkyboxes.withPreset(MapDraft.apply(project,records),skyPicker.id));
 
   function clearAgent(){
     pending=null;

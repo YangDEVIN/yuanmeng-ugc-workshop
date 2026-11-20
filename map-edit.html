@@ -8,7 +8,8 @@
   <link rel="stylesheet" href="workshop.css?v6">
   <link rel="stylesheet" href="map-workspace.css?v6">
   <link rel="stylesheet" href="map-edit.css?v7">
-<script src="workshop-bridge.js?v8"></script></head>
+<script src="workshop-bridge.js?v8"></script><script src="native-assets.js"></script><script src="map-export.js?v1"></script>
+</head>
 <body class="workshop map-editor draft">
   <header class="workshop-bar">
     <nav class="workshop-nav" aria-label="工坊导航">
@@ -21,7 +22,7 @@
       <div><h1 class="workshop-title"><span class="workshop-icon" aria-hidden="true">✎</span>地图编辑</h1><p class="map-intro" id="draft-map"></p></div>
       <div class="map-actions">
         <button type="button" data-icon="undo" id="draft-undo" disabled>撤销</button>
-        <button type="button" data-icon="export" class="map-primary" id="draft-download" disabled>确认导出 JSON</button>
+        <button type="button" data-icon="export" class="map-primary" id="draft-download" disabled>导出</button>
       </div>
     </header>
     <p id="draft-status" role="status">正在载入地图草稿…</p>
@@ -94,9 +95,9 @@
   </main>
   <script src="lib/three.min.js?v6"></script><script src="brick-material.js"></script><script src="lib/OrbitControls.js?v6"></script>
   <script src="editor-skybox-list.js?v6"></script><script src="campus-skyboxes.js?v6"></script><script src="campus-sky-view.js?v6"></script>
-  <script src="map-workspace.js?v6"></script><script src="native-assets.js?v6"></script><script src="map-draft.js?v6"></script>
+  <script src="map-workspace.js?v6"></script><script src="map-draft.js?v6"></script>
   <script src="campus-native-preview.js?v6"></script>
   <script src="campus-materials.js?v6"></script>
-  <script src="draft-store.js?v6"></script><script src="map-edit.js?v8"></script>
+  <script src="draft-store.js?v6"></script><script src="map-edit.js?v9"></script>
 </body>
 </html>

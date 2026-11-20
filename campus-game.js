@@ -305,7 +305,8 @@
     try{await DraftStore.open(data.makeProject(spawnEditor.getSpawns(),skyPicker.id),target,'story.html',captureViewState());}
     catch(error){projectStatus.textContent='编辑页载入失败：'+error.message;buttons.forEach(button=>button.disabled=false);}
   }
-  $('#campus-edit').onclick=$('#campus-export').onclick=()=>openDraft('project');
+  $('#campus-edit').onclick=()=>openDraft('project');
+  $('#campus-export').onclick=()=>MapExport.open(()=>data.makeProject(spawnEditor.getSpawns(),skyPicker.id));
   $('#campus-placement').onclick=()=>openDraft('placement');
   if(window.WorkshopBridge)WorkshopBridge.buildButton($('#campus-export').parentElement,()=>data.makeProject(spawnEditor.getSpawns(),skyPicker.id));
   $('#campus-import').onchange=async event=>{

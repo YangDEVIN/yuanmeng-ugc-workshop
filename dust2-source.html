@@ -4,6 +4,7 @@
 <script src="workshop-bridge.js?v8"></script>
 <link rel="stylesheet" href="workshop.css">
 <link rel="stylesheet" href="map-workspace.css">
+<script src="native-assets.js"></script><script src="map-export.js?v1"></script>
 <body class="workshop map-editor">
 <main class="map-main">
   <header class="map-heading">
@@ -11,8 +12,8 @@
     <a id="workshop-back" href="maps.html#map=dust2">返回地图工坊</a></div>
     <div class="map-actions">
       <button data-icon="edit" id="project-edit" disabled>编辑地图</button>
-      <button class="map-primary" data-icon="export" id="project-export" disabled>导出地图工程 JSON</button>
-      <button data-icon="blocks" id="placement-export" disabled>导出元梦积木清单</button>
+      <button class="map-primary" data-icon="export" id="project-export" disabled>导出</button>
+      <button data-icon="blocks" hidden id="placement-export" disabled>导出元梦积木清单</button>
       <label class="map-import" data-icon="import">导入地图工程 <input id="project-import" type="file" accept=".json,application/json"></label>
     </div>
   </header>
@@ -40,7 +41,7 @@
   </div>
 </main>
 <script src="map-workspace.js"></script>
-<script src="native-assets.js"></script><script src="map-draft.js"></script><script src="draft-store.js"></script>
+<script src="map-draft.js"></script><script src="draft-store.js"></script>
 <script src="lib/three.min.js"></script><script src="brick-material.js"></script><script src="lib/OrbitControls.js"></script>
 <script src="editor-skybox-list.js"></script><script src="campus-skyboxes.js"></script><script src="campus-sky-view.js"></script>
 <script src="reference/dust2-geometry.js"></script><script src="reference/template-geometry.js"></script><script src="spawn-editor.js"></script>
@@ -231,7 +232,13 @@ Promise.resolve().then(async ()=>{
       await DraftStore.open(project,target,'maps.html#map='+(mapKey==='template'?'template':'dust2'));
     }catch(error){status.textContent='编辑页载入失败：'+error.message;buttons.forEach(button=>button.disabled=false);}
   }
-  editButton.onclick=exportButton.onclick=()=>openDraft('project');
+  editButton.onclick=()=>openDraft('project');
+  exportButton.onclick=()=>MapExport.open(()=>{
+    const project={...(importedProject||{}),...FpsProject.create(data,spawnEditor.getSpawns())};
+    if(mapKey==='template'&&importedProject?.yuanmengReference)project.yuanmengReference=importedProject.yuanmengReference;
+    if(edited)project.editorEdits=importedProject.editorEdits;
+    project.placement=currentPlacement();project.atmosphere={...(importedProject?.atmosphere||{}),skybox:project.placement.skybox};return project;
+  });
   placementButton.onclick=()=>openDraft('placement');
   if(window.WorkshopBridge)WorkshopBridge.buildButton(exportButton.parentElement,()=>({...FpsProject.create(data,spawnEditor.getSpawns()),placement:currentPlacement()}));
   bounds.getCenter(center);radius=bounds.getSize(new THREE.Vector3()).length()*.65;

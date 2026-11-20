@@ -85,6 +85,7 @@
 #source-editor{display:none;width:100%;border:0}
 #app.source-mode>#source-editor{display:block;flex:1;min-height:0}
 </style>
+<script src="native-assets.js"></script><script src="map-export.js?v1"></script>
 </head>
 <body class="workshop">
 <div id="app">
@@ -416,14 +417,14 @@ function renderCode(){
   $('#genBox').innerHTML=
     '<button class="btn p" id="copy">📋 复制生成口令</button>'+
     '<div class="code" id="code">请在元梦里生成 FPS 地图【'+def.name+'】：\n目标占地约 '+(size.x/100).toFixed(0)+'×'+(size.y/100).toFixed(0)+'m（最短边不少于200m），当前相对比例 '+o.scale+'×；放置点 X='+o.x+' Y='+o.y+' Z='+o.z+'，朝向 '+o.yaw+'°，共 '+est+' 个方块。\n订单：'+JSON.stringify(o)+'</div>'+
-    '<div style="display:flex;gap:8px"><button class="btn g" id="expOrder" style="margin-top:8px;flex:1">📦 复制放置清单</button><button class="btn g" id="dlOrder" style="margin-top:8px;flex:1">⬇ 下载 JSON</button></div>'+
+    '<div style="display:flex;gap:8px"><button class="btn g" id="expOrder" style="margin-top:8px;flex:1">📦 复制放置清单</button><button class="btn g" id="dlOrder" style="margin-top:8px;flex:1">导出</button></div>'+
     '<div class="note" style="margin-top:8px">① 把<b>生成口令</b>发我，我在编辑器里按比例生成（最省事）。<br>② 或用<b>放置清单</b>：'+est+' 个方块的完整坐标 / 缩放 / 颜色，是元梦可直接批量调用的接口数据。<br>③ 下方<b>分享链接</b>已带当前配置，打开即还原这张图和比例。</div>'+
     '<div class="code" id="share" style="font-size:11px"></div>'+
     '<button class="btn g" id="copyShare">🔗 复制分享链接</button>';
   $('#share').textContent=shareUrl();
   $('#copy').onclick=doCopy;
   $('#expOrder').onclick=()=>copyText(JSON.stringify(order),'已复制放置清单（'+est+' 块），可直接喂给元梦接口生成');
-  $('#dlOrder').onclick=()=>downloadJson(order,def.id+'_order.json');
+  $('#dlOrder').onclick=()=>MapExport.open(()=>({schema:'yuanmeng-custom-project/v1',map:def.id,name:def.name,settings:{...o},placement:{map:def.id,coordinates:{units:'cm'},count:order.count,guidance:order.guidance,commands:[{tool:'ugc_create_entity',arguments:{items:order.items}}]}}));
   $('#copyShare').onclick=()=>copyText(shareUrl(),'已复制分享链接');
   WorkshopBridge.buildButton($('#genBox'),()=>({schema:'yuanmeng-custom-project/v1',map:def.id,name:def.name,placement:{coordinates:{units:'cm'},count:order.count,guidance:order.guidance,commands:[{tool:'ugc_create_entity',arguments:{items:order.items}}]}}));
 }

@@ -43,7 +43,7 @@
     try{if(file.size>32*1024*1024)throw Error('文件超过 32 MB，请拆分地图。');const next=CustomMap.normalize(JSON.parse(await file.text()));await show(next);selected=null;notice('已导入 '+file.name+'。');}
     catch(e){notice('导入失败：'+e.message);}finally{event.target.value='';}
   };
-  $('export').onclick=()=>{try{const p=snapshot();DraftStore.download(p,p.map.replace(/[^\w\u4e00-\u9fff-]/g,'_')+'-map-project.json');notice('已导出当前地图，包括草稿编辑。');}catch(e){notice(e.message);}};
+  $('export').onclick=()=>MapExport.open(snapshot);
   $('save-map').onclick=async()=>{
     try{
       const p=snapshot(),id=selected||crypto.randomUUID(),key='custom-project-'+crypto.randomUUID();
