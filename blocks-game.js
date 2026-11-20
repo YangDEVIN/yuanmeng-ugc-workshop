@@ -32,12 +32,7 @@ el('start').onclick=()=>{clearInterval(timer);game=new FallingBlocks();running=t
 el('pause').onclick=()=>{if(!timer||game.over)return;running=!running;el('pause').textContent=running?'暂停':'继续';el('state').textContent=running?'进行中':'已暂停';};
 document.querySelectorAll('[data-key]').forEach(b=>b.onclick=()=>act(b.dataset.key));
 document.addEventListener('keydown',e=>{const k={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'rotate',ArrowDown:'down',' ':'drop'}[e.key];if(k&&running&&!(e.key===' '&&e.target.tagName==='BUTTON')){e.preventDefault();act(k);}});
-el('download').onclick=()=>{const link=document.createElement('a');link.href='blocks-project.json';link.download='俄罗斯方块.json';link.click();};
-el('install').onclick=async()=>{const status=el('message'),btn=el('install');btn.disabled=true;try{
- if(!WorkshopBridge.local)throw Error('请下载完整项目，运行 node tools/serve.cjs 后从本地工坊导入。');
- const t=await WorkshopBridge.api('/api/mcp/status');if(t.state!=='connected')throw Error(t.message||'请打开元梦草稿并连接 MCP。');
- if(!confirm('将俄罗斯方块 UI 和 Lua 导入「'+t.mapName+'」当前场景？请选择专用空白 2D 草稿。'))return;
- status.textContent='正在导入…';const result=await WorkshopBridge.api('/api/games/blocks',{mapId:t.mapId,layerId:t.layerId});status.textContent=result.message;
-}catch(e){status.textContent=e.message;}finally{btn.disabled=false;}};
+el('download').onclick=()=>{const link=document.createElement('a');link.href='blocks-project.json';link.download='blocks-game-project.json';link.click();};
+GameRestore.bind({button:el('install'),status:el('message'),game:'blocks',name:'俄罗斯方块'});
 draw();}
 

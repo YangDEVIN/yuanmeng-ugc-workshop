@@ -12,7 +12,7 @@
   const restore=document.createElement('button');restore.textContent='恢复上个版本';document.querySelector('.actions').append(restore);restore.onclick=async()=>{try{const previous=await DraftStore.load('custom-before-agent');if(!previous)throw Error('暂无 Agent 修改前的版本');await show(previous);notice('已恢复 Agent 修改前的版本。');}catch(e){notice(e.message);}};
   const auto=new Option('自动识别正在运行的 Agent','auto',true,true);$('agent').prepend(auto);
   $('agent-settings').hidden=true;
-  const importButton=document.createElement('button');importButton.textContent='↑ 导入 JSON';importButton.className='primary';
+  const importButton=document.createElement('button');importButton.textContent='导入工程';importButton.className='primary';
   $('upload').parentElement.before(importButton);$('upload').parentElement.hidden=true;importButton.onclick=()=>$('upload').click();
   const stop=document.createElement('button');stop.textContent='停止等待';stop.type='button';stop.hidden=true;$('chat-form').append(stop);
   stop.onclick=()=>{clearTimeout(jobTimer);job=null;busy=false;stop.hidden=true;$('send').disabled=false;DraftStore.save('custom-active-job',null).catch(e=>notice(e.message));message('已停止等待和自动应用。后台 Agent 可能仍在运行，请在对应客户端查看；本轮结果不会覆盖当前地图。');};
@@ -67,6 +67,7 @@
   const help={NO_CONFIG:'打开 VS Code 的「元梦开发助手AI」，启动 MCP 服务。插件会自动生成本机接入文件。',ECONNREFUSED:'VS Code 中的元梦 MCP 服务没有响应。请检查服务是否启动，并保持该窗口打开。此错误不代表游戏关闭，也不是信任失败。',HTTP_401:'接入凭据已失效。请在元梦插件重新生成接入信息，再点击重新检测。',HTTP_403:'元梦服务拒绝访问。请核对插件的本机接入配置。',SESSION_NOT_FOUND:'本次已重新建立一次会话，仍失败。请在元梦插件检查服务后重试。'};
   let lastIssue='',checking=false;
   async function checkConnection(manual=false){
+    if(!WorkshopBridge.local)return;
     if(checking)return;checking=true;
     try{
       const result=await api('/api/mcp/status'),ok=result.state==='connected';
@@ -83,7 +84,7 @@
   }
   $('connection').onclick=()=>checkConnection(true);$('retry').onclick=()=>checkConnection(true);
   function agentStatus(){const active=agentList.filter(a=>a.running),c=agentList.find(a=>a.id===$('agent').value);$('agent-status').textContent=$('agent').value==='auto'?(active.length?'正在运行：'+active.map(a=>a.id+(a.automatic?'':'（无自动接口）')).join('、'):'未检测到运行中的 Agent'):c?.automatic?'可自动提交 · '+(c.running?'正在运行':'将启动本轮进程'):'此 Agent 无可用自动接口';$('send').textContent='✦ 生成 / 修改地图';}
-  async function refreshAgents(){try{agentList=await api('/api/agents/active');agentStatus();}catch(e){$('agent-status').textContent=e.message;}}
+  async function refreshAgents(){if(!WorkshopBridge.local)return;try{agentList=await api('/api/agents/active');agentStatus();}catch(e){$('agent-status').textContent=e.message;}}
   $('agent').onchange=agentStatus;
   $('agent-settings').onclick=()=>{const c=agentList.find(a=>a.id===$('agent').value);$('settings-agent').textContent=$('agent').selectedOptions[0].textContent;$('executable').value=c?.executable||'';$('arguments').value=JSON.stringify(c?.args||['{prompt}']);$('settings-status').textContent='';$('settings').showModal();};
   $('settings-form').onsubmit=async event=>{event.preventDefault();try{await api('/api/agents',{id:$('agent').value,executable:$('executable').value,args:JSON.parse($('arguments').value)});await refreshAgents();$('settings').close();}catch(e){$('settings-status').textContent=e.message;}};
@@ -125,9 +126,15 @@
   try{
     const working=replicaExample?(await DraftStore.load(workingKey)??{project:await (await fetch('minecraft-castle/workshop-project.json')).json()}):castleExample?{project:await (await fetch('crown-castle/workshop-project.json')).json()}:await DraftStore.load(workingKey);if(working?.project){project=CustomMap.normalize(working.project);selected=working.selected;}
     await show(project);
-    pending=await DraftStore.load('custom-pending');if(pending){$('apply').hidden=false;message('上次 Agent 返回的新版本等待应用。');}
-    job=await DraftStore.load('custom-active-job');if(job){busy=true;stop.hidden=false;$('send').disabled=true;message('正在恢复上次任务的结果等待。');poll();}
+    pending=WorkshopBridge.local?await DraftStore.load('custom-pending'):null;if(pending){$('apply').hidden=false;message('上次 Agent 返回的新版本等待应用。');}
+    job=WorkshopBridge.local?await DraftStore.load('custom-active-job'):null;if(job){busy=true;stop.hidden=false;$('send').disabled=true;message('正在恢复上次任务的结果等待。');poll();}
   }catch(e){notice(e.message);}
+  if(!WorkshopBridge.local){
+    connect.remove();download.remove();restore.remove();
+    $('connection').remove();$('connect-dialog').remove();$('settings').remove();
+    document.querySelector('.preview-panel').append(document.querySelector('.prompt-actions'));
+    document.querySelector('.chat-panel').remove();document.querySelector('.custom-layout').style.gridTemplateColumns='1fr';
+  }
   refreshAgents();checkConnection();
   window.addEventListener('workshop-connected',()=>{refreshAgents();checkConnection();});
   setInterval(()=>{if(!document.hidden&&!busy)refreshAgents();},15000);

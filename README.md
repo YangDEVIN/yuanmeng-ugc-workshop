@@ -14,7 +14,7 @@
 
 ## 开始使用
 
-线上工坊用于浏览与网页创作。需要本机服务的功能，按页面提示下载连接器，或下载仓库后运行：
+线上工坊用于浏览与网页创作。在线版不显示元梦还原、本机连接和本地 Agent 入口。需要这些功能时，下载仓库后运行：
 
 ```sh
 node tools/serve.cjs
@@ -52,7 +52,7 @@ node tools/serve.cjs
 共享预览、草稿、导出和连接模块位于仓库根目录；静态资源位于 lib/ 等资源目录；本机服务、校验与部署工具位于 tools/。各工程保留独立数据入口。
 
 ```sh
-node --test tools/test-harness.cjs tools/test-online.cjs tools/test-map-export.cjs
+node --test tools/test-harness.cjs tools/test-online.cjs tools/test-map-export.cjs tools/test-actions.cjs
 node tools/package-site.cjs
 ```
 

@@ -111,19 +111,22 @@ async function handle(req,res){
       const all=await config();all[c.id]={executable:c.executable,args:c.args};await fs.mkdir(state,{recursive:true});await fs.writeFile(path.join(state,'agents.json'),JSON.stringify(all,null,2));json(res,200,{ok:true});
     }else if(req.method==='POST'&&url.pathname==='/api/jobs'){const input=await body(req);if(!access.local(req)&&!input.automatic)throw Error('线上只支持自动任务接口');json(res,200,await createJob(input));}
     else if(req.method==='GET'&&url.pathname.startsWith('/api/jobs/'))json(res,200,await jobResult(url.pathname.slice(10)));
-    else if(req.method==='POST' && url.pathname==='/api/games/princess' && access.local(req)){
-      const input=await body(req),id=crypto.randomUUID(),job={state:'running',message:'正在检查场景'};
-      princessJobs.set(id,job);
-      require('../princess-kit/restore.cjs').restore(input,msg=>{job.message=msg;})
-        .then(message=>Object.assign(job,{state:'saved',message}))
+    else if(req.method==='POST' && /^\/api\/games\/(princess|blocks)$/.test(url.pathname) && access.local(req)){
+      const input=await body(req),game=url.pathname.split('/').pop();
+      const active=[...princessJobs.values()].find(j=>j.state==='running');
+      if(active)throw Error('已有游戏还原任务正在运行，请等待完成后再操作');
+      const id=crypto.randomUUID(),job={id,game,state:'running',message:'正在检查目标场景'};princessJobs.set(id,job);
+      Promise.resolve().then(()=>game==='princess'
+        ?require('../princess-kit/restore.cjs').restore(input,msg=>{job.message=msg;})
+        :require('./blocks-import.cjs').install(input,withMcp))
+        .then(result=>Object.assign(job,{state:'saved',message:typeof result==='string'?result:result.message}))
         .catch(e=>Object.assign(job,{state:'blocked',message:redact(e.message)}))
         .finally(()=>setTimeout(()=>princessJobs.delete(id),3600000).unref());
       json(res,202,{id});
-    }else if(req.method==='GET' && url.pathname.startsWith('/api/games/princess/') && access.local(req)){
-      const job=princessJobs.get(url.pathname.split('/').pop());
-      json(res,job?200:404,job||{error:'任务不存在或本地服务已重启'});
+    }else if(req.method==='GET' && /^\/api\/games\/(princess|blocks)\/[^/]+$/.test(url.pathname) && access.local(req)){
+      const parts=url.pathname.split('/'),job=princessJobs.get(parts.pop()),game=parts.pop();
+      json(res,job&&job.game===game?200:404,job&&job.game===game?job:{error:'任务不存在或本地服务已重启，请核对编辑器，不要直接重新还原'});
     }
-    else if(req.method==='POST' && url.pathname==='/api/games/blocks' && access.local(req)) json(res,200,await require('./blocks-import.cjs').install(await body(req),withMcp));
     else if(url.pathname.startsWith('/api/builds')){
       const builds=require('./map-build.cjs');
       if(req.method==='POST'&&url.pathname==='/api/builds/prepare')json(res,200,await builds.prepare(await body(req),withMcp));

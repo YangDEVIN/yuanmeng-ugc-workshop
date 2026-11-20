@@ -407,6 +407,7 @@
     $('draft-apply-agent').disabled=true;
   }
   $('draft-agent-form').onsubmit=async event=>{
+    if(!WorkshopBridge.local){event.preventDefault();return;}
     event.preventDefault();clearAgent();
     const send=$('draft-send');send.disabled=true;
     const snapshotRevision=revision;
@@ -575,3 +576,5 @@
   if(project.map==='minecraft-castle'&&renderer)window.draftView.setCamera([8,130,-225],[0,8,-4]);
   if(project.map==='brick-castle'&&renderer&&project.gameplay?.interactables?.length)window.draftView.setCamera([7,16,-40],[0,24,58]);
 })();
+
+if(!WorkshopBridge.local){document.addEventListener("DOMContentLoaded",()=>document.querySelector("#draft-agent-tab")?.remove());}
