@@ -52,7 +52,7 @@ node tools/serve.cjs
 共享预览、草稿、导出和连接模块位于仓库根目录；静态资源位于 lib/ 等资源目录；本机服务、校验与部署工具位于 tools/。各工程保留独立数据入口。
 
 ```sh
-node --test tools/test-harness.cjs tools/test-online.cjs tools/test-map-export.cjs tools/test-actions.cjs
+node --test tools/test-harness.cjs tools/test-online.cjs tools/test-map-export.cjs tools/test-actions.cjs tools/test-minifigure.cjs
 node tools/package-site.cjs
 ```
 
