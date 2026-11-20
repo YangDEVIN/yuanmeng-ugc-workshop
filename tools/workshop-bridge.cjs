@@ -113,9 +113,12 @@ async function handle(req,res){
     else if(req.method==='GET'&&url.pathname.startsWith('/api/jobs/'))json(res,200,await jobResult(url.pathname.slice(10)));
     else if(req.method==='POST' && /^\/api\/games\/(princess|blocks)$/.test(url.pathname) && access.local(req)){
       const input=await body(req),game=url.pathname.split('/').pop();
+      if(input.requestId&&!/^[a-f0-9-]{36}$/i.test(input.requestId))throw Error('无效任务编号');
+      const previous=input.requestId&&princessJobs.get(input.requestId);
+      if(previous){if(previous.game!==game||previous.mapId!==input.mapId||previous.layerId!==input.layerId)throw Error('任务编号与目标不一致');json(res,202,{id:previous.id});return true;}
       const active=[...princessJobs.values()].find(j=>j.state==='running');
       if(active)throw Error('已有游戏还原任务正在运行，请等待完成后再操作');
-      const id=crypto.randomUUID(),job={id,game,state:'running',message:'正在检查目标场景'};princessJobs.set(id,job);
+      const id=input.requestId||crypto.randomUUID(),job={id,game,mapId:input.mapId,layerId:input.layerId,state:'running',message:'正在检查目标场景'};princessJobs.set(id,job);
       Promise.resolve().then(()=>game==='princess'
         ?require('../princess-kit/restore.cjs').restore(input,msg=>{job.message=msg;})
         :require('./blocks-import.cjs').install(input,withMcp))
