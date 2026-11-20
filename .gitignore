@@ -33,3 +33,10 @@ ai-connection.json
 /_site/
 /.connector/
 /princess-kit/.restore/
+
+# 本机参考原模与临时恢复脚本，不公开分发
+/minecraft-castle/original.bin
+/minecraft-castle/atlas.jpg
+/minecraft-castle/index.html
+/coconut/
+/princess-kit/_auto_restore.cjs

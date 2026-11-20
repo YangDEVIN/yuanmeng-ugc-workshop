@@ -3,6 +3,8 @@ local W=require "Common.Bindings"
 local stage,score,distance,length,time,x,speed,jump,wings,stun,mode,objects
 local held={}
 local steer,throttle,originX,originY=0,0,nil,nil
+local canPublish=false
+local winReported=false
 local function resetInput()
  held={}
  steer,throttle,originX,originY=0,0,nil,nil
@@ -70,9 +72,16 @@ local function step(dt)
    end
   end
  end
- if distance>=length then score=score+math.floor(time)*100 mode=stage==10 and "won" or "station" end
+ if distance>=length then
+  score=score+math.floor(time)*100 mode=stage==10 and "won" or "station"
+  if mode=="won" and not winReported then
+   winReported=true
+   System:SendToServer(_GAME.NetMsg.C2S_WIN,{score=score})
+   Log:PrintLog("[Princess] WIN reported score="..score)
+  end
+ end
 end
-local labels={ready="进入冒险",run="冒险中",pause="已暂停",lost="时间到",station="抵达驿站 · 开始进入下一站",won="全部通关"}
+local labels={ready="进入冒险",run="冒险中",pause="已暂停",lost="时间到",station="抵达驿站 · 开始进入下一站",won="全部通关 · 可发布地图"}
 local prototypes={W.hole,W.hole,W.seal,W.flag,W.fish,W.flag,W.magic}
 local pool={}
 local roadFrames=W.roads
@@ -114,20 +123,48 @@ local function render()
  for proto,widgets in pairs(pool) do
   for i=(used[proto] or 0)+1,#widgets do UI:SetVisibility({widgets[i]},false) end
  end
- UI:SetText({W.score},labels[mode].."  "..stage.."/10   "..math.ceil(time).." 秒   "..math.max(0,math.ceil(length-distance)).." 米   "..score.." 分")
+ local wonLabel=canPublish and labels.won or "全部通关"
+ UI:SetText({W.score},(mode=="won" and wonLabel or labels[mode]).."  "..stage.."/10   "..math.ceil(time).." 秒   "..math.max(0,math.ceil(length-distance)).." 米   "..score.." 分")
 end
-function Game:Init() end
+function Game:Init()
+ System:BindNotify(_GAME.NetMsg.S2C_WIN_ACK,function(msgId,msg)
+  if msg and msg.canPublish then
+   canPublish=true
+   Log:PrintLog("[Princess] canPublish=true (server ack)")
+  end
+ end)
+end
 local function bind()
  UI:RegisterPressed(W.stick,function(_,px,py)
   if mode=="run" then originX,originY=px,py end
+ end)
+ -- Ordinary buttons deliver global drag events even when widget dragging is disabled.
+ System:RegisterEvent(Events.ON_TOUCH_SCREEN_MOVED,function(px,py)
+  moveStick(nil,px,py)
  end)
  UI:RegisterMoved(W.stick,moveStick)
  UI:RegisterReleased(W.stick,function()
   steer,throttle,originX,originY=0,0,nil,nil
  end)
- for _,id in ipairs({W.left,W.right,W.fast,W.slow}) do
+ -- Keep the mapped buttons inside the viewport and clear of the touch controls.
+ local directions={W.left,W.right,W.fast,W.slow}
+ for index,id in ipairs(directions) do
+  UI:SetPosition({id},-240+index*70,-480)
   local button=id
-  UI:RegisterPressed(id,function() press(button) end)
+  local pressedSinceClick=false
+  UI:RegisterPressed(id,function()
+   pressedSinceClick=true
+   press(button)
+  end)
+  UI:RegisterClicked(id,function()
+   if not pressedSinceClick and mode=="run" then
+    if button==W.left then x=math.max(-.92,x-.12)
+    elseif button==W.right then x=math.min(.92,x+.12)
+    elseif button==W.fast then speed=math.min(38,speed+2)
+    elseif button==W.slow then speed=math.max(12,speed-2) end
+   end
+   pressedSinceClick=false
+  end)
   UI:RegisterReleased(id,function() release(button) end)
  end
  for _,id in ipairs({W.jump,W.start,W.pause}) do
@@ -136,7 +173,7 @@ local function bind()
  end
 end
 local elapsed=0
-function Game:OnStart() stage,score=1,0 begin() mode="ready" bind() render() Log:PrintLog("[Princess] OnStart") end
+function Game:OnStart() stage,score=1,0 canPublish=false winReported=false begin() mode="ready" bind() render() Log:PrintLog("[Princess] OnStart") end
 function Game:OnUpdate(dt)
  if not mode then return end
  if mode=="run" then step(math.min(dt,.1)) end

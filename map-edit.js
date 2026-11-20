@@ -38,7 +38,10 @@
   const nativePreview=window.CampusNativePreview;
   // 正式版会把元梦内置元件（枯树、屏风等）拆成多块带真实颜色的枝干；
   // 编辑页必须复用同一份拆解，否则会显示成一整块默认淡紫色包围盒。
+  const nativeShapeIds=new Map(Object.entries({'1101002001034000':'box','1101002001034002':'cylinder','1101002001034004':'cone','1101002001034020':'pyramid','1101002001034026':'frustum','1101002001034028':'squareFrustum','1101002001034010':'sphere','1101002001034053':'ring','1102008017001001':'pine'}));
   function rowsFor(entry,key){
+    const shape=nativeShapeIds.get(entry.item.typeId);
+    if(project.schema==='yuanmeng-custom-project/v1'&&shape)return [{...entry,box:MapDraft.boxFor(entry.item),key:'native-'+shape}];
     if(nativePreview&&!authoredIds.has(entry.id)&&!hiddenIds.has(entry.id))
       return nativePreview.expand(MapDraft,entry)
         .map(part=>({...entry,box:nativePreview.toBox(part),key:'plain'}));
@@ -70,6 +73,17 @@
   const origin=new THREE.Vector3(0,0,0), gridPlane=new THREE.Plane(new THREE.Vector3(0,1,0),0);
   const ray=new THREE.Raycaster();
   const geo=new THREE.BoxGeometry(1,1,1);
+  const ring=new THREE.TorusGeometry(.42,.08,8,32);ring.rotateX(Math.PI/2);ring.scale(1,6.25,1);
+  const pyramid=new THREE.ConeGeometry(.5,1,4);pyramid.rotateY(Math.PI/4);pyramid.scale(Math.SQRT2,1,Math.SQRT2);
+  const pineVertices=[],pineColors=[];
+  for(const [radius,height,y,color] of [[.07,.28,-.36,0x94684c],[.5,.49,-.12,0x76879c],[.39,.45,.10,0x8e9cb0],[.27,.42,.29,0xa3acc0]]){
+    const g=new THREE.CylinderGeometry(radius===.07?radius:0,radius,height,10).toNonIndexed();g.translate(0,y,0);
+    pineVertices.push(...g.attributes.position.array);const c=new THREE.Color(color);for(let i=0;i<g.attributes.position.count;i++)pineColors.push(c.r,c.g,c.b);g.dispose();
+  }
+  const pine=new THREE.BufferGeometry();pine.setAttribute('position',new THREE.Float32BufferAttribute(pineVertices,3));pine.setAttribute('color',new THREE.Float32BufferAttribute(pineColors,3));pine.computeVertexNormals();
+  const squareFrustum=new THREE.CylinderGeometry(.16,.5,1,4);squareFrustum.rotateY(Math.PI/4);squareFrustum.scale(Math.SQRT2,1,Math.SQRT2);
+  const shapeGeometry={squareFrustum,box:geo,cylinder:new THREE.CylinderGeometry(.5,.5,1,24),cone:new THREE.ConeGeometry(.5,1,24),pyramid,frustum:new THREE.CylinderGeometry(.30,.5,1,24),sphere:new THREE.SphereGeometry(.5,20,12),ring,pine};
+  const pineMaterial=new THREE.MeshLambertMaterial({vertexColors:true});
   const shared=CampusMaterials.create(THREE);
   const materials=shared.materials;
   shared.setWireframe(wireframe);
@@ -128,9 +142,10 @@
     camera.aspect=stage.clientWidth/stage.clientHeight;camera.updateProjectionMatrix();
     renderer.setSize(stage.clientWidth,stage.clientHeight,false);render();
   }
+  function positionGamePins(){for(const el of stage.querySelectorAll("[data-game-pin]")){const point=new THREE.Vector3(...el.gamePoint),distance=camera.position.distanceTo(point);el.textContent=distance>95?el.dataset.short:el.title;const v=point.project(camera);el.hidden=Math.abs(v.x)>.98||Math.abs(v.y)>.97||v.z>1||v.z< -1;el.style.left=(50+50*v.x)+"%";el.style.top=(50-50*v.y)+"%"}}
   function render(){
     if(!renderer)return;
-    sky.followCamera(camera);
+    sky.followCamera(camera);positionGamePins();
     renderer.render(scene,camera);
     if(pins.length){
       const w=stage.clientWidth,h=stage.clientHeight;
@@ -172,6 +187,7 @@
     ?'临时草稿：初始画面已与正式版同步；此后编辑只作用于当前草稿，不会改动正式版，确认导出 JSON 后才形成新工程。'
     :'临时草稿：编辑只作用于当前草稿，确认导出 JSON 后才形成新工程。';
   const color=(box,highlight)=>highlight?0x8556b1:((box.color.r<<16)|(box.color.g<<8)|box.color.b);
+  function instanceTint(row){const tint=new THREE.Color(row.key==='native-pine'&&row.id!==selected?0xffffff:color(row.box,row.id===selected));if(project.map==='minecraft-castle')return tint.lerp(tint.clone().convertSRGBToLinear(),.55);return project.map==='brick-castle'?tint.convertSRGBToLinear():tint}
   function setInstance(row){
     const {size,offset,position,rotation}=row.box;
     const degrees=THREE.MathUtils.degToRad,m=.01;
@@ -181,8 +197,8 @@
     dummy.position.set(position[0]*m,position[2]*m,position[1]*m).add(rotatedOffset);
     dummy.scale.set(size[0]*m,size[2]*m,size[1]*m);
     dummy.updateMatrix();
-    row.mesh.setMatrixAt(row.index,dummy.matrix);
-    row.mesh.setColorAt(row.index,new THREE.Color(color(row.box,row.id===selected)));
+    row.restMatrix=dummy.matrix.clone();row.mesh.setMatrixAt(row.index,dummy.matrix);
+    row.mesh.setColorAt(row.index,instanceTint(row));
     const box=new THREE.Box3().setFromPoints([new THREE.Vector3(-.5,-.5,-.5),new THREE.Vector3(.5,.5,.5)]).applyMatrix4(dummy.matrix);
     bounds.union(box);
   }
@@ -196,6 +212,7 @@
     camera.position.copy(orbit.target).add(offset.normalize().multiplyScalar(size*.58/Math.sin(angle)));
     orbit.update();
   }
+  const courtyardStone=project.map==='minecraft-castle'?new THREE.MeshLambertMaterial({color:0xffffff}):null;
   function show(){
     const removed=new Set(edits.removed);
     records=base.concat(edits.added).filter(entry=>!removed.has(entry.id));
@@ -216,7 +233,7 @@
     }
     if(renderer){
       for(const [key,rows] of batches){
-        const mesh=new THREE.InstancedMesh(geo,shared.resolve(key),rows.length);
+        const mesh=new THREE.InstancedMesh(shapeGeometry[key.slice(7)]??geo,key==='native-pine'?pineMaterial:(courtyardStone??shared.resolve(key)),rows.length);
         mesh.userData.rows=rows;
         rows.forEach((row,i)=>{row.mesh=mesh;row.index=i;setInstance(row);});
         mesh.instanceMatrix.needsUpdate=true;
@@ -242,7 +259,7 @@
     $('draft-selection').textContent=message||(entry?
       (info?.asset.name??entry.item.typeId)+' · '+[position.x,position.y,position.z].join(' / ')+' cm':'');
     if(updateColors&&meshes.length){
-      for(const row of display)row.mesh.setColorAt(row.index,new THREE.Color(color(row.box,row.id===selected)));
+      for(const row of display)row.mesh.setColorAt(row.index,instanceTint(row));
       for(const mesh of meshes)if(mesh.instanceColor)mesh.instanceColor.needsUpdate=true;
       render();
     }
@@ -443,7 +460,122 @@
     get viewState(){return viewState;},
     get hiddenCount(){return hiddenIds.size;},
     get showHidden(){return showHidden;}};
+  if(['brick-castle','minecraft-castle'].includes(project.map)&&renderer){
+    const host=$('draft-roofs').parentElement;
+    const doors=project.gameplay?.interactables??[];
+    function openDoor(d,button){
+      const dialog=document.createElement('dialog'),f=document.createElement('iframe'),close=document.createElement('button');
+      f.title=d.name;f.src='crown-castle/arcade.html?game='+d.game;f.style.cssText='width:100%;height:100%;border:0';dialog.style.cssText='width:min(760px,94vw);height:min(610px,84vh);padding:0;border:2px solid #c9a689;border-radius:16px';close.textContent='×';close.title='退出并返回入口';close.style.cssText='position:absolute;right:8px;bottom:8px;z-index:2';close.onclick=()=>dialog.close();
+      const receive=e=>{if(e.origin===location.origin&&e.source===f.contentWindow&&e.data?.type==='castle-arcade-exit')dialog.close()};
+      dialog.onclose=()=>{window.removeEventListener('message',receive);dialog.remove();button.focus()};
+      window.addEventListener('message',receive);dialog.append(f,close);document.body.append(dialog);dialog.showModal();f.focus()
+    }
+    for(const d of doors.filter(d=>[0,1,2].includes(d.game)&&d.location)){const btn=document.createElement('button');btn.dataset.gamePin=d.id;btn.textContent=d.label;btn.title=d.label;btn.dataset.short=["？","❄","币"][d.game];btn.gamePoint=[d.location.x/100,(d.location.z??130)/100,d.location.y/100];btn.style.cssText='position:absolute;z-index:3;transform:translate(-50%,-50%);background:#fff5dc;color:#593e57;border:2px solid #be9b75;border-radius:14px;padding:4px 9px;font-weight:bold;white-space:nowrap';btn.onclick=()=>openDoor(d,btn);stage.append(btn)}
+    for(const [name,pos,look] of (project.map==='minecraft-castle'?[['全图 200 m',[0,285,-145],[0,0,0]],['城堡前庭',[8,130,-225],[0,8,-4]],['游乐广场',[12,42,-107],[0,4,-33]]]:[['迎宾水庭',[7,16,-40],[0,24,58]],['南街游戏广场',[0,55,-104],[0,1,-37]],['林带',[67,8,79],[82,3,86]],['池岸',[-48,13,-15],[-74,1,-34]],['城堡',[19,34,-37],[0,20,61]],['王座',[0,8,74],[0,7,86]]])){
+      const button=document.createElement('button');button.textContent=name;button.onclick=()=>window.draftView.setCamera(pos,look);host.append(button);
+    }
+  }
+  if(project.map==='minecraft-castle'&&renderer){
+    const marks=project.gameplay?.photoSpots??(project.gameplay?.photoSpot?[{...project.gameplay.photoSpot,name:'蔷薇城门',point:[15.4,3,-57.05],camera:[15.4,19,-80],target:[0,14,18]}]:[]);
+    for(const mark of marks){
+      const photo=document.createElement('button');photo.title=mark.name+'打卡';photo.dataset.gamePin=mark.id;photo.dataset.short=mark.name.slice(0,2)+'拍照';
+      photo.gamePoint=mark.point;photo.style.cssText='position:absolute;z-index:3;transform:translate(-50%,-50%);border-radius:14px;background:#f8e3e4';stage.append(photo);
+      photo.onclick=()=>{window.draftView.setCamera(mark.camera,mark.target);renderer.render(scene,camera);
+        const d=document.createElement('dialog'),img=new Image(),save=document.createElement('a'),close=document.createElement('button');
+        img.src=renderer.domElement.toDataURL('image/png');img.alt=mark.name+'纪念照';img.style.cssText='display:block;max-width:min(80vw,800px);max-height:68vh';save.href=img.src;save.download=mark.name+'.png';save.textContent='保存照片';close.textContent='返回广场';close.onclick=()=>d.close();d.onclose=()=>{d.remove();window.draftView.setCamera([8,130,-225],[0,8,-4])};d.append(img,save,close);document.body.append(d);d.showModal()};
+    }
+  }
+  if(project.map==='minecraft-castle'&&renderer&&project.gameplay?.mechanisms){
+    const config=project.gameplay.mechanisms;
+    const bindings=new Map(config.bindings.map(b=>[b.id,b]));
+    const reveal=new Set(config.revealIds);
+    const running={wheel:false,carousel:false};
+    const phases={wheel:0,carousel:0};
+    let interior=false,lastTime=performance.now(),frameId,animatedRows=[],currentDisplay;
+    const matrix=new THREE.Matrix4(),rotate=new THREE.Matrix4(),toOrigin=new THREE.Matrix4(),back=new THREE.Matrix4();
+    const center=new THREE.Vector3(),position=new THREE.Vector3(),origin=new THREE.Vector3();
+    const scaleZero=new THREE.Matrix4().makeScale(0,0,0);
+    const host=$('draft-roofs').parentElement;
+    const info=document.createElement('output');info.style.cssText='display:block;padding:6px;color:#634766';info.textContent='点选游乐设施可启动机关';host.append(info);
+    function updateParts(){
+      if(currentDisplay!==display){
+        currentDisplay=display;
+        animatedRows=display.filter(row=>bindings.has(row.id)||reveal.has(row.id));
+      }
+      const touched=new Set();
+      for(const row of animatedRows){
+        matrix.copy(row.restMatrix);
+        const binding=bindings.get(row.id);
+        if(binding){
+          const wheel=binding.kind==='wheel'||binding.kind==='cabin';
+          const angle=phases[wheel?'wheel':'carousel'];
+          center.fromArray(wheel?config.wheel.pivot:config.carousel.pivot);
+          if(binding.kind==='cabin'){
+            origin.fromArray(binding.pivot);position.copy(origin).sub(center).applyAxisAngle(new THREE.Vector3(0,0,1),angle).add(center).sub(origin);
+            matrix.premultiply(toOrigin.makeTranslation(position.x,position.y,position.z));
+          }else{
+            if(wheel)rotate.makeRotationZ(angle);else rotate.makeRotationY(angle);
+            toOrigin.makeTranslation(-center.x,-center.y,-center.z);
+            back.makeTranslation(center.x,center.y,center.z);
+            matrix.premultiply(toOrigin).premultiply(rotate).premultiply(back);
+            if(binding.kind==='horse'){
+              position.setFromMatrixPosition(row.restMatrix);
+              const wave=Math.sin(angle*2+Math.atan2(position.z-center.z,position.x-center.x)*2)*.48;
+              matrix.premultiply(toOrigin.makeTranslation(0,wave,0));
+            }
+          }
+        }
+        if(interior&&reveal.has(row.id))matrix.multiply(scaleZero);
+        row.mesh.setMatrixAt(row.index,matrix);touched.add(row.mesh);
+      }
+      for(const mesh of touched){mesh.instanceMatrix.needsUpdate=true;mesh.frustumCulled=false;}
+    }
+    function control(label,action,point,fn){
+      const button=document.createElement('button');button.textContent=label;button.dataset.parkAction=action;
+      button.onclick=()=>fn(button);host.append(button);
+      const pin=document.createElement('button');pin.dataset.gamePin='mechanism-'+action;pin.title=label;pin.dataset.short=label;pin.gamePoint=point;
+      pin.style.cssText='position:absolute;z-index:3;transform:translate(-50%,-50%);background:#e9f4ed;color:#345b53;border:1px solid #8fb6a3;border-radius:12px;padding:4px 8px;font-weight:bold';
+      pin.onclick=()=>button.click();stage.append(pin);
+      return button;
+    }
+    for(const [key,label,point,view,look] of [
+      ['wheel','摩天轮',[48.3,9,-7.35],[102,43,-65],[64,22,-.35]],
+      ['carousel','旋转木马',[50.4,9,-43.05],[89,28,-80],[63.7,12,-38.85]]
+    ]){
+      control('启动'+label,key,point,b=>{
+        running[key]=!running[key];b.textContent=(running[key]?'暂停':'继续')+label;b.setAttribute('aria-pressed',String(running[key]));
+        info.textContent=label+(running[key]?'运行中':'已暂停');window.draftView.setCamera(view,look);updateParts();render();
+      });
+    }
+    control('参观城堡内饰','interior',[0,7,-2.1],b=>{
+      interior=!interior;b.textContent=interior?'返回城堡外观':'参观城堡内饰';b.setAttribute('aria-pressed',String(interior));
+      info.textContent=interior?'王座厅与魔法图书室 · 可旋转查看':'已恢复城堡外观';
+      window.draftView.setCamera(interior?[38,52,-16]:[8,130,-225],interior?[-1,7,34]:[0,8,-4]);updateParts();render();
+    });
+    for(const [label,view,look] of [['王座近景',[10.5,12,21],[10.5,8,46]],['魔法书房',[-14.7,13,17],[-14.7,6,34]]]){
+      const b=document.createElement('button');b.textContent=label;b.onclick=()=>{
+        if(!interior)host.querySelector('[data-park-action=interior]').click();
+        window.draftView.setCamera(view,look);updateParts();render();
+      };host.append(b);
+    }
+    control('敲响庆典钟','bell',[-9.1,8,-32.55],()=>{
+      info.textContent='庆典钟已敲响';
+      const Audio=window.AudioContext||window.webkitAudioContext;
+      if(Audio){const context=new Audio();context.resume().then(()=>{for(const [n,f] of [523.25,659.25,783.99].entries()){const oscillator=context.createOscillator(),gain=context.createGain(),time=context.currentTime+n*.15;oscillator.type='sine';oscillator.frequency.value=f;gain.gain.setValueAtTime(.0001,time);gain.gain.exponentialRampToValueAtTime(.12,time+.02);gain.gain.exponentialRampToValueAtTime(.0001,time+1);oscillator.connect(gain).connect(context.destination);oscillator.start(time);oscillator.stop(time+1.05);}setTimeout(()=>context.close(),1800);}).catch(()=>{info.textContent='庆典钟已敲响 · 当前浏览器未启用声音';});}
+    });
+    function tick(now){
+      const elapsed=document.hidden?0:Math.min((now-lastTime)/1000,.1);lastTime=now;
+      for(const key of ['wheel','carousel'])if(running[key])phases[key]=(phases[key]+elapsed*Math.PI*2/config[key].periodSeconds)%(Math.PI*2);
+      if(running.wheel||running.carousel||currentDisplay!==display){updateParts();render();}
+      frameId=requestAnimationFrame(tick);
+    }
+    frameId=requestAnimationFrame(tick);
+    window.addEventListener('pagehide',()=>cancelAnimationFrame(frameId),{once:true});
+    window.parkMechanisms={get state(){return{running:{...running},phases:{...phases},interior,boundCount:bindings.size,revealCount:reveal.size}},reset(){running.wheel=running.carousel=false;phases.wheel=phases.carousel=0;updateParts();render();}};
+  }
   if(!customEmbedded&&window.WorkshopBridge)WorkshopBridge.buildButton(document.querySelector('.map-actions'),()=>window.draftView.exportProject());
   if(renderer)feedback.textContent='';
   show();
+  if(project.map==='minecraft-castle'&&renderer)window.draftView.setCamera([8,130,-225],[0,8,-4]);
+  if(project.map==='brick-castle'&&renderer&&project.gameplay?.interactables?.length)window.draftView.setCamera([7,16,-40],[0,24,58]);
 })();

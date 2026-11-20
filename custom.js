@@ -1,5 +1,8 @@
 (async()=>{
   const $=id=>document.getElementById(id),frame=$('preview');
+  const castleExample=new URLSearchParams(location.search).get('example')==='brick-castle';
+  const replicaExample=new URLSearchParams(location.search).get('example')==='minecraft-castle';
+  const workingKey=replicaExample?'custom-working-minecraft-castle-crownpark-snowridge-v1':castleExample?'custom-working-brick-castle':'custom-working';
   const INDEX='custom-library/v1';
   let library=await DraftStore.load(INDEX)||[],project=CustomMap.empty(),selected=null,agentList=[],pending=null,job=null,jobTimer,busy=false,frameReady=false,previewKey='';
   const notice=text=>$('notice').textContent=text;
@@ -20,7 +23,7 @@
     return CustomMap.normalize({...current,name:$('map-name').value.trim()||'未命名地图'});
   }
   let saving=Promise.resolve();
-  function saveWorking(){const value={project:snapshot(),selected};saving=saving.catch(()=>{}).then(()=>DraftStore.save('custom-working',value));saving.catch(e=>notice('草稿保存失败：'+e.message));}
+  function saveWorking(){const value={project:snapshot(),selected};saving=saving.catch(()=>{}).then(()=>DraftStore.save(workingKey,value));saving.catch(e=>notice('草稿保存失败：'+e.message));}
   $('map-name').onchange=saveWorking;
   async function show(value){
     const next=CustomMap.normalize(value),key='custom-preview-'+crypto.randomUUID();
@@ -120,7 +123,7 @@
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkConnection();});
   setInterval(()=>{if(!document.hidden)checkConnection();},30000);
   try{
-    const working=await DraftStore.load('custom-working');if(working?.project){project=CustomMap.normalize(working.project);selected=working.selected;}
+    const working=replicaExample?(await DraftStore.load(workingKey)??{project:await (await fetch('minecraft-castle/workshop-project.json')).json()}):castleExample?{project:await (await fetch('crown-castle/workshop-project.json')).json()}:await DraftStore.load(workingKey);if(working?.project){project=CustomMap.normalize(working.project);selected=working.selected;}
     await show(project);
     pending=await DraftStore.load('custom-pending');if(pending){$('apply').hidden=false;message('上次 Agent 返回的新版本等待应用。');}
     job=await DraftStore.load('custom-active-job');if(job){busy=true;stop.hidden=false;$('send').disabled=true;message('正在恢复上次任务的结果等待。');poll();}
