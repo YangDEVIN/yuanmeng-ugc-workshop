@@ -1,6 +1,8 @@
 (async()=>{
   const $=id=>document.getElementById(id);
   const feedback=$('draft-status'), stage=$('draft-stage');
+  const scenicOnly=new URLSearchParams(location.search).get('view')==='scenic';
+  if(scenicOnly)document.body.classList.add('scenic-only');
   const draftId=location.hash.slice(1);
   const customEmbedded=new URLSearchParams(location.search).get('custom')==='1';
   if(customEmbedded)document.body.classList.add('custom-embedded');
@@ -309,6 +311,7 @@
     });
     canvas.addEventListener('pointercancel',()=>{down=null;});
     canvas.addEventListener('pointerup',event=>{
+      if(scenicOnly)return;
       if(!down||event.pointerId!==down[2])return;
       const moved=Math.hypot(event.clientX-down[0],event.clientY-down[1]);
       down=null;if(moved>5)return;
@@ -457,7 +460,7 @@
     get viewState(){return viewState;},
     get hiddenCount(){return hiddenIds.size;},
     get showHidden(){return showHidden;}};
-  if(['brick-castle','minecraft-castle'].includes(project.map)&&renderer){
+  if(!scenicOnly&&['brick-castle','minecraft-castle'].includes(project.map)&&renderer){
     const host=$('draft-roofs').parentElement;
     const doors=project.gameplay?.interactables??[];
     function openDoor(d,button){
@@ -472,7 +475,7 @@
       const button=document.createElement('button');button.textContent=name;button.onclick=()=>window.draftView.setCamera(pos,look);host.append(button);
     }
   }
-  if(project.map==='minecraft-castle'&&renderer){
+  if(!scenicOnly&&project.map==='minecraft-castle'&&renderer){
     const marks=project.gameplay?.photoSpots??(project.gameplay?.photoSpot?[{...project.gameplay.photoSpot,name:'蔷薇城门',point:[15.4,3,-57.05],camera:[15.4,19,-80],target:[0,14,18]}]:[]);
     for(const mark of marks){
       const photo=document.createElement('button');photo.title=mark.name+'打卡';photo.dataset.gamePin=mark.id;photo.dataset.short=mark.name.slice(0,2)+'拍照';
@@ -482,7 +485,7 @@
         img.src=renderer.domElement.toDataURL('image/png');img.alt=mark.name+'纪念照';img.style.cssText='display:block;max-width:min(80vw,800px);max-height:68vh';save.href=img.src;save.download=mark.name+'.png';save.textContent='保存照片';close.textContent='返回广场';close.onclick=()=>d.close();d.onclose=()=>{d.remove();window.draftView.setCamera([8,130,-225],[0,8,-4])};d.append(img,save,close);document.body.append(d);d.showModal()};
     }
   }
-  if(project.map==='minecraft-castle'&&renderer&&project.gameplay?.mechanisms){
+  if(!scenicOnly&&project.map==='minecraft-castle'&&renderer&&project.gameplay?.mechanisms){
     const config=project.gameplay.mechanisms;
     const bindings=new Map(config.bindings.map(b=>[b.id,b]));
     const reveal=new Set(config.revealIds);
@@ -570,7 +573,7 @@
     window.addEventListener('pagehide',()=>cancelAnimationFrame(frameId),{once:true});
     window.parkMechanisms={get state(){return{running:{...running},phases:{...phases},interior,boundCount:bindings.size,revealCount:reveal.size}},reset(){running.wheel=running.carousel=false;phases.wheel=phases.carousel=0;updateParts();render();}};
   }
-  if(!customEmbedded&&window.WorkshopBridge)WorkshopBridge.buildButton(document.querySelector('.map-actions'),()=>window.draftView.exportProject());
+  if(!scenicOnly&&!customEmbedded&&window.WorkshopBridge)WorkshopBridge.buildButton(document.querySelector('.map-actions'),()=>window.draftView.exportProject());
   if(renderer)feedback.textContent='';
   show();
   if(project.map==='minecraft-castle'&&renderer)window.draftView.setCamera([8,130,-225],[0,8,-4]);

@@ -21,3 +21,5 @@
 .custom-embedded .map-heading{justify-content:flex-end;margin-bottom:10px}
 .custom-embedded .map-stage{min-height:600px}
 @media(max-width:800px){.custom-embedded .map-stage{min-height:420px}}
+
+.scenic-only .workshop-bar,.scenic-only .map-heading,.scenic-only .map-panel,.scenic-only .map-controls,.scenic-only .map-views,.scenic-only #draft-note{display:none!important}.scenic-only .map-main{width:100%;padding:0;margin:0}.scenic-only .map-body{display:block}.scenic-only .map-stage{height:100vh;min-height:400px;border:0;border-radius:0}.scenic-only #draft-status:empty{display:none}
