@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="zh-CN"><head><base href="../../"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FPS 地图工坊 · 沙漠2</title>
+<script src="workshop-bridge.js?v10"></script>
+<link rel="stylesheet" href="workshop.css">
+<link rel="stylesheet" href="map-workspace.css">
+<script src="native-assets.js"></script><script src="map-export.js?v1"></script>
+</head><body class="workshop map-editor">
+<main class="map-main">
+  <header class="map-heading">
+    <div><div class="workshop-title"><span class="workshop-icon" aria-hidden="true">◫</span><h1>沙漠双点</h1></div>
+    <a id="workshop-back" href="maps/fps/index.html#map=dust2">返回地图工坊</a></div>
+    <div class="map-actions">
+      <button data-icon="edit" id="project-edit" disabled>编辑地图</button>
+      <button class="map-primary" data-icon="export" id="project-export" disabled>导出</button>
+      <button data-icon="blocks" hidden id="placement-export" disabled>导出元梦积木清单</button>
+      <label class="map-import" data-icon="import">导入工程 <input id="project-import" type="file" accept=".json,application/json"></label>
+    </div>
+  </header>
+  <p id="project-status" role="status"></p><p id="status" role="status">正在加载地图…</p><p id="error" role="alert"></p>
+  <div class="map-body">
+    <section class="map-stage" id="fps-stage" aria-label="FPS 地图与移动控制">
+      <div class="map-views" role="group" aria-label="地图视角">
+        <button data-view="top" data-icon="top" aria-pressed="false">俯视</button>
+        <button data-view="perspective" data-icon="perspective" aria-pressed="true">透视</button>
+        <button data-view="wire" data-icon="wire" aria-pressed="false">线框</button>
+        <button data-view="follow" data-icon="follow" aria-pressed="false">跟随</button>
+        <button id="fps-cutaway" data-icon="roof" aria-pressed="false" hidden>剖视屋顶</button>
+        <label class="map-skybox"><span aria-hidden="true">☁</span> 天空盒 <select id="fps-skybox"></select></label>
+      </div>
+      <div class="map-controls" id="fps-movement" aria-label="移动与交互"></div>
+    </section>
+    <aside class="map-panel">
+      <div class="map-tabs" role="tablist" aria-label="地图设置">
+        <button id="fps-route-tab" data-icon="route" role="tab" aria-controls="fps-route" aria-selected="true">动线验证</button>
+        <button id="fps-spawn-tab" data-icon="spawn" role="tab" aria-controls="fps-spawns" aria-selected="false" tabindex="-1">出生点设置</button>
+      </div>
+      <section id="fps-route" role="tabpanel" aria-labelledby="fps-route-tab"><div id="fps-guide"></div></section>
+      <section id="fps-spawns" role="tabpanel" aria-labelledby="fps-spawn-tab" hidden></section>
+    </aside>
+  </div>
+</main>
+<script src="map-workspace.js"></script>
+<script src="map-draft.js"></script><script src="draft-store.js"></script>
+<script src="lib/three.min.js"></script><script src="brick-material.js"></script><script src="lib/OrbitControls.js"></script>
+<script src="editor-skybox-list.js"></script><script src="campus-skyboxes.js"></script><script src="campus-sky-view.js"></script>
+<script src="reference/dust2-geometry.js"></script><script src="reference/template-geometry.js"></script><script src="spawn-editor.js"></script>
+<script src="reference/yuanmeng-template.js"></script><script src="map-project.js"></script>
+<script src="maps.js"></script><script src="surface-blocks.js"></script><script src="player-layout.js"></script><script src="map-guidance.js"></script><script src="map-placement.js"></script>
+<script src="fps-route.js"></script><script src="fps-route-panel.js"></script>
+<script>
+if(new URLSearchParams(location.search).get('embedded')==='1'){
+  document.getElementById('workshop-back').hidden=true;
+  document.documentElement.classList.add('embedded');
+}
+const mapKey=new URLSearchParams(location.search).get('map')==='template'?'template':'de_dust2';
+const defaultData=mapKey==='template'?TemplateGeometry:Dust2Geometry;
+const displayName=mapKey==='template'?'训练模板':'沙漠双点';
+const units=mapKey==='template'?'cm':'Source units';
+const importKey=mapKey+'-import-project';
+document.querySelector('h1').textContent=displayName;
+document.title='FPS 地图工坊 · '+displayName;
+const scene=new THREE.Scene();scene.fog=new THREE.Fog(0xa9c3cf,1400,30000);
+const stage=document.getElementById('fps-stage');
+const movement=document.getElementById('fps-movement');
+const {action,walk}=MapWorkspace.controlsBar(movement);
+const camera=new THREE.PerspectiveCamera(50,1,1,100000);
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.domElement.className='map-canvas';stage.prepend(renderer.domElement);
+function fitCanvas(){
+  if(!stage.clientWidth||!stage.clientHeight)return;
+  camera.aspect=stage.clientWidth/stage.clientHeight;camera.updateProjectionMatrix();
+  renderer.setSize(stage.clientWidth,stage.clientHeight,false);
+}
+new ResizeObserver(fitCanvas).observe(stage);fitCanvas();
+const controls=new THREE.OrbitControls(camera,renderer.domElement);controls.enableDamping=true;
+const ambient=new THREE.HemisphereLight(0xffefd2,0x455066,1.05);scene.add(ambient);
+const sun=new THREE.DirectionalLight(0xffffff,.8);sun.position.set(1500,5000,1000);scene.add(sun);
+const sky=createMapSky(THREE);scene.add(sky.mesh);
+const skyPicker=YuanmengSkyboxes.bind(document.getElementById('fps-skybox'),{key:mapKey+'-skybox',initial:1,fallback:1,
+  onChange(profile){sky.setProfile(profile);scene.fog.color.setHex(profile.fog);ambient.color.setHex(profile.ambient);
+    sun.color.setHex(profile.light);sun.intensity=profile.intensity;}});
+const surfaces=[];let center=new THREE.Vector3(),radius=5000;
+function frame(top){
+  const size=radius*Math.max(1,1/camera.aspect);
+  controls.target.copy(center);camera.position.copy(center).add(top?new THREE.Vector3(0,size,0.01):new THREE.Vector3(size*.7,size*.65,size*.8));controls.update();
+}
+let viewMode='perspective',routePanel;
+let wireframe = false;
+const viewButtons=[...stage.querySelectorAll('[data-view]')];
+for(const button of viewButtons)button.onclick=()=>{
+  viewMode=button.dataset.view;wireframe=viewMode==='wire';
+  for(const other of viewButtons)other.setAttribute('aria-pressed',String(other===button));
+  surfaces.forEach(mesh=>mesh.material.wireframe=wireframe);
+  frame(viewMode==='top');
+  if(viewMode==='follow')routePanel?.follow();
+};
+MapWorkspace.tabs(document.querySelector('.map-tabs'));
+MapWorkspace.addIcons();
+function projectDatabase() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open('fps-map-projects', 1);
+    request.onupgradeneeded = () => request.result.createObjectStore('imports');
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+async function accessImport(action) {
+  const db = await projectDatabase();
+  try {
+    return await new Promise((resolve, reject) => {
+      const transaction = db.transaction('imports', 'readwrite');
+      const request = action(transaction.objectStore('imports'));
+      transaction.oncomplete = () => resolve(request.result);
+      transaction.onabort = () => reject(transaction.error);
+    });
+  } finally {
+    db.close();
+  }
+}
+document.getElementById('project-import').onchange=async event=>{
+  const file=event.target.files[0];if(!file)return;
+  try{const project=FpsProject.validate(JSON.parse(await file.text()));if(project.map!==mapKey)throw Error('请先在左侧选择该工程对应地图');await accessImport(store=>store.put(project,importKey));location.reload()}
+  catch(error){document.getElementById('project-status').textContent='导入失败：'+error.message;event.target.value=''}
+};
+Promise.resolve().then(async ()=>{
+  let importedProject = null;
+  try {
+    const queued = await accessImport(store => {
+      const request = store.get(importKey);
+      store.delete(importKey);
+      return request;
+    });
+    const legacy = queued ? null : sessionStorage.getItem(importKey);
+    if (legacy) sessionStorage.removeItem(importKey);
+    if (queued || legacy) importedProject = FpsProject.validate(queued || JSON.parse(legacy));
+  } catch (error) {
+    document.getElementById('project-status').textContent='工程恢复失败：'+error.message;
+  }
+  const importedGeometry = importedProject?.geometry;
+  const importedSky=importedProject?.atmosphere?.skybox?.displayId??importedProject?.placement?.skybox?.displayId;
+  if(importedSky!==undefined)skyPicker.set(importedSky);
+  const usesOldExtraction = mapKey === 'de_dust2' &&
+    importedGeometry?.mapRevision === defaultData.mapRevision &&
+    importedGeometry.status?.startsWith('World brush surfaces only');
+  let data = usesOldExtraction ? defaultData : importedGeometry || defaultData;
+  if (mapKey === 'de_dust2' && !data.sites && data.mapRevision === defaultData.mapRevision) {
+    data = { ...data, sites: defaultData.sites, landmarks: defaultData.landmarks };
+  }
+  if (mapKey === 'de_dust2' && !data.worldBounds && data.mapRevision === defaultData.mapRevision) {
+    data.worldBounds = defaultData.worldBounds;
+  }
+  if(mapKey==='de_dust2'&&data.mapRevision===defaultData.mapRevision&&!data.groups?.some(group=>group.kind==='roof')){
+    data={...data,restoredRoofFaces:defaultData.restoredRoofFaces,groups:data.groups.concat(defaultData.groups.filter(group=>group.kind==='roof'))};
+  }
+  if (!data || !data.groups || !data.groups.length) throw Error('几何资源缺失，请确认 reference/dust2-geometry.js 与网页一起解压');
+  const bounds=new THREE.Box3();
+  const referenceMeshes = [];
+  for(const group of SurfaceBlocks.playableGroups(data).filter(group=>group.kind!=='roof')){
+    const points=new Float32Array(group.positions.length);
+    for(let i=0;i<points.length;i+=3){points[i]=group.positions[i];points[i+1]=group.positions[i+2];points[i+2]=-group.positions[i+1]}
+    const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.BufferAttribute(points,3));geometry.computeVertexNormals();geometry.computeBoundingBox();bounds.union(geometry.boundingBox);
+    const color=group.color || (/metal|door/.test(group.material)?0x87735d:/stone|concrete/.test(group.material)?0xc1b59d:0xc9ad79);
+    const mesh=new THREE.Mesh(geometry,new THREE.MeshLambertMaterial({color,side:THREE.DoubleSide}));
+    scene.add(mesh);
+    referenceMeshes.push(mesh);
+  }
+  const spawnEditor=createSpawnEditor({scene,camera,renderer,surfaces,mount:document.getElementById('fps-spawns'),landmarks:data.landmarks,mapId:mapKey,units,initialSpawns:importedProject?.settings.spawns,onChange:()=>routePanel?.invalidate()});
+  const exportButton=document.getElementById('project-export');exportButton.disabled=false;
+  const snapshot = importedProject?.yuanmengReference?.snapshot || YuanmengTemplateReference.snapshot;
+  const edited=importedProject&&MapDraft.validateEdited(importedProject,mapKey==='template'?1:2.5);
+  const placement = edited?importedProject.placement:MapPlacement.build(mapKey, snapshot, FpsMaps, data);
+  const sites = MapGuidance.sitesFor(mapKey, data);
+  const guideGroup = new THREE.Group();
+  const guideControls = document.getElementById('fps-guide');
+  scene.add(guideGroup);
+  MapGuidance.showGuides({
+    group: guideGroup, container: guideControls, sites,
+    caption: mapKey === 'template' ? '训练地标' : '原图爆破区',
+    mapPoint: ([x, y, z]) => new THREE.Vector3(x, z + 100, -y),
+    focus(point) {
+      controls.target.copy(point);
+      camera.position.copy(point).add(viewMode==='top'?new THREE.Vector3(0,650,.01):new THREE.Vector3(350,350,450));
+      controls.update();
+    },
+  });
+  function currentPlacement() {
+    const sourceUnitCm = placement.coordinates.sourceUnitCm;
+    return { ...placement, skybox:YuanmengSkyboxes.exportPreset(skyPicker.id), guidance: MapGuidance.exportGuidance({
+      sites, spawns: spawnEditor.getSpawns(),
+      source: mapKey === 'template' ? 'template-snapshot-and-training-waypoints' : 'source-bsp-sites',
+      toCm: position => position.map(value => value * sourceUnitCm),
+    }) };
+  }
+  const preview = buildPlacementPreview(placement);
+  scene.add(...preview);
+  const viewButton = document.createElement('button');
+  guideControls.append(viewButton);
+  let showReference = false;
+  let cutaway=false;
+  const roofToggle=document.getElementById('fps-cutaway');
+  roofToggle.hidden=!placement.roofItemIndexes?.length;
+  roofToggle.onclick=()=>{cutaway=!cutaway;roofToggle.setAttribute('aria-pressed',String(cutaway));setView();};
+  function setView() {
+    referenceMeshes.forEach(mesh => mesh.visible = showReference);
+    preview.forEach(mesh => mesh.visible = !showReference && !(cutaway&&mesh.userData.roof));
+    roofToggle.disabled=showReference;
+    surfaces.splice(0, surfaces.length, ...(showReference ? referenceMeshes : preview));
+    surfaces.forEach(mesh => mesh.material.wireframe = wireframe);
+    MapWorkspace.decorate(viewButton,'reference',showReference?'查看导出预览':'对照原图参考');
+  }
+  viewButton.onclick = () => { showReference = !showReference; setView(); routePanel?.invalidate(); };
+  setView();
+  routePanel=createFpsRoutePanel({scene,placement,sites,spawnEditor,container:guideControls.parentElement,camera,controls,
+    action,walk,movement,getView:()=>viewMode,
+    showPlacement(){if(showReference){showReference=false;setView();}}});
+  const placementButton = document.getElementById('placement-export');
+  placementButton.disabled=false;
+  const editButton=document.getElementById('project-edit');editButton.disabled=false;
+  async function openDraft(target){
+    const buttons=[editButton,exportButton,placementButton];
+    buttons.forEach(button=>button.disabled=true);
+    const status=document.getElementById('project-status');
+    status.textContent='正在载入地图编辑…';
+    try {
+      const project=FpsProject.create(data,spawnEditor.getSpawns());
+      FpsProject.validate(project);
+      if(mapKey==='template'&&importedProject?.yuanmengReference)project.yuanmengReference=importedProject.yuanmengReference;
+      if(edited)project.editorEdits=importedProject.editorEdits;
+      project.placement=currentPlacement();
+      project.atmosphere={skybox:project.placement.skybox};
+      await DraftStore.open(project,target,'maps/fps/index.html#map='+(mapKey==='template'?'template':'dust2'));
+    }catch(error){status.textContent='编辑页载入失败：'+error.message;buttons.forEach(button=>button.disabled=false);}
+  }
+  editButton.onclick=()=>openDraft('project');
+  exportButton.onclick=()=>MapExport.open(()=>{
+    const project={...(importedProject||{}),...FpsProject.create(data,spawnEditor.getSpawns())};
+    if(mapKey==='template'&&importedProject?.yuanmengReference)project.yuanmengReference=importedProject.yuanmengReference;
+    if(edited)project.editorEdits=importedProject.editorEdits;
+    project.placement=currentPlacement();project.atmosphere={...(importedProject?.atmosphere||{}),skybox:project.placement.skybox};return project;
+  });
+  placementButton.onclick=()=>openDraft('placement');
+  if(window.WorkshopBridge)WorkshopBridge.buildButton(exportButton.parentElement,()=>({...FpsProject.create(data,spawnEditor.getSpawns()),placement:currentPlacement()}));
+  bounds.getCenter(center);radius=bounds.getSize(new THREE.Vector3()).length()*.65;
+  scene.fog.near=radius*.5;scene.fog.far=radius*3.5;frame(false);
+  document.getElementById('status').textContent='';
+}).catch(error=>{
+  document.getElementById('status').textContent='地图加载失败';
+  document.getElementById('error').textContent=error.message;
+});
+function buildPlacementPreview(placement) {
+  const items = placement.commands.flatMap(command => command.arguments.items);
+  const rate = placement.coordinates.sourceUnitCm;
+  const roofIndexes = new Set(placement.roofItemIndexes);
+  const boxes=[],roofBoxes=[];
+  items.forEach((item,index)=>{
+    if(['1101002001034000','1101008001011363'].includes(item.typeId))(roofIndexes.has(index)?roofBoxes:boxes).push(item);
+  });
+  const block = new THREE.Object3D();
+  function createBoxMesh(boxes,roof) {
+    const mesh = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), brickMaterial(new THREE.MeshLambertMaterial(),60/rate), boxes.length);
+    mesh.userData.roof=roof;
+    boxes.forEach(({ transform, color }, index) => {
+    const { location, rotation, scale } = transform;
+    const height = scale.z * 100 / rate;
+    block.scale.set(scale.x * 100 / rate, height, scale.y * 100 / rate);
+    block.position.set(location.x / rate, location.z / rate + height / 2, -location.y / rate);
+    block.rotation.y = THREE.MathUtils.degToRad(rotation.yaw);
+    block.updateMatrix();
+    mesh.setMatrixAt(index, block.matrix);
+    mesh.setColorAt(index, new THREE.Color((color.r << 16) | (color.g << 8) | color.b));
+    });
+    return mesh;
+  }
+  const arrowShape = new THREE.Shape();
+  arrowShape.moveTo(-150, -35);
+  arrowShape.lineTo(10, -35);
+  arrowShape.lineTo(10, -108);
+  arrowShape.lineTo(150, 0);
+  arrowShape.lineTo(10, 108);
+  arrowShape.lineTo(10, 35);
+  arrowShape.lineTo(-150, 35);
+  arrowShape.closePath();
+  const arrowGeometry = new THREE.ShapeGeometry(arrowShape);
+  arrowGeometry.rotateX(-Math.PI / 2);
+  const markers = items.filter(item => item.typeId === '1102011001001018').map(({ transform }) => {
+    const { location, rotation, scale } = transform;
+    const arrow = new THREE.Mesh(arrowGeometry, new THREE.MeshBasicMaterial({color:0x4a3420,side:THREE.DoubleSide}));
+    arrow.position.set(location.x / rate, (location.z + 4) / rate, -location.y / rate);
+    arrow.scale.set(scale.x / rate, 1, scale.y / rate);
+    arrow.rotation.y = THREE.MathUtils.degToRad(rotation.yaw);
+    return arrow;
+  });
+  const native=items.flatMap(item=>{
+    if(['1101002001034000','1101008001011363','1102011001001018'].includes(item.typeId))return [];
+    const shape=MapDraft.boxFor(item);if(!shape)return [];
+    const {size,offset,position,color,rotation}=shape;
+    const mesh=new THREE.Mesh(new THREE.BoxGeometry(size[0]/rate,size[2]/rate,size[1]/rate),
+      new THREE.MeshLambertMaterial({color:(color.r<<16)|(color.g<<8)|color.b}));
+    mesh.rotation.y=THREE.MathUtils.degToRad(rotation.yaw??0);
+    mesh.position.set(position[0]/rate,position[2]/rate,-position[1]/rate)
+      .add(new THREE.Vector3(offset[0]/rate,offset[2]/rate,-offset[1]/rate).applyEuler(mesh.rotation));
+    return [mesh];
+  });
+  return [createBoxMesh(boxes,false), ...(roofBoxes.length?[createBoxMesh(roofBoxes,true)]:[]), ...markers,...native];
+}
+function animate(){requestAnimationFrame(animate);controls.update();sky.followCamera(camera);renderer.render(scene,camera)}animate();
+</script></body></html>

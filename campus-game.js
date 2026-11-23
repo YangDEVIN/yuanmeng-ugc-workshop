@@ -302,7 +302,7 @@
     const buttons=['#campus-edit','#campus-export','#campus-placement'].map($);
     buttons.forEach(button=>button.disabled=true);
     projectStatus.textContent='正在载入地图编辑…';
-    try{await DraftStore.open(data.makeProject(spawnEditor.getSpawns(),skyPicker.id),target,'story.html',captureViewState());}
+    try{await DraftStore.open(data.makeProject(spawnEditor.getSpawns(),skyPicker.id),target,'maps/story/index.html',captureViewState());}
     catch(error){projectStatus.textContent='编辑页载入失败：'+error.message;buttons.forEach(button=>button.disabled=false);}
   }
   $('#campus-edit').onclick=()=>openDraft('project');

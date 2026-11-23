@@ -32,7 +32,7 @@ el('start').onclick=()=>{clearInterval(timer);game=new FallingBlocks();running=t
 el('pause').onclick=()=>{if(!timer||game.over)return;running=!running;el('pause').textContent=running?'暂停':'继续';el('state').textContent=running?'进行中':'已暂停';};
 document.querySelectorAll('[data-key]').forEach(b=>b.onclick=()=>act(b.dataset.key));
 document.addEventListener('keydown',e=>{const k={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'rotate',ArrowDown:'down',' ':'drop'}[e.key];if(k&&running&&!(e.key===' '&&e.target.tagName==='BUTTON')){e.preventDefault();act(k);}});
-el('download').onclick=()=>{const link=document.createElement('a');link.href='blocks-project.json';link.download='blocks-game-project.json';link.click();};
+el('download').onclick=()=>{const link=document.createElement('a');link.href='games/blocks/project.json';link.download='blocks-game-project.json';link.click();};
 GameRestore.bind({button:el('install'),status:el('message'),game:'blocks',name:'俄罗斯方块'});
 draw();}
 

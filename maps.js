@@ -115,12 +115,12 @@
 
   const defs = [];
 
-  // ======================================================= 0) 训练模板（读 template.json，仅预览）
+  // ======================================================= 0) 训练模板（读 maps/fps/template.json，仅预览）
   defs.push({
     id: 'template', name: '训练模板', emoji: '🗺️', kind: 'template',
     theme: { a: '#C9A36B', b: '#8A6E3C' },
     tip: '当前元梦地图的实时快照（1479 个元件）。仅作预览底图，不可直接重建。',
-    parts: [], size: { x: 0, y: 0, z: 0 }, tags: [], external: 'template.json',
+    parts: [], size: { x: 0, y: 0, z: 0 }, tags: [], external: 'maps/fps/template.json',
   });
 
   // ======================================================= 1) 沙漠·双点（de_dust2 风格）

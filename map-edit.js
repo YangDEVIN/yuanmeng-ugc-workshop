@@ -465,7 +465,7 @@
     const doors=project.gameplay?.interactables??[];
     function openDoor(d,button){
       const dialog=document.createElement('dialog'),f=document.createElement('iframe'),close=document.createElement('button');
-      f.title=d.name;f.src='crown-castle/arcade.html?game='+d.game;f.style.cssText='width:100%;height:100%;border:0';dialog.style.cssText='width:min(760px,94vw);height:min(610px,84vh);padding:0;border:2px solid #c9a689;border-radius:16px';close.textContent='×';close.title='退出并返回入口';close.style.cssText='position:absolute;right:8px;bottom:8px;z-index:2';close.onclick=()=>dialog.close();
+      f.title=d.name;f.src='maps/scenic/crown-castle/arcade.html?game='+d.game;f.style.cssText='width:100%;height:100%;border:0';dialog.style.cssText='width:min(760px,94vw);height:min(610px,84vh);padding:0;border:2px solid #c9a689;border-radius:16px';close.textContent='×';close.title='退出并返回入口';close.style.cssText='position:absolute;right:8px;bottom:8px;z-index:2';close.onclick=()=>dialog.close();
       const receive=e=>{if(e.origin===location.origin&&e.source===f.contentWindow&&e.data?.type==='castle-arcade-exit')dialog.close()};
       dialog.onclose=()=>{window.removeEventListener('message',receive);dialog.remove();button.focus()};
       window.addEventListener('message',receive);dialog.append(f,close);document.body.append(dialog);dialog.showModal();f.focus()

@@ -32,7 +32,7 @@ function detect(id){
   return null;
 }
 async function agents(){const configured=await config();return agentIds.map(id=>{const c=configured[id]||detect(id);return {id,available:!!c,configured:!!configured[id],handoff:c?.handoff||!c?.args?.some(a=>/\{prompt\}|\{taskFile\}/.test(a)),executable:c?.executable||'',args:c?.args||['{prompt}']};});}
-const {withMcp,rpcPacket,unwrap,redact}=require('../princess-kit/mcp.cjs');
+const {withMcp,rpcPacket,unwrap,redact}=require('../games/princess/kit/mcp.cjs');
 async function probeMcp(){return withMcp(async call=>{
   const status=await call('ugc_get_status',{probe:true}),context=await call('ugc_get_context',{});
   return {state:status?.connected&&context?.mapId?'connected':'disconnected',serviceOnline:true,gameConnected:status?.connected===true,mapName:context?.mapName??null,mapId:context?.mapId??null,layerId:context?.currentLayerId??null,scriptConnected:context?.scriptConnected??null,mode:status?.running?.runningMode??null,checkedAt:new Date().toISOString(),message:!status?.connected?'元梦客户端尚未连接，请保持 VS Code 服务运行并打开游戏。':!context?.mapId?'请从星世界草稿箱进入具体地图编辑。':null};
@@ -120,7 +120,7 @@ async function handle(req,res){
       if(active)throw Error('已有游戏还原任务正在运行，请等待完成后再操作');
       const id=input.requestId||crypto.randomUUID(),job={id,game,mapId:input.mapId,layerId:input.layerId,state:'running',message:'正在检查目标场景'};princessJobs.set(id,job);
       Promise.resolve().then(()=>game==='princess'
-        ?require('../princess-kit/restore.cjs').restore(input,msg=>{job.message=msg;})
+        ?require('../games/princess/kit/restore.cjs').restore(input,msg=>{job.message=msg;})
         :require('./blocks-import.cjs').install(input,withMcp))
         .then(result=>Object.assign(job,{state:'saved',message:typeof result==='string'?result:result.message}))
         .catch(e=>Object.assign(job,{state:'blocked',message:redact(e.message)}))

@@ -40,3 +40,7 @@ ai-connection.json
 /minecraft-castle/index.html
 /coconut/
 /princess-kit/_auto_restore.cjs
+
+# 已迁移页签中的本地运行缓存
+/games/princess/kit/.restore/
+/games/princess/kit/_auto_restore.cjs

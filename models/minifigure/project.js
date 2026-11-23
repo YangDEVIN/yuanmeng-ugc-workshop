@@ -1,5 +1,5 @@
 (function(root){
- const catalog=typeof module==='object'?require('./native-assets.js'):root.YuanmengNativeAssets;
+ const catalog=typeof module==='object'?require('../../native-assets.js'):root.YuanmengNativeAssets;
  const ids={box:'1101002001034000',cylinder:'1101002001034002',cone:'1101002001034004'};
  const names=['基础白模','蔷薇公主','潮汐公主','星砂公主'];
  function create(id=0,expression=true){

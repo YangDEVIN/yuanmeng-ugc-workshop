@@ -52,7 +52,7 @@ node tools/serve.cjs
 共享预览、草稿、导出和连接模块位于仓库根目录；静态资源位于 lib/ 等资源目录；本机服务、校验与部署工具位于 tools/。各工程保留独立数据入口。
 
 ```sh
-node --test tools/test-harness.cjs tools/test-online.cjs tools/test-map-export.cjs tools/test-actions.cjs tools/test-minifigure.cjs
+node --test tools/test-harness.cjs tools/test-online.cjs tools/test-map-export.cjs tools/test-actions.cjs tools/test-minifigure.cjs tools/test-tab-paths.cjs
 node tools/package-site.cjs
 ```
 
@@ -61,3 +61,14 @@ node tools/package-site.cjs
 ## 资源与发布
 
 第三方资源保留来源、许可和使用范围；没有公开授权的原模与贴图不随网站分发。本机凭据、用户运行目录和调试缓存不提交到仓库。“元梦之星”名称仅用于说明兼容目标。
+
+## 按页签组织
+
+- maps/fps/：FPS 页面、模板、布局和工程数据。
+- maps/story/：剧情页与场景工程。
+- maps/parkour/：跑酷页。
+- maps/scenic/：观赏页、最新城堡工程及独立场景资料。
+- games/blocks/、games/princess/：2D 游戏入口、工程数据、资源与还原包。
+- models/animals/、models/minifigure/、models/outfits/：动物、小人和装备预览与数据。
+
+根目录保留首页、共用渲染/编辑/导出模块与兼容跳转页；tools/page-routes.json 记录旧网址到新页签的映射。地图脚本中产生的浏览器地址须依据 document.baseURI，不能按新页签的地址拼接根目录工具页。

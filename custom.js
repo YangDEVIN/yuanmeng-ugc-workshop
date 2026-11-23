@@ -124,7 +124,7 @@
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkConnection();});
   setInterval(()=>{if(!document.hidden)checkConnection();},30000);
   try{
-    const working=replicaExample?(await DraftStore.load(workingKey)??{project:await (await fetch('minecraft-castle/workshop-project.json')).json()}):castleExample?{project:await (await fetch('crown-castle/workshop-project.json')).json()}:await DraftStore.load(workingKey);if(working?.project){project=CustomMap.normalize(working.project);selected=working.selected;}
+    const working=replicaExample?(await DraftStore.load(workingKey)??{project:await (await fetch('maps/scenic/castle/workshop-project.json')).json()}):castleExample?{project:await (await fetch('maps/scenic/crown-castle/workshop-project.json')).json()}:await DraftStore.load(workingKey);if(working?.project){project=CustomMap.normalize(working.project);selected=working.selected;}
     await show(project);
     pending=WorkshopBridge.local?await DraftStore.load('custom-pending'):null;if(pending){$('apply').hidden=false;message('上次 Agent 返回的新版本等待应用。');}
     job=WorkshopBridge.local?await DraftStore.load('custom-active-job'):null;if(job){busy=true;stop.hidden=false;$('send').disabled=true;message('正在恢复上次任务的结果等待。');poll();}

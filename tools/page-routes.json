@@ -1,0 +1,12 @@
+{
+  "maps.html": "maps/fps/index.html",
+  "dust2-source.html": "maps/fps/source.html",
+  "story.html": "maps/story/index.html",
+  "parkour.html": "maps/parkour/index.html",
+  "scenic.html": "maps/scenic/index.html",
+  "blocks-game.html": "games/blocks/index.html",
+  "princess.html": "games/princess/index.html",
+  "minifigure.html": "models/minifigure/index.html",
+  "dress-up.html": "models/outfits/index.html",
+  "animals/index.html": "models/animals/index.html"
+}

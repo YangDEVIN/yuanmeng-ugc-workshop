@@ -1,4 +1,4 @@
-const project = require('../blocks-project.json');
+const project = require('../games/blocks/project.json');
 const {target} = require('./map-build.cjs');
 let importing = false;
 async function readWidgets(call) {

@@ -357,7 +357,7 @@
     const data = new Blob([JSON.stringify(exportOutfit(),null,2)],{type:'application/json'});
     const link = document.createElement('a');
     link.href = URL.createObjectURL(data);
-    link.download = 'velvet-star-outfit.json';
+    link.download = 'models/outfits/project.json';
     link.click();
     setTimeout(() => URL.revokeObjectURL(link.href),1000);
   });

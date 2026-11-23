@@ -56,7 +56,7 @@ const DraftStore=(()=>{
     const key=draftKey();
     // viewState 是正式版当前画面的只读快照，编辑页据此还原初始镜头与氛围。
     await save(key,{project,target,back,viewState,edits:null});
-    const page=new URL('map-edit.html',location.href);
+    const page=new URL('map-edit.html',document.baseURI);
     // 保留分享链接的查询参数，跳转后不丢鉴权信息。
     page.search=location.search;
     page.hash=key;
