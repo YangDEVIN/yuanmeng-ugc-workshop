@@ -8,5 +8,6 @@
   "princess.html": "games/princess/index.html",
   "minifigure.html": "models/minifigure/index.html",
   "dress-up.html": "models/outfits/index.html",
-  "animals/index.html": "models/animals/index.html"
+  "animals/index.html": "models/animals/index.html",
+  "crown-castle/index.html": "maps/scenic/index.html"
 }
