@@ -1,0 +1,387 @@
+{
+  "version": 1,
+  "updated": "2026-11-23",
+  "scope": "基于当前对话、已跟踪规范与任务记录整理；为问题类别数量，不是发生次数。原因未证实与待验收风险单独标注。",
+  "cases": [
+    {
+      "id": "KB-001",
+      "category": "布局",
+      "title": "场景空旷、建筑堆放杂乱",
+      "evidence": "用户反馈",
+      "cause": "只铺底板和重复摆件，缺少主次与路线",
+      "prevention": "先定出生视线、主地标、广场、环路与功能分区，再按前中远景补细节",
+      "verify": "从出生点走到每个入口和打卡点，检查遮挡与停留空间",
+      "source": "agent.md；项目历史用户反馈"
+    },
+    {
+      "id": "KB-002",
+      "category": "布局",
+      "title": "扩场地却未扩展模型与内容",
+      "evidence": "用户反馈",
+      "cause": "仅改变底板尺寸",
+      "prevention": "调整建筑体量、路网、景观与活动范围；尺寸和元件预算分别记录",
+      "verify": "测量地图边界及有效活动范围，不能用空白面积交付",
+      "source": "agent.md；项目历史用户反馈"
+    },
+    {
+      "id": "KB-003",
+      "category": "布局",
+      "title": "风格不统一、积木感不足",
+      "evidence": "用户反馈",
+      "cause": "多个模型配色比例与表面语言冲突",
+      "prevention": "统一主辅色、颗粒尺度、轮廓、屋顶和材质；原模只作参考",
+      "verify": "对照远景及近景，检查城堡、广场、游乐设施和植被",
+      "source": "agent.md；项目历史用户反馈"
+    },
+    {
+      "id": "KB-004",
+      "category": "布局",
+      "title": "方块过碎、画面噪声大",
+      "evidence": "用户反馈",
+      "cause": "逐体素堆叠且地下部分未裁剪",
+      "prevention": "按材质和高度合并连续块，保留洞口和层次；清除无用途地下几何",
+      "verify": "比较轮廓与元件数，检查洞口、碰撞及地板下方",
+      "source": "agent.md；项目历史用户反馈"
+    },
+    {
+      "id": "KB-005",
+      "category": "布局",
+      "title": "小游戏入口像孤立标签",
+      "evidence": "用户反馈",
+      "cause": "玩法与建筑场景脱节",
+      "prevention": "入口按玩法设计为课堂、雪场或商铺，并接入道路和触发区域",
+      "verify": "玩家能从场景识别玩法，入口可达且触发准确",
+      "source": "agent.md；项目历史用户反馈"
+    },
+    {
+      "id": "KB-006",
+      "category": "布局",
+      "title": "城堡只能看外壳，打卡缺少构图",
+      "evidence": "用户反馈",
+      "cause": "未规划室内、通路和相机",
+      "prevention": "明确门厅、楼梯、室内停留点及拍摄视线，检查屋顶显隐恢复",
+      "verify": "实走进出室内，拍照不穿墙，返回恢复外观",
+      "source": "agent.md；项目历史用户反馈"
+    },
+    {
+      "id": "KB-007",
+      "category": "模型",
+      "title": "人物比例与装备细节不符",
+      "evidence": "用户反馈",
+      "cause": "示意模型被当作已还原模型",
+      "prevention": "核对指定白模版本，按目标星宝实测高度校准；表情贴片和装备挂点分别绑定",
+      "verify": "检查本体与饰品高度、正侧背面、动作穿插；未实测不称1:1",
+      "source": "agent.md；项目历史用户反馈"
+    },
+    {
+      "id": "KB-008",
+      "category": "模型",
+      "title": "家具组合错位",
+      "evidence": "历史记录",
+      "cause": "桌腿、桌面、椅子采用独立坐标",
+      "prevention": "由同一组布局与局部变换推导组件",
+      "verify": "检查支撑、落地、间距与可交互位置",
+      "source": "horror-references.md"
+    },
+    {
+      "id": "KB-009",
+      "category": "模型",
+      "title": "门洞、台阶不适合玩家",
+      "evidence": "规范归纳",
+      "cause": "按模型外观估算尺寸",
+      "prevention": "采用厘米坐标和实测玩家尺寸校准净空、台阶与跳距",
+      "verify": "逐段实走，检查碰撞、卡头、断路及复活",
+      "source": "agent.md；项目历史用户反馈"
+    },
+    {
+      "id": "KB-010",
+      "category": "模型",
+      "title": "棋盘材质或导入模型与网页不同",
+      "evidence": "用户反馈，原因待逐件确认",
+      "cause": "可能是错误类型、材质变体或预览代理；不能仅凭截图断言缺贴图",
+      "prevention": "查真实目录尺寸、轴心和材质，先做小批样件回读对照",
+      "verify": "逐类比较网页与元梦外形、颜色、纹理，未匹配停止批量导入",
+      "source": "agent.md；项目历史用户反馈"
+    },
+    {
+      "id": "KB-011",
+      "category": "数据",
+      "title": "预览与导出不是同一版本",
+      "evidence": "历史记录",
+      "cause": "多个布局文件或旧入口并存",
+      "prevention": "预览、编辑、导出共用工程数据和版本；旧链接迁移",
+      "verify": "导出后重新打开，对比数量、布局、环境与玩法元数据",
+      "source": "agent.md；项目历史用户反馈"
+    },
+    {
+      "id": "KB-012",
+      "category": "数据",
+      "title": "元件数量预算与格式上限冲突",
+      "evidence": "规范归纳",
+      "cause": "设计预算被误当作工具硬上限",
+      "prevention": "生成前核对当前格式校验器、批次与文件大小限制；冲突时先优化或确认可支持方案",
+      "verify": "统计真实实例和文件大小，不以面数或合并网格数替代",
+      "source": "agent.md；项目历史用户反馈"
+    },
+    {
+      "id": "KB-013",
+      "category": "数据",
+      "title": "导入坐标、旋转或缩放发生偏移",
+      "evidence": "历史记录",
+      "cause": "编辑器吸附和量化；角度可有等价表示",
+      "prevention": "写入后按实例回读，按当前能力校正；比较实际几何及等价角度",
+      "verify": "检查接缝、支撑和触发位置；不要把固定容差当所有地图通用值",
+      "source": "tools/yuanmeng/README.md"
+    },
+    {
+      "id": "KB-014",
+      "category": "数据",
+      "title": "导入后引用旧实例编号",
+      "evidence": "已确认机制",
+      "cause": "实例编号重新分配",
+      "prevention": "稳定逻辑键结合类型、位置、尺寸唯一匹配；歧义时停止",
+      "verify": "每个逻辑元件只对应一个当前实例，机关运行引用实际编号",
+      "source": "agent.md；项目历史用户反馈"
+    },
+    {
+      "id": "KB-015",
+      "category": "数据",
+      "title": "读图失败被误判为元件丢失",
+      "evidence": "历史记录",
+      "cause": "大地图插件兼容问题或读取时进入试玩态",
+      "prevention": "先查插件/服务版本、分页、地图和编辑态；区分读取失败与不存在",
+      "verify": "恢复正确状态后回读，不能基于不完整读取重建",
+      "source": "tools/yuanmeng/README.md"
+    },
+    {
+      "id": "KB-016",
+      "category": "数据",
+      "title": "重复导入或断线后重复提交",
+      "evidence": "历史记录与预防",
+      "cause": "部分批次成功或回执丢失",
+      "prevention": "写前记录请求编号及目标，保存逐件回执；断线查询原任务和现场",
+      "verify": "核对已完成数量与实例，未知结果不盲目重放",
+      "source": "agent.md；项目历史用户反馈"
+    },
+    {
+      "id": "KB-017",
+      "category": "机关",
+      "title": "运动与显隐无效",
+      "evidence": "已确认",
+      "cause": "必要元件被强制静态化",
+      "prevention": "查询 common.ManualStaticMode，仅对必要元件按接口解除强制静态",
+      "verify": "回读属性并实际观察运动、显隐和恢复",
+      "source": "agent.md；maps/scenic/castle/TASK.tmp.md"
+    },
+    {
+      "id": "KB-018",
+      "category": "机关",
+      "title": "轮体散开、座舱翻转或木马不同步",
+      "evidence": "待验收风险",
+      "cause": "轴心、局部变换、朝向和时间基准不一致",
+      "prevention": "保存初始变换，共用轴心与时间；分别定义座舱朝向和升降",
+      "verify": "观察完整周期、停止重启及多人表现，不能以脚本提交代替",
+      "source": "agent.md；maps/scenic/castle/TASK.tmp.md"
+    },
+    {
+      "id": "KB-019",
+      "category": "机关",
+      "title": "出生点在地板下",
+      "evidence": "已确认",
+      "cause": "默认高度与新场景地面不一致",
+      "prevention": "按地面和角色尺寸放置出生点，核对朝向、落点和净空",
+      "verify": "从真实出生到主路走查，检查所有出生点",
+      "source": "agent.md；maps/scenic/castle/TASK.tmp.md"
+    },
+    {
+      "id": "KB-020",
+      "category": "2D",
+      "title": "入口绑定了错误游戏版本",
+      "evidence": "已确认",
+      "cause": "仅按主题选取简化实现",
+      "prevention": "核对用户指定包的角色、关卡、画面、操作与胜负，记录版本依据",
+      "verify": "进入触发盒对照指定版本实拍，不仅检查名称",
+      "source": "agent.md；maps/scenic/castle/TASK.tmp.md"
+    },
+    {
+      "id": "KB-021",
+      "category": "2D",
+      "title": "独立小游戏初始化覆盖现有地图",
+      "evidence": "预防规则",
+      "cause": "还原包默认重置主脚本和原生界面",
+      "prevention": "先审查脚本，嵌入地图时拆独立模块，复用主入口和通信",
+      "verify": "验证原有机关、其他入口、地图配置无回归",
+      "source": "agent.md；maps/scenic/castle/TASK.tmp.md"
+    },
+    {
+      "id": "KB-022",
+      "category": "2D",
+      "title": "图片或控件绑定错乱",
+      "evidence": "已确认机制",
+      "cause": "迁移后 UID 和资源编号变化，大整数可能失真",
+      "prevention": "上传回查素材、创建回读控件，生成绑定表；保留资源编号精度",
+      "verify": "逐项检查背景、动画帧、障碍及按钮",
+      "source": "agent.md；maps/scenic/castle/TASK.tmp.md"
+    },
+    {
+      "id": "KB-023",
+      "category": "2D",
+      "title": "UI 偏位、透明、被遮挡或点不到",
+      "evidence": "已确认与待验收",
+      "cause": "坐标语义、层级、透明度和命中属性不同",
+      "prevention": "核对中心点与左上角换算；复制控件显式设置必要属性，装饰不拦截操作",
+      "verify": "按实际分辨率检查精灵、文字和鼠标触摸命中",
+      "source": "agent.md；maps/scenic/castle/TASK.tmp.md"
+    },
+    {
+      "id": "KB-024",
+      "category": "2D",
+      "title": "原生 HUD 和键位提示重叠",
+      "evidence": "实机已观察",
+      "cause": "只隐藏部分原生控件",
+      "prevention": "进入前记录状态，按能力隐藏或避让顶部控件和键位提示，退出恢复",
+      "verify": "检查全屏各角落及文本，不以局部截图代替",
+      "source": "agent.md；maps/scenic/castle/TASK.tmp.md"
+    },
+    {
+      "id": "KB-025",
+      "category": "2D",
+      "title": "操作小游戏同时控制人物或退出后无法移动",
+      "evidence": "预防规则，恢复待完整验证",
+      "cause": "输入及移动、跳跃状态未成对恢复",
+      "prevention": "进入保存原状态并限制3D控制；退出和异常结束恢复，清空按住与触摸状态",
+      "verify": "测试左右、跳跃、暂停、退出、重入及焦点变化",
+      "source": "agent.md；maps/scenic/castle/TASK.tmp.md"
+    },
+    {
+      "id": "KB-026",
+      "category": "2D",
+      "title": "退出后立即重新打开界面",
+      "evidence": "已接入防护",
+      "cause": "人物仍在触发盒内",
+      "prevention": "逐玩家记录盒内和禁止重入状态；离开后解锁，事件与轮询去重",
+      "verify": "验证站立不重开、离开再入可打开、多人相互独立",
+      "source": "agent.md；maps/scenic/castle/TASK.tmp.md"
+    },
+    {
+      "id": "KB-027",
+      "category": "2D",
+      "title": "地图计时可能提前终止多关卡游戏",
+      "evidence": "实机观察到风险，未验证结束结果",
+      "cause": "地图总时间与小游戏流程分别设置",
+      "prevention": "估算游园、全关卡、重试和暂停所需时长，回读并调整地图时间",
+      "verify": "走完整流程与超时路径；隐藏倒计时不能延长时间",
+      "source": "agent.md；maps/scenic/castle/TASK.tmp.md"
+    },
+    {
+      "id": "KB-028",
+      "category": "2D",
+      "title": "重复发金币或客户端伪造通关",
+      "evidence": "待验证风险",
+      "cause": "未按回合去重或过度信任客户端",
+      "prevention": "服务端绑定玩家、回合及结算状态；最短耗时不等于完整反作弊",
+      "verify": "重复提交、提前退出、重连及非法回合不多发；持久化单独验收",
+      "source": "agent.md；maps/scenic/castle/TASK.tmp.md"
+    },
+    {
+      "id": "KB-029",
+      "category": "验收",
+      "title": "无报错被当作完整可玩",
+      "evidence": "历史记录",
+      "cause": "仅看启动日志或保存回执",
+      "prevention": "分别核对布局、视觉、真实输入、胜负、结算、脚本与引擎错误",
+      "verify": "空日志、采集失败、未触发业务均标未验证",
+      "source": "agent.md；maps/scenic/castle/TASK.tmp.md"
+    },
+    {
+      "id": "KB-030",
+      "category": "验收",
+      "title": "试玩中断后清理状态不明",
+      "evidence": "已观察",
+      "cause": "用户中断或会话变化，未取得恢复回执",
+      "prevention": "记录本人session并检查当前归属，恢复编辑态和原采集设置",
+      "verify": "保存清理回执；不能停止用户后来开启的会话",
+      "source": "agent.md；maps/scenic/castle/TASK.tmp.md"
+    },
+    {
+      "id": "KB-031",
+      "category": "网站",
+      "title": "不同页签导出与还原行为不同",
+      "evidence": "用户反馈",
+      "cause": "页面分别实现按钮和流程",
+      "prevention": "地图共用 map-export.js，游戏共用 game-restore.js；下载与写入明确区分",
+      "verify": "逐页检查导出格式、数量、按钮可见性和还原进度",
+      "source": "agent.md；项目历史用户反馈"
+    },
+    {
+      "id": "KB-032",
+      "category": "网站",
+      "title": "在线版仍暴露本机或自定义仓库入口",
+      "evidence": "用户反馈",
+      "cause": "只隐藏部分按钮或发布转换遗漏",
+      "prevention": "按环境移除不支持功能和后台本机探测，旧地址跳回首页",
+      "verify": "检查实际发布文件、直接旧URL与线上页面",
+      "source": "agent.md；项目历史用户反馈"
+    },
+    {
+      "id": "KB-033",
+      "category": "网站",
+      "title": "分类指向旧版、人物混入观赏图",
+      "evidence": "用户反馈",
+      "cause": "页面和数据未按页签整理",
+      "prevention": "地图、游戏、模型各归母目录；观赏只读场景，人物独立展示",
+      "verify": "检查首页分类、旧链接、当前版本、只读行为及导出",
+      "source": "agent.md；项目历史用户反馈"
+    },
+    {
+      "id": "KB-034",
+      "category": "网站",
+      "title": "小人没有可见导出按钮",
+      "evidence": "用户反馈",
+      "cause": "功能遗漏或藏在窄屏栏中",
+      "prevention": "独立模型页顶部提供统一导出，排除展示底板",
+      "verify": "桌面和窄屏下载后核对本体数量、比例和装备范围",
+      "source": "agent.md；项目历史用户反馈"
+    },
+    {
+      "id": "KB-035",
+      "category": "网站",
+      "title": "本地正常但线上资源缺失",
+      "evidence": "历史记录",
+      "cause": "依赖未跟踪或忽略的私有资源",
+      "prevention": "以Git跟踪文件打包检查；无公开授权的素材不补传，移除依赖入口",
+      "verify": "检查实际发布包及线上资源状态，不把本地文件存在当发布成功",
+      "source": "agent.md；项目历史用户反馈"
+    },
+    {
+      "id": "KB-036",
+      "category": "流程",
+      "title": "临时说明过早删除、知识只留聊天",
+      "evidence": "历史规则",
+      "cause": "混淆本地、元梦、GitHub与网页保存",
+      "prevention": "每项目独立TASK，通用经验入知识库；网页归档回读后才删临时记录",
+      "verify": "保留待办与证据，正式文档不删；区分四种保存状态",
+      "source": "agent.md；项目历史用户反馈"
+    },
+    {
+      "id": "KB-037",
+      "category": "流程",
+      "title": "资源被误公开或凭据入库",
+      "evidence": "预防规则",
+      "cause": "把参考包、运行数据和公开资产混同",
+      "prevention": "核对来源许可与发布范围，排除凭据、缓存及未授权原模",
+      "verify": "提交前审查精确文件列表与差异，不使用无差别git add",
+      "source": "agent.md；项目历史用户反馈"
+    },
+    {
+      "id": "KB-038",
+      "category": "流程",
+      "title": "Agent 未加载规范或任务覆盖手工修改",
+      "evidence": "历史规则",
+      "cause": "独立任务目录缺文档或未比较草稿版本",
+      "prevention": "任务注入规范、知识库和格式契约，输出校验并比较源版本",
+      "verify": "确认任务包含知识，冲突时阻止自动覆盖并保留恢复点",
+      "source": "agent.md；项目历史用户反馈"
+    }
+  ]
+}

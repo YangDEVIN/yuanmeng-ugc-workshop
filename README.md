@@ -72,3 +72,9 @@ node tools/package-site.cjs
 - models/animals/、models/minifigure/、models/outfits/：动物、小人和装备预览与数据。
 
 根目录保留首页、共用渲染/编辑/导出模块与兼容跳转页；tools/page-routes.json 记录旧网址到新页签的映射。地图脚本中产生的浏览器地址须依据 document.baseURI，不能按新页签的地址拼接根目录工具页。
+
+## 制图问题知识库
+
+[搜索问题与解决方法](knowledge/index.html) · [完整 Markdown](knowledge/README.md) · [结构化数据](knowledge/issues.json)
+
+已归纳 38 类问题，覆盖布局、模型、导入数据、机关、2D、验收、网站和工作流程。每条包含证据状态、原因或排查方向、预防步骤和验收要求。本地网站发起 Agent 任务时自动携带知识库；新问题维护在 issues.json 后重新生成，避免网页与文档各自漂移。

@@ -18,9 +18,12 @@ test('Agent job writes task and round-trips validated result; launcher is isolat
   const p=sample();let dir;
   const job=await bridge.createJob({agent:available.id,task:'测试：保留地图',project:p},{launcher:async(c,d,prompt)=>{dir=d;assert.ok(prompt.includes('task.md'));assert.ok((await fs.readFile(path.join(d,'task.md'),'utf8')).includes('测试：保留地图'));}});
   assert.ok((await fs.readFile(path.join(dir,'task.md'),'utf8')).includes(await fs.readFile(path.join(dir,'AGENTS.md'),'utf8')));
+  const knowledge=await fs.readFile(path.join(dir,'knowledge/README.md'),'utf8');
+  assert.ok(knowledge.includes('KB-038'));
+  assert.ok((await fs.readFile(path.join(dir,'task.md'),'utf8')).includes(knowledge));
   assert.equal((await bridge.jobResult(job.id)).state,'waiting');
   await fs.writeFile(path.join(dir,'result.json'),JSON.stringify(C.normalize(p)));assert.equal((await bridge.jobResult(job.id)).state,'ready');
   await fs.writeFile(path.join(dir,'result.json'),'{}');assert.equal((await bridge.jobResult(job.id)).state,'invalid');
   // Delete only files in this test's unique job directory, not user jobs.
-  for(const file of ['AGENTS.md','agent.md','project.json','native-assets.js','task.md','job.json','result.json'])await fs.unlink(path.join(dir,file));await fs.rmdir(dir);
+  for(const file of ['AGENTS.md','agent.md','project.json','native-assets.js','task.md','job.json','result.json'])await fs.unlink(path.join(dir,file));await fs.unlink(path.join(dir,'knowledge/README.md'));await fs.rmdir(path.join(dir,'knowledge'));await fs.rmdir(dir);
 });
